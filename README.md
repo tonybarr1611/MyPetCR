@@ -1,30 +1,33 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# MyPetCR
 
-Currently, two official plugins are available:
+React/TS Web App for general-purpose use in a veterinary clinic. It contains an e-market as well as an entire patient registry system. This software was developed as a project for the course "Bases de Datos I" at TEC Costa Rica; it does not intend to infringe any copyright of the already existing store MyPetCR.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
+## Deployment
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+To locally deploy this project run
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+```bash
+  npm install
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+```bash
+  npm run dev
+```
+
+Likewise, you can access the URL
+
+- [MyPetCR.publicvm.com](mypetcr.publicvm.com)
+## Authors
+
+- [Andrés Arias](https://github.com/andco97)
+- [Victor Aymerich](https://github.com/ZunZun77)
+- [Anthony Barrantes](https://github.com/tonybarr1611)
+- [Fabricio Solis](https://github.com/sfabricito)
+- [Pavel Zamora](https://github.com/PavelCA04)
+
+
+## Licensed under
+
+[![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
