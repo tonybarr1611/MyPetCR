@@ -2,6 +2,7 @@
 
 # Server
 SERVER_PORT = 
+TZ = 'UTC'
 
 #Database
 DB_SERVER = ''
