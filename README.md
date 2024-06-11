@@ -16,6 +16,12 @@ To locally deploy this project run
   npm run dev
 ```
 
+To locally run the server
+
+```bash
+  npm run dev -w backend
+```
+
 Likewise, you can access the URL
 
 - [mypetcr.netlify.app](mypetcr.netlify.app)

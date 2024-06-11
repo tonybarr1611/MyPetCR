@@ -1,10 +1,10 @@
 import express from "express";
 import dotenv from "dotenv";
 
-dotenv.config(); // Initialize dotenv
+dotenv.config();
 
 const app = express();
-const port = 8090;
+const port = process.env.SERVER_PORT;
 
 app.use((req, res, next) => {
     process.env.TZ = 'UTC';
