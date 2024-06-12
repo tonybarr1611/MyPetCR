@@ -5,8 +5,17 @@ import payment from '../controllers/payment';
 import status from '../controllers/status';
 import invoice from '../controllers/invoice';
 import client from '../controllers/client';
+import employee from '../controllers/employee';
 
 const route = express.Router();
+
+// Employee
+route.post('/employee', employee.CreateEmployee);
+route.get('/employee', employee.AllEmployees);
+route.get('/employee/:id', employee.EmployeeById);
+route.put('/employee/:id', employee.UpdateEmployee);
+route.delete('/employee/:id', employee.DeleteEmployee);
+
 // Client 
 route.post('/client', client.CreateClient);
 route.get('/client', client.AllClients);
