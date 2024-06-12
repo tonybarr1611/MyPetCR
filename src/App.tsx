@@ -1,7 +1,10 @@
-import Login from './Login/login';
-import './index.css'
+
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-toastify/dist/ReactToastify.css';
+import './index.css';
+import Login from './Login/login';
+
 
 
 
