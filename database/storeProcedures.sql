@@ -140,4 +140,126 @@ BEGIN
 END
 GO
 
+------------------ Appointment ------------------
 
+-- Create
+CREATE PROCEDURE SPCreateAppointment
+    @IDPet INT,
+    @IDEmployee INT,
+    @IDStore INT,
+    @IDStatus INT,
+    @DateTime DATETIME
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Pet WHERE IDPet = @IDPet)
+    BEGIN
+        RAISERROR ('Invalid Pet ID', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM Employee WHERE IDEmployee = @IDEmployee)
+    BEGIN
+        RAISERROR ('Invalid Employee ID', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM Store WHERE IDStore = @IDStore)
+    BEGIN
+        RAISERROR ('Invalid Store ID', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM StatusType WHERE IDStatus = @IDStatus)
+    BEGIN
+        RAISERROR ('Invalid Status ID', 16, 1);
+        RETURN;
+    END
+
+    INSERT INTO Appointment (IDPet, IDEmployee, IDStore, IDStatus, DateTime)
+    VALUES (@IDPet, @IDEmployee, @IDStore, @IDStatus, @DateTime);
+END
+GO
+
+-- Read All
+CREATE PROCEDURE SPReadAllAppointments
+AS
+BEGIN
+    SELECT * FROM Appointment;
+END
+GO
+
+-- Read By ID
+CREATE PROCEDURE SPReadAppointmentByID
+    @IDAppointment INT
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Appointment WHERE IDAppointment = @IDAppointment)
+    BEGIN
+        RAISERROR ('Invalid Appointment ID', 16, 1);
+        RETURN;
+    END
+
+    SELECT * FROM Appointment WHERE IDAppointment = @IDAppointment;
+END
+GO
+
+-- Update
+CREATE PROCEDURE SPUpdateAppointment
+    @IDAppointment INT,
+    @IDPet INT,
+    @IDEmployee INT,
+    @IDStore INT,
+    @IDStatus INT,
+    @DateTime DATETIME
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Appointment WHERE IDAppointment = @IDAppointment)
+    BEGIN
+        RAISERROR ('Invalid Appointment ID', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM Pet WHERE IDPet = @IDPet)
+    BEGIN
+        RAISERROR ('Invalid Pet ID', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM Employee WHERE IDEmployee = @IDEmployee)
+    BEGIN
+        RAISERROR ('Invalid Employee ID', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM Store WHERE IDStore = @IDStore)
+    BEGIN
+        RAISERROR ('Invalid Store ID', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM StatusType WHERE IDStatus = @IDStatus)
+    BEGIN
+        RAISERROR ('Invalid Status ID', 16, 1);
+        RETURN;
+    END
+
+    UPDATE Appointment
+    SET IDPet = @IDPet, IDEmployee = @IDEmployee, IDStore = @IDStore, IDStatus = @IDStatus, DateTime = @DateTime
+    WHERE IDAppointment = @IDAppointment;
+END
+GO
+
+-- Delete
+CREATE PROCEDURE SPDeleteAppointment
+    @IDAppointment INT
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Appointment WHERE IDAppointment = @IDAppointment)
+    BEGIN
+        RAISERROR ('Invalid Appointment ID', 16, 1);
+        RETURN;
+    END
+
+    DELETE FROM Appointment WHERE IDAppointment = @IDAppointment;
+END
+GO
