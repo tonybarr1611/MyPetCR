@@ -1,7 +1,7 @@
 import { Form, Button, Container, Row, Col, Card } from "react-bootstrap";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import { EyeFill, EyeSlashFill, PersonLock } from "react-bootstrap-icons";
 import "./Login.css";
 
@@ -24,28 +24,28 @@ const Login = () => {
     try {
       if (!credentials.email && !credentials.password) {
         toast.error("All fields are required", {
-          autoClose: 500,
+          autoClose: 1500,
           theme: "colored",
         });
       } else if (!emailRegex.test(credentials.email)) {
         toast.error("Please enter a valid email", {
-          autoClose: 500,
+          autoClose: 1500,
           theme: "colored",
         });
       } else if (credentials.password.length < 5) {
         toast.error("Please enter valid password", {
-          autoClose: 500,
+          autoClose: 1500,
           theme: "colored",
         });
       }
     } catch (error: any) {
       error.response.data.error.length === 1
         ? toast.error(error.response.data.error[0].msg, {
-            autoClose: 500,
+            autoClose: 1500,
             theme: "colored",
           })
         : toast.error(error.response.data.error, {
-            autoClose: 500,
+            autoClose: 1500,
             theme: "colored",
           });
     }
@@ -56,6 +56,7 @@ const Login = () => {
       className="d-flex justify-content-center align-items-center"
       style={{ height: "100vh" }}
     >
+      <ToastContainer position="top-center" />
       <Card style={{ width: "24rem", backgroundColor: "#C9E5F0" }}>
         <Card.Body>
           <div className="text-center mb-4">
@@ -75,7 +76,6 @@ const Login = () => {
                 name="email"
                 value={credentials.email}
                 onChange={handleOnChange}
-                required
               />
             </Form.Group>
 
@@ -88,7 +88,6 @@ const Login = () => {
                   name="password"
                   value={credentials.password}
                   onChange={handleOnChange}
-                  required
                 />
                 <Button
                   variant="primary"
