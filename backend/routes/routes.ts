@@ -7,10 +7,17 @@ import invoice from '../controllers/invoice';
 import client from '../controllers/client';
 import employee from '../controllers/employee';
 import inventory from '../controllers/inventory';
-
+import product from '../controllers/product';
 const route = express.Router();
 
-// inventory
+// product
+route.post('/product', product.CreateProduct);
+route.get('/product', product.AllProducts);
+route.get('/product/:id', product.ProductById);
+route.put('/product/:id', product.UpdateProduct);
+route.delete('/product/:id', product.DeleteProduct);
+
+// inventory, it has a composite key
 route.post('/inventory', inventory.CreateInventory);
 route.get('/inventory', inventory.AllInventories);
 route.get('/inventory/:IDProduct/:IDStore', inventory.InventoryById);
