@@ -230,6 +230,73 @@ BEGIN
 END;
 GO
 
+------------------ Invoice Detail ------------------
+
+-- Create
+CREATE PROCEDURE SPCreateInvoiceDetail (
+    @IDInvoice INT,
+    @IDProduct INT,
+    @Description NVARCHAR(512),
+    @Quantity INT,
+    @Price MONEY
+)
+AS
+BEGIN
+    INSERT INTO InvoiceDetail (IDInvoice, IDProduct, Description, Quantity, Price)
+    VALUES (@IDInvoice, @IDProduct, @Description, @Quantity, @Price);
+END;
+GO
+
+-- Read All
+CREATE PROCEDURE SPReadAllInvoicesDetails
+AS
+BEGIN
+    SELECT IDInvoiceDetail, IDInvoice, IDProduct, Description, Quantity, Price
+    FROM InvoiceDetail;
+END;
+GO
+
+-- Read by ID
+CREATE PROCEDURE SPReadInvoiceDetailByID (@IDInvoiceDetail INT)
+AS
+BEGIN
+    SELECT IDInvoiceDetail, IDInvoice, IDProduct, Description, Quantity, Price
+    FROM InvoiceDetail
+    WHERE IDInvoiceDetail = @IDInvoiceDetail;
+END;
+GO
+
+-- Update
+CREATE PROCEDURE SPUpdateInvoiceDetail
+(
+    @IDInvoiceDetail INT,
+    @IDInvoice INT,
+    @IDProduct INT,
+    @Description NVARCHAR(512),
+    @Quantity INT,
+    @Price MONEY
+)
+AS
+BEGIN
+    UPDATE InvoiceDetail
+    SET IDInvoice = @IDInvoice,
+        IDProduct = @IDProduct,
+        Description = @Description,
+        Quantity = @Quantity,
+        Price = @Price
+    WHERE IDInvoiceDetail = @IDInvoiceDetail;
+END;
+GO
+
+-- Delete
+CREATE PROCEDURE SPDeleteInvoiceDetail (@IDInvoiceDetail INT)
+AS
+BEGIN
+    DELETE FROM InvoiceDetail
+    WHERE IDInvoiceDetail = @IDInvoiceDetail;
+END;
+GO
+
 ------------------ Breed ------------------
 -- Create
 CREATE PROCEDURE SPCreateBreed
