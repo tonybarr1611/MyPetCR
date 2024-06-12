@@ -1,16 +1,16 @@
 CREATE TABLE [User] (
-    IDUser INT PRIMARY KEY IDENTITY(1,1),
+    IDUser INT IDENTITY(1,1) PRIMARY KEY,
     LoginID NVARCHAR(255) UNIQUE NOT NULL,
     Password NVARCHAR(255) NOT NULL
 );
 
 CREATE TABLE LogType (
-    IDLogType INT PRIMARY KEY IDENTITY(1,1),
+    IDLogType INT IDENTITY(1,1) PRIMARY KEY,
     Name NVARCHAR(64) NOT NULL
 );
 
 CREATE TABLE Log (
-    IDLog INT PRIMARY KEY IDENTITY(1,1),
+    IDLog INT IDENTITY(1,1) PRIMARY KEY,
     IDLogType INT,
     IDUser INT,
     DateTime DATETIME NOT NULL,
@@ -20,34 +20,34 @@ CREATE TABLE Log (
 );
 
 CREATE TABLE Client (
-    IDClient INT PRIMARY KEY IDENTITY(1,1),
+    IDClient INT IDENTITY(1,1) PRIMARY KEY,
     IDUser INT,
     Name NVARCHAR(255) NOT NULL,
-    PhoneNumber INT,
+    PhoneNumber NVARCHAR(20),
     FOREIGN KEY (IDUser) REFERENCES [User](IDUser)
 );
 
 CREATE TABLE Employee (
-    IDEmployee INT PRIMARY KEY IDENTITY(1,1),
+    IDEmployee INT IDENTITY(1,1) PRIMARY KEY,
     IDUser INT,
     Name NVARCHAR(255) NOT NULL,
-    PhoneNumber INT,
+    PhoneNumber NVARCHAR(20),
     FOREIGN KEY (IDUser) REFERENCES [User](IDUser)
 );
 
 CREATE TABLE UserType (
-    IDUserType INT PRIMARY KEY IDENTITY(1,1),
+    IDUserType INT IDENTITY(1,1) PRIMARY KEY,
     Name NVARCHAR(64) NOT NULL,
     Clearance INT NOT NULL
 );
 
 CREATE TABLE ProductType (
-    IDProductType INT PRIMARY KEY IDENTITY(1,1),
+    IDProductType INT IDENTITY(1,1) PRIMARY KEY,
     Name NVARCHAR(255) NOT NULL
 );
 
 CREATE TABLE Product (
-    IDProduct INT PRIMARY KEY IDENTITY(1,1),
+    IDProduct INT IDENTITY(1,1) PRIMARY KEY,
     IDProductType INT,
     Name NVARCHAR(255) NOT NULL,
     Description NVARCHAR(512),
@@ -56,7 +56,7 @@ CREATE TABLE Product (
 );
 
 CREATE TABLE Store (
-    IDStore INT PRIMARY KEY IDENTITY(1,1),
+    IDStore INT IDENTITY(1,1) PRIMARY KEY,
     Location NVARCHAR(128) NOT NULL
 );
 
@@ -70,7 +70,7 @@ CREATE TABLE Inventory (
 );
 
 CREATE TABLE Review (
-    IDReview INT PRIMARY KEY IDENTITY(1,1),
+    IDReview INT IDENTITY(1,1) PRIMARY KEY,
     IDProduct INT,
     IDClient INT,
     Description NVARCHAR(512),
@@ -81,19 +81,19 @@ CREATE TABLE Review (
 );
 
 CREATE TABLE PetType (
-    IDPetType INT PRIMARY KEY IDENTITY(1,1),
+    IDPetType INT IDENTITY(1,1) PRIMARY KEY,
     Name NVARCHAR(64) NOT NULL
 );
 
 CREATE TABLE Breed (
-    IDBreed INT PRIMARY KEY IDENTITY(1,1),
+    IDBreed INT IDENTITY(1,1) PRIMARY KEY,
     IDPetType INT,
     Name NVARCHAR(128) NOT NULL,
     FOREIGN KEY (IDPetType) REFERENCES PetType(IDPetType)
 );
 
 CREATE TABLE Pet (
-    IDPet INT PRIMARY KEY IDENTITY(1,1),
+    IDPet INT IDENTITY(1,1) PRIMARY KEY,
     IDBreed INT,
     IDClient INT,
     Name NVARCHAR(128) NOT NULL,
@@ -105,12 +105,12 @@ CREATE TABLE Pet (
 );
 
 CREATE TABLE StatusType (
-    IDStatus INT PRIMARY KEY IDENTITY(1,1),
+    IDStatus INT IDENTITY(1,1) PRIMARY KEY,
     Name NVARCHAR(64) NOT NULL
 );
 
 CREATE TABLE Appointment (
-    IDAppointment INT PRIMARY KEY IDENTITY(1,1),
+    IDAppointment INT IDENTITY(1,1) PRIMARY KEY,
     IDPet INT,
     IDEmployee INT,
     IDStore INT,
@@ -123,19 +123,19 @@ CREATE TABLE Appointment (
 );
 
 CREATE TABLE PaymentType (
-    IDPaymentType INT PRIMARY KEY IDENTITY(1,1),
+    IDPaymentType INT IDENTITY(1,1) PRIMARY KEY,
     Name NVARCHAR(64) NOT NULL
 );
 
 CREATE TABLE Payment (
-    IDPayment INT PRIMARY KEY IDENTITY(1,1),
+    IDPayment INT IDENTITY(1,1) PRIMARY KEY,
     IDPaymentType INT,
     Name NVARCHAR(64) NOT NULL,
     FOREIGN KEY (IDPaymentType) REFERENCES PaymentType(IDPaymentType)
 );
 
 CREATE TABLE Invoice (
-    IDInvoice INT PRIMARY KEY IDENTITY(1,1),
+    IDInvoice INT IDENTITY(1,1) PRIMARY KEY,
     IDAppointment INT,
     IDClient INT,
     IDPayment INT,
@@ -148,7 +148,7 @@ CREATE TABLE Invoice (
 );
 
 CREATE TABLE InvoiceDetail (
-    IDInvoiceDetail INT PRIMARY KEY IDENTITY(1,1),
+    IDInvoiceDetail INT IDENTITY(1,1) PRIMARY KEY,
     IDInvoice INT,
     IDProduct INT,
     Description NVARCHAR(512),
@@ -159,18 +159,18 @@ CREATE TABLE InvoiceDetail (
 );
 
 CREATE TABLE Address (
-    IDAddress INT PRIMARY KEY IDENTITY(1,1),
+    IDAddress INT IDENTITY(1,1) PRIMARY KEY,
     IDClient INT,
     Province NVARCHAR(16),
     City NVARCHAR(64),
     District NVARCHAR(64),
-    ZIPCode INT,
+    ZIPCode NVARCHAR(10),
     Description NVARCHAR(512),
     FOREIGN KEY (IDClient) REFERENCES Client(IDClient)
 );
 
 CREATE TABLE Shipping (
-    IDShipping INT PRIMARY KEY IDENTITY(1,1),
+    IDShipping INT IDENTITY(1,1) PRIMARY KEY,
     IDInvoice INT,
     IDAddress INT,
     IDStatus INT,
