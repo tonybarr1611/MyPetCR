@@ -1,6 +1,6 @@
 :root {
   --darkblue: #1A485B;
-  --blue: #4D7381;
+  /* --blue: #4D7381; */
   --salmon: #FFC7A7;
   --lightsalmon: #FFEDE1;
   --lightblue: #C9E5F0;
@@ -15,35 +15,6 @@ html, body {
   font-family: 'Roboto', sans-serif;
 }
 
-.full-height-container {
-  background-color: var(--lightsalmon); 
-  padding: 20px;
-  border-radius: 10px;
-}
-
-.card {
-  background-color: var(--lightblue); 
-  border: 1px solid var(--blue);
-}
-
-.card-body {
-  color: var(--darkblue); 
-}
-
-
-.btn-primary {
-  background-color: var(--blue);
-  color: var(--lightsalmon);
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1.2rem;
-  border: none;
-}
-
-.btn-primary:hover{
-  background-color: var(--darkblue);
-}
-.btn-primary:active{
-  background-color: var(--brown);
+.text-end {
+  text-align: end;
 }
