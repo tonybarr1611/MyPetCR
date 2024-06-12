@@ -119,3 +119,408 @@ BEGIN
     WHERE IDPayment = @IDPayment;
 END;
 GO
+
+------------------ Breed ------------------
+-- Create
+CREATE PROCEDURE SPCreateBreed
+    @IDPetType INT,
+    @Name NVARCHAR(128)
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM PetType WHERE IDPetType = @IDPetType)
+    BEGIN
+        RAISERROR ('Invalid PetType ID', 16, 1);
+        RETURN;
+    END
+
+    INSERT INTO Breed (IDPetType, Name)
+    VALUES (@IDPetType, @Name);
+END
+GO
+
+-- Read All
+CREATE PROCEDURE SPReadAllBreeds
+AS
+BEGIN
+    SELECT * FROM Breed;
+END
+GO
+
+-- Read By ID
+CREATE PROCEDURE SPReadBreedByID
+    @IDBreed INT
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Breed WHERE IDBreed = @IDBreed)
+    BEGIN
+        RAISERROR ('Invalid Breed ID', 16, 1);
+        RETURN;
+    END
+
+    SELECT * FROM Breed WHERE IDBreed = @IDBreed;
+END
+GO
+
+-- Update
+CREATE PROCEDURE SPUpdateBreed
+    @IDBreed INT,
+    @IDPetType INT,
+    @Name NVARCHAR(128)
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Breed WHERE IDBreed = @IDBreed)
+    BEGIN
+        RAISERROR ('Invalid Breed ID', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM PetType WHERE IDPetType = @IDPetType)
+    BEGIN
+        RAISERROR ('Invalid PetType ID', 16, 1);
+        RETURN;
+    END
+
+    UPDATE Breed
+    SET IDPetType = @IDPetType, Name = @Name
+    WHERE IDBreed = @IDBreed;
+END
+GO
+
+-- Delete
+CREATE PROCEDURE SPDeleteBreed
+    @IDBreed INT
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Breed WHERE IDBreed = @IDBreed)
+    BEGIN
+        RAISERROR ('Invalid Breed ID', 16, 1);
+        RETURN;
+    END
+
+    DELETE FROM Breed WHERE IDBreed = @IDBreed;
+END
+GO
+
+------------------ Appointment ------------------
+
+-- Create
+CREATE PROCEDURE SPCreateAppointment
+    @IDPet INT,
+    @IDEmployee INT,
+    @IDStore INT,
+    @IDStatus INT,
+    @DateTime DATETIME
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Pet WHERE IDPet = @IDPet)
+    BEGIN
+        RAISERROR ('Invalid Pet ID', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM Employee WHERE IDEmployee = @IDEmployee)
+    BEGIN
+        RAISERROR ('Invalid Employee ID', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM Store WHERE IDStore = @IDStore)
+    BEGIN
+        RAISERROR ('Invalid Store ID', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM StatusType WHERE IDStatus = @IDStatus)
+    BEGIN
+        RAISERROR ('Invalid Status ID', 16, 1);
+        RETURN;
+    END
+
+    INSERT INTO Appointment (IDPet, IDEmployee, IDStore, IDStatus, DateTime)
+    VALUES (@IDPet, @IDEmployee, @IDStore, @IDStatus, @DateTime);
+END
+GO
+
+-- Read All
+CREATE PROCEDURE SPReadAllAppointments
+AS
+BEGIN
+    SELECT * FROM Appointment;
+END
+GO
+
+-- Read By ID
+CREATE PROCEDURE SPReadAppointmentByID
+    @IDAppointment INT
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Appointment WHERE IDAppointment = @IDAppointment)
+    BEGIN
+        RAISERROR ('Invalid Appointment ID', 16, 1);
+        RETURN;
+    END
+
+    SELECT * FROM Appointment WHERE IDAppointment = @IDAppointment;
+END
+GO
+
+-- Update
+CREATE PROCEDURE SPUpdateAppointment
+    @IDAppointment INT,
+    @IDPet INT,
+    @IDEmployee INT,
+    @IDStore INT,
+    @IDStatus INT,
+    @DateTime DATETIME
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Appointment WHERE IDAppointment = @IDAppointment)
+    BEGIN
+        RAISERROR ('Invalid Appointment ID', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM Pet WHERE IDPet = @IDPet)
+    BEGIN
+        RAISERROR ('Invalid Pet ID', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM Employee WHERE IDEmployee = @IDEmployee)
+    BEGIN
+        RAISERROR ('Invalid Employee ID', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM Store WHERE IDStore = @IDStore)
+    BEGIN
+        RAISERROR ('Invalid Store ID', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM StatusType WHERE IDStatus = @IDStatus)
+    BEGIN
+        RAISERROR ('Invalid Status ID', 16, 1);
+        RETURN;
+    END
+
+    UPDATE Appointment
+    SET IDPet = @IDPet, IDEmployee = @IDEmployee, IDStore = @IDStore, IDStatus = @IDStatus, DateTime = @DateTime
+    WHERE IDAppointment = @IDAppointment;
+END
+GO
+
+-- Delete
+CREATE PROCEDURE SPDeleteAppointment
+    @IDAppointment INT
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Appointment WHERE IDAppointment = @IDAppointment)
+    BEGIN
+        RAISERROR ('Invalid Appointment ID', 16, 1);
+        RETURN;
+    END
+
+    DELETE FROM Appointment WHERE IDAppointment = @IDAppointment;
+END
+GO
+
+------------------ Address ------------------
+
+-- Create
+CREATE PROCEDURE SPCreateAddress
+    @IDClient INT,
+    @Province NVARCHAR(16),
+    @City NVARCHAR(64),
+    @District NVARCHAR(64),
+    @ZIPCode NVARCHAR(10),
+    @Description NVARCHAR(512)
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Client WHERE IDClient = @IDClient)
+    BEGIN
+        RAISERROR ('Invalid Client ID', 16, 1);
+        RETURN;
+    END
+
+    INSERT INTO Address (IDClient, Province, City, District, ZIPCode, Description)
+    VALUES (@IDClient, @Province, @City, @District, @ZIPCode, @Description);
+END
+GO
+
+-- Read All
+CREATE PROCEDURE SPReadAllAddresses
+AS
+BEGIN
+    SELECT * FROM Address;
+END
+GO
+
+-- Read By ID
+CREATE PROCEDURE SPReadAddressByID
+    @IDAddress INT
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Address WHERE IDAddress = @IDAddress)
+    BEGIN
+        RAISERROR ('Invalid Address ID', 16, 1);
+        RETURN;
+    END
+
+    SELECT * FROM Address WHERE IDAddress = @IDAddress;
+END
+GO
+
+-- Update
+CREATE PROCEDURE SPUpdateAddress
+    @IDAddress INT,
+    @IDClient INT,
+    @Province NVARCHAR(16),
+    @City NVARCHAR(64),
+    @District NVARCHAR(64),
+    @ZIPCode NVARCHAR(10),
+    @Description NVARCHAR(512)
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Address WHERE IDAddress = @IDAddress)
+    BEGIN
+        RAISERROR ('Invalid Address ID', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM Client WHERE IDClient = @IDClient)
+    BEGIN
+        RAISERROR ('Invalid Client ID', 16, 1);
+        RETURN;
+    END
+
+    UPDATE Address
+    SET IDClient = @IDClient, Province = @Province, City = @City, District = @District, ZIPCode = @ZIPCode, Description = @Description
+    WHERE IDAddress = @IDAddress;
+END
+GO
+
+-- Delete
+CREATE PROCEDURE SPDeleteAddress
+    @IDAddress INT
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Address WHERE IDAddress = @IDAddress)
+    BEGIN
+        RAISERROR ('Invalid Address ID', 16, 1);
+        RETURN;
+    END
+
+    DELETE FROM Address WHERE IDAddress = @IDAddress;
+END
+GO
+
+------------------ Shipping ------------------
+
+-- Create
+CREATE PROCEDURE SPCreateShipping
+    @IDInvoice INT,
+    @IDAddress INT,
+    @IDStatus INT,
+    @TrackingID NVARCHAR(128)
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Invoice WHERE IDInvoice = @IDInvoice)
+    BEGIN
+        RAISERROR ('Invalid Invoice ID', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM Address WHERE IDAddress = @IDAddress)
+    BEGIN
+        RAISERROR ('Invalid Address ID', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM StatusType WHERE IDStatus = @IDStatus)
+    BEGIN
+        RAISERROR ('Invalid Status ID', 16, 1);
+        RETURN;
+    END
+
+    INSERT INTO Shipping (IDInvoice, IDAddress, IDStatus, TrackingID)
+    VALUES (@IDInvoice, @IDAddress, @IDStatus, @TrackingID);
+END
+GO
+
+-- Read All
+CREATE PROCEDURE SPReadAllShippings
+AS
+BEGIN
+    SELECT * FROM Shipping;
+END
+GO
+
+-- Read By ID
+CREATE PROCEDURE SPReadShippingByID
+    @IDShipping INT
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Shipping WHERE IDShipping = @IDShipping)
+    BEGIN
+        RAISERROR ('Invalid Shipping ID', 16, 1);
+        RETURN;
+    END
+
+    SELECT * FROM Shipping WHERE IDShipping = @IDShipping;
+END
+GO
+
+-- Update
+CREATE PROCEDURE SPUpdateShipping
+    @IDShipping INT,
+    @IDInvoice INT,
+    @IDAddress INT,
+    @IDStatus INT,
+    @TrackingID NVARCHAR(128)
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Shipping WHERE IDShipping = @IDShipping)
+    BEGIN
+        RAISERROR ('Invalid Shipping ID', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM Invoice WHERE IDInvoice = @IDInvoice)
+    BEGIN
+        RAISERROR ('Invalid Invoice ID', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM Address WHERE IDAddress = @IDAddress)
+    BEGIN
+        RAISERROR ('Invalid Address ID', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM StatusType WHERE IDStatus = @IDStatus)
+    BEGIN
+        RAISERROR ('Invalid Status ID', 16, 1);
+        RETURN;
+    END
+
+    UPDATE Shipping
+    SET IDInvoice = @IDInvoice, IDAddress = @IDAddress, IDStatus = @IDStatus, TrackingID = @TrackingID
+    WHERE IDShipping = @IDShipping;
+END
+GO
+
+-- Delete
+CREATE PROCEDURE SPDeleteShipping
+    @IDShipping INT
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Shipping WHERE IDShipping = @IDShipping)
+    BEGIN
+        RAISERROR ('Invalid Shipping ID', 16, 1);
+        RETURN;
+    END
+
+    DELETE FROM Shipping WHERE IDShipping = @IDShipping;
+END
+GO
