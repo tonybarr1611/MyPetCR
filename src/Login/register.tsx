@@ -1,42 +1,55 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Container, Form, Button, Card } from 'react-bootstrap'
-import { ToastContainer, toast } from 'react-toastify'
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Container, Form, Button, Card } from "react-bootstrap";
+import { ToastContainer, toast } from "react-toastify";
 import { EyeFill, EyeSlashFill } from "react-bootstrap-icons";
 import { FaDog } from "react-icons/fa6";
-import "./Login.css"
+import "./Login.css";
 
 const Register = () => {
-  const [credentials, setCredentials] = useState({ email: "", password: "" })
+  const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleOnChange = (e: { target: { name: any; value: any; }; }) => {
-    setCredentials({ ...credentials, [e.target.name]: e.target.value })
-  }
+  const handleOnChange = (e: { target: { name: any; value: any } }) => {
+    setCredentials({ ...credentials, [e.target.name]: e.target.value });
+  };
 
-  const handleSubmit = async (e: { preventDefault: () => void; }) => {
-    e.preventDefault()
-    let emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    let emailRegex =
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
     try {
       if (!credentials.email && !credentials.password) {
-        toast.error("All fields are required", { autoClose: 1500, theme: 'colored' })
+        toast.error("All fields are required", {
+          autoClose: 1500,
+          theme: "colored",
+        });
       } else if (emailRegex.test(credentials.email) === false) {
-        toast.error("Please enter a valid email", { autoClose: 1500, theme: 'colored' })
+        toast.error("Please enter a valid email", {
+          autoClose: 1500,
+          theme: "colored",
+        });
       } else if (credentials.password.length < 5) {
-        toast.error("Please enter a password with more than 5 characters", { autoClose: 1500, theme: 'colored' })
+        toast.error("Please enter a password with more than 5 characters", {
+          autoClose: 1500,
+          theme: "colored",
+        });
       } else if (credentials.email && credentials.password) {
         // Authentication logic (e.g., sending data to backend)
       }
-    } catch (error : any) {
-      toast.error(error.response.data.error[0].msg, { autoClose: 1500, theme: 'colored' })
+    } catch (error: any) {
+      toast.error(error.response.data.error[0].msg, {
+        autoClose: 1500,
+        theme: "colored",
+      });
     }
-  }
+  };
 
   return (
     <Container
@@ -44,10 +57,14 @@ const Register = () => {
       style={{ height: "100vh" }}
     >
       <ToastContainer position="top-center" />
-      <Card style={{ width: '24rem', background: "#C9E5F0" }}>
+      <Card style={{ width: "24rem", background: "#C9E5F0" }}>
         <Card.Body>
           <div className="text-center mb-4">
-            <FaDog size={40} className="mb-3" style={{ color: 'var(--darkblue)' }} />
+            <FaDog
+              size={40}
+              className="mb-3"
+              style={{ color: "var(--darkblue)" }}
+            />
             <h1 className="h4">Sign Up</h1>
           </div>
           <Form onSubmit={handleSubmit}>
@@ -69,7 +86,11 @@ const Register = () => {
                   value={credentials.password}
                   onChange={handleOnChange}
                 />
-                <Button variant="primary" onClick={handleClickShowPassword} className="ml-1">
+                <Button
+                  variant="primary"
+                  onClick={handleClickShowPassword}
+                  className="ml-1"
+                >
                   {showPassword ? <EyeSlashFill /> : <EyeFill />}
                 </Button>
               </div>
@@ -81,10 +102,10 @@ const Register = () => {
         </Card.Body>
       </Card>
     </Container>
-  )
-}
+  );
+};
 
-export default Register
+export default Register;
 
 /*
 import { useState } from 'react'
