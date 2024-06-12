@@ -58,3 +58,86 @@ BEGIN
     WHERE IDPaymentType = @PaymentTypeID;
 END;
 GO
+
+------------------ Breed ------------------
+-- Create
+CREATE PROCEDURE SPCreateBreed
+    @IDPetType INT,
+    @Name NVARCHAR(128)
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM PetType WHERE IDPetType = @IDPetType)
+    BEGIN
+        RAISERROR ('Invalid PetType ID', 16, 1);
+        RETURN;
+    END
+
+    INSERT INTO Breed (IDPetType, Name)
+    VALUES (@IDPetType, @Name);
+END
+GO
+
+-- Read All
+CREATE PROCEDURE SPReadAllBreeds
+AS
+BEGIN
+    SELECT * FROM Breed;
+END
+GO
+
+-- Read By ID
+CREATE PROCEDURE SPReadBreedByID
+    @IDBreed INT
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Breed WHERE IDBreed = @IDBreed)
+    BEGIN
+        RAISERROR ('Invalid Breed ID', 16, 1);
+        RETURN;
+    END
+
+    SELECT * FROM Breed WHERE IDBreed = @IDBreed;
+END
+GO
+
+-- Update
+CREATE PROCEDURE SPUpdateBreed
+    @IDBreed INT,
+    @IDPetType INT,
+    @Name NVARCHAR(128)
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Breed WHERE IDBreed = @IDBreed)
+    BEGIN
+        RAISERROR ('Invalid Breed ID', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM PetType WHERE IDPetType = @IDPetType)
+    BEGIN
+        RAISERROR ('Invalid PetType ID', 16, 1);
+        RETURN;
+    END
+
+    UPDATE Breed
+    SET IDPetType = @IDPetType, Name = @Name
+    WHERE IDBreed = @IDBreed;
+END
+GO
+
+-- Delete
+CREATE PROCEDURE SPDeleteBreed
+    @IDBreed INT
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Breed WHERE IDBreed = @IDBreed)
+    BEGIN
+        RAISERROR ('Invalid Breed ID', 16, 1);
+        RETURN;
+    END
+
+    DELETE FROM Breed WHERE IDBreed = @IDBreed;
+END
+GO
+
+
