@@ -263,3 +263,93 @@ BEGIN
     DELETE FROM Appointment WHERE IDAppointment = @IDAppointment;
 END
 GO
+
+------------------ Address ------------------
+
+-- Create
+CREATE PROCEDURE SPCreateAddress
+    @IDClient INT,
+    @Province NVARCHAR(16),
+    @City NVARCHAR(64),
+    @District NVARCHAR(64),
+    @ZIPCode NVARCHAR(10),
+    @Description NVARCHAR(512)
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Client WHERE IDClient = @IDClient)
+    BEGIN
+        RAISERROR ('Invalid Client ID', 16, 1);
+        RETURN;
+    END
+
+    INSERT INTO Address (IDClient, Province, City, District, ZIPCode, Description)
+    VALUES (@IDClient, @Province, @City, @District, @ZIPCode, @Description);
+END
+GO
+
+-- Read All
+CREATE PROCEDURE SPReadAllAddresses
+AS
+BEGIN
+    SELECT * FROM Address;
+END
+GO
+
+-- Read By ID
+CREATE PROCEDURE SPReadAddressByID
+    @IDAddress INT
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Address WHERE IDAddress = @IDAddress)
+    BEGIN
+        RAISERROR ('Invalid Address ID', 16, 1);
+        RETURN;
+    END
+
+    SELECT * FROM Address WHERE IDAddress = @IDAddress;
+END
+GO
+
+-- Update
+CREATE PROCEDURE SPUpdateAddress
+    @IDAddress INT,
+    @IDClient INT,
+    @Province NVARCHAR(16),
+    @City NVARCHAR(64),
+    @District NVARCHAR(64),
+    @ZIPCode NVARCHAR(10),
+    @Description NVARCHAR(512)
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Address WHERE IDAddress = @IDAddress)
+    BEGIN
+        RAISERROR ('Invalid Address ID', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM Client WHERE IDClient = @IDClient)
+    BEGIN
+        RAISERROR ('Invalid Client ID', 16, 1);
+        RETURN;
+    END
+
+    UPDATE Address
+    SET IDClient = @IDClient, Province = @Province, City = @City, District = @District, ZIPCode = @ZIPCode, Description = @Description
+    WHERE IDAddress = @IDAddress;
+END
+GO
+
+-- Delete
+CREATE PROCEDURE SPDeleteAddress
+    @IDAddress INT
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Address WHERE IDAddress = @IDAddress)
+    BEGIN
+        RAISERROR ('Invalid Address ID', 16, 1);
+        RETURN;
+    END
+
+    DELETE FROM Address WHERE IDAddress = @IDAddress;
+END
+GO
