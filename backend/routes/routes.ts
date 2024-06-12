@@ -4,8 +4,15 @@ import paymentType from '../controllers/paymentType';
 import payment from '../controllers/payment';
 import status from '../controllers/status';
 import invoice from '../controllers/invoice';
+import client from '../controllers/client';
 
 const route = express.Router();
+// Client 
+route.post('/client', client.CreateClient);
+route.get('/client', client.AllClients);
+route.get('/client/:id', client.ClientById);
+route.put('/client/:id', client.UpdateClient);
+route.delete('/client/:id', client.DeleteClient);
 
 // Payment Types
 route.post('/paymentType', paymentType.CreatePaymentType);
