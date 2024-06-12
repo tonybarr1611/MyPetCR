@@ -120,6 +120,64 @@ BEGIN
 END;
 GO
 
+------------------ Status Type ------------------
+
+-- Create
+CREATE PROCEDURE SPCreateStatus (@Name nvarchar(64))
+AS
+BEGIN
+    IF @Name IS NULL OR @Name = ''
+    BEGIN
+        RAISERROR ('Status name cannot be empty.', 16, 1);
+        RETURN;
+    END;
+
+    INSERT INTO StatusType (Name) VALUES (@Name);
+END;
+GO
+
+-- Read all
+CREATE PROCEDURE SPReadAllStatus
+AS
+BEGIN
+    SELECT IDStatus, Name FROM StatusType
+END;
+GO
+
+-- Read By ID
+CREATE PROCEDURE SPReadStatusByID (@IDStatus int)
+AS
+BEGIN
+    SELECT IDStatus, Name
+    FROM StatusType
+    WHERE IDStatus = @IDStatus;
+END;
+GO
+
+-- Update by ID
+CREATE PROCEDURE SPUpdateStatus (@IDStatus int, @NewName nvarchar(64))
+AS
+BEGIN
+    IF @NewName IS NULL OR @NewName = ''
+    BEGIN
+        RAISERROR ('Status new name cannot be empty.', 16, 1);
+        RETURN;
+    END;
+
+    UPDATE StatusType
+    SET Name = @NewName
+    WHERE IDStatus = @IDStatus;
+END;
+GO
+
+-- Delete by ID
+CREATE PROCEDURE SPDeleteStatus (@IDStatus int)
+AS
+BEGIN
+    DELETE FROM StatusType WHERE IDStatus = @IDStatus;
+END;
+GO
+
 ------------------ Breed ------------------
 -- Create
 CREATE PROCEDURE SPCreateBreed
