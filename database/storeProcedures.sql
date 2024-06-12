@@ -178,6 +178,58 @@ BEGIN
 END;
 GO
 
+------------------ Invoice ------------------
+
+-- Create
+CREATE PROCEDURE SPCreateInvoice (@IDAppointment INT, @IDClient INT, @IDPayment INT, @IDStatus INT, @DateTime DATETIME)
+AS
+BEGIN
+    INSERT INTO Invoice (IDAppointment, IDClient, IDPayment, IDStatus, DateTime)
+    VALUES (@IDAppointment, @IDClient, @IDPayment, @IDStatus, @DateTime);
+END;
+GO
+
+-- Read All
+CREATE  PROCEDURE SPReadAllInvoices
+AS
+BEGIN
+    SELECT IDInvoice, IDAppointment, IDClient, IDPayment, IDStatus, DateTime
+    FROM Invoice
+END;
+GO
+
+-- Read By ID
+CREATE PROCEDURE SPReadInvoiceByID (@IDInvoice int)
+AS
+BEGIN
+    SELECT IDInvoice, IDAppointment, IDClient, IDPayment, IDStatus, DateTime
+    FROM Invoice
+    WHERE IDInvoice = @IDInvoice;
+END;
+GO
+
+-- Update by ID
+CREATE PROCEDURE SPUpdateInvoice (@IDInvoice INT, @IDAppointment INT, @IDClient INT, @IDPayment INT, @IDStatus INT, @DateTime DATETIME)
+AS
+BEGIN
+    UPDATE Invoice
+    SET IDAppointment = @IDAppointment,
+        IDClient = @IDClient,
+        IDPayment = @IDPayment,
+        IDStatus = @IDStatus,
+        DateTime = @DateTime
+    WHERE IDInvoice = @IDInvoice;
+END;
+GO
+
+-- Delete by ID
+CREATE PROCEDURE SPDeleteInvoice (@IDInvoice INT)
+AS
+BEGIN
+    DELETE FROM Invoice WHERE IDInvoice = @IDInvoice;
+END;
+GO
+
 ------------------ Breed ------------------
 -- Create
 CREATE PROCEDURE SPCreateBreed

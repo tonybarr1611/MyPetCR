@@ -3,6 +3,7 @@ import express from 'express';
 import paymentType from '../controllers/paymentType';
 import payment from '../controllers/payment';
 import status from '../controllers/status';
+import invoice from '../controllers/invoice';
 
 const route = express.Router();
 
@@ -26,5 +27,12 @@ route.get('/status', status.ReadAllStatus);
 route.get('/status/:id', status.ReadStatusByID);
 route.put('/status/:id', status.UpdateStatus);
 route.delete('/status/:id', status.DeleteStatus);
+
+// Invoice
+route.post('/invoice', invoice.CreateInvoice);
+route.get('/invoice', invoice.ReadAllInvoices);
+route.get('/invoice/:id', invoice.ReadInvoicesByID);
+route.put('/invoice/:id', invoice.UpdateInvoice);
+route.delete('/invoice/:id', invoice.DeleteInvoice);
 
 export default route;
