@@ -50,7 +50,6 @@ const Login = () => {
           });
     }
   };
-
   return (
     <Container
       className="d-flex justify-content-center align-items-center"
@@ -78,7 +77,6 @@ const Login = () => {
                 onChange={handleOnChange}
               />
             </Form.Group>
-
             <Form.Group className="mb-3" controlId="formBasicPassword">
               <Form.Label>Password</Form.Label>
               <div className="input-group">
@@ -98,16 +96,13 @@ const Login = () => {
                 </Button>
               </div>
             </Form.Group>
-
             <Form.Group className="mb-3" controlId="formBasicCheckbox">
               <Form.Check type="checkbox" label="Remember me" />
             </Form.Group>
-
             <Button variant="primary" type="submit" className="w-100 mb-3">
               Sign In
               {/* TODO: enviar log */}
             </Button>
-
             <Row>
               <Col className="text-end">
                 <span
@@ -119,9 +114,6 @@ const Login = () => {
                 >
                   Continue as Guest
                 </span>
-                {/*<Link to="/register" className="text-decoration-none">
-                      Don't have an account? <span style={{ color: '#0d6efd' }}>Sign Up</span>
-                    </Link>*/}
               </Col>
             </Row>
           </Form>
