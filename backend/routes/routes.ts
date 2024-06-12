@@ -8,6 +8,8 @@ import client from '../controllers/client';
 import employee from '../controllers/employee';
 import inventory from '../controllers/inventory';
 import product from '../controllers/product';
+import productType from '../controllers/productType';
+
 const route = express.Router();
 
 // product
@@ -16,6 +18,13 @@ route.get('/product', product.AllProducts);
 route.get('/product/:id', product.ProductById);
 route.put('/product/:id', product.UpdateProduct);
 route.delete('/product/:id', product.DeleteProduct);
+
+// productType
+route.post('/productType', productType.CreateProductType);
+route.get('/productType', productType.AllProductTypes);
+route.get('/productType/:id', productType.ProductTypeById);
+route.put('/productType/:id', productType.UpdateProductType);
+route.delete('/productType/:id', productType.DeleteProductType);
 
 // inventory, it has a composite key
 route.post('/inventory', inventory.CreateInventory);
