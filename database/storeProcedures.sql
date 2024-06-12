@@ -353,3 +353,113 @@ BEGIN
     DELETE FROM Address WHERE IDAddress = @IDAddress;
 END
 GO
+
+------------------ Shipping ------------------
+
+-- Create
+CREATE PROCEDURE SPCreateShipping
+    @IDInvoice INT,
+    @IDAddress INT,
+    @IDStatus INT,
+    @TrackingID NVARCHAR(128)
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Invoice WHERE IDInvoice = @IDInvoice)
+    BEGIN
+        RAISERROR ('Invalid Invoice ID', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM Address WHERE IDAddress = @IDAddress)
+    BEGIN
+        RAISERROR ('Invalid Address ID', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM StatusType WHERE IDStatus = @IDStatus)
+    BEGIN
+        RAISERROR ('Invalid Status ID', 16, 1);
+        RETURN;
+    END
+
+    INSERT INTO Shipping (IDInvoice, IDAddress, IDStatus, TrackingID)
+    VALUES (@IDInvoice, @IDAddress, @IDStatus, @TrackingID);
+END
+GO
+
+-- Read All
+CREATE PROCEDURE SPReadAllShippings
+AS
+BEGIN
+    SELECT * FROM Shipping;
+END
+GO
+
+-- Read By ID
+CREATE PROCEDURE SPReadShippingByID
+    @IDShipping INT
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Shipping WHERE IDShipping = @IDShipping)
+    BEGIN
+        RAISERROR ('Invalid Shipping ID', 16, 1);
+        RETURN;
+    END
+
+    SELECT * FROM Shipping WHERE IDShipping = @IDShipping;
+END
+GO
+
+-- Update
+CREATE PROCEDURE SPUpdateShipping
+    @IDShipping INT,
+    @IDInvoice INT,
+    @IDAddress INT,
+    @IDStatus INT,
+    @TrackingID NVARCHAR(128)
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Shipping WHERE IDShipping = @IDShipping)
+    BEGIN
+        RAISERROR ('Invalid Shipping ID', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM Invoice WHERE IDInvoice = @IDInvoice)
+    BEGIN
+        RAISERROR ('Invalid Invoice ID', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM Address WHERE IDAddress = @IDAddress)
+    BEGIN
+        RAISERROR ('Invalid Address ID', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM StatusType WHERE IDStatus = @IDStatus)
+    BEGIN
+        RAISERROR ('Invalid Status ID', 16, 1);
+        RETURN;
+    END
+
+    UPDATE Shipping
+    SET IDInvoice = @IDInvoice, IDAddress = @IDAddress, IDStatus = @IDStatus, TrackingID = @TrackingID
+    WHERE IDShipping = @IDShipping;
+END
+GO
+
+-- Delete
+CREATE PROCEDURE SPDeleteShipping
+    @IDShipping INT
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Shipping WHERE IDShipping = @IDShipping)
+    BEGIN
+        RAISERROR ('Invalid Shipping ID', 16, 1);
+        RETURN;
+    END
+
+    DELETE FROM Shipping WHERE IDShipping = @IDShipping;
+END
+GO
