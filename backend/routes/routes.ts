@@ -6,8 +6,16 @@ import status from '../controllers/status';
 import invoice from '../controllers/invoice';
 import client from '../controllers/client';
 import employee from '../controllers/employee';
+import inventory from '../controllers/inventory';
 
 const route = express.Router();
+
+// inventory
+route.post('/inventory', inventory.CreateInventory);
+route.get('/inventory', inventory.AllInventories);
+route.get('/inventory/:IDProduct/:IDStore', inventory.InventoryById);
+route.put('/inventory/:IDProduct/:IDStore', inventory.UpdateInventory);
+route.delete('/inventory/:IDProduct/:IDStore', inventory.DeleteInventory);
 
 // Employee
 route.post('/employee', employee.CreateEmployee);
