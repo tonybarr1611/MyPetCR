@@ -1,15 +1,26 @@
 import { Request, Response } from 'express';
-import { Int, NVarChar } from 'mssql';
+import sql from 'mssql';
 
-import { executeProcedure } from './executeProcedure';
+import { executeProcedure, getItem } from './executeProcedure';
 
 async function CreatePayment(req: Request, res: Response) {
     const { IDPaymentType, Name } = req.body;
+
+    if (!IDPaymentType || !Name) {
+        return res.status(400).send("Missing required fields");
+    }
+
+    const paymentType = await getItem(res,
+        'ReadByIDPaymentType',
+        [{ name: 'IDPaymentType', type: sql.Int, value: IDPaymentType }]
+    );
+    if (paymentType?.recordset.length == 0) { return res.status(404).send("Payment not created: Payment Type not found"); }
+
     await executeProcedure(res, 
-        'SPCreatePayment', 
+        'CreatePayment', 
         [
-            { name: 'IDPaymentType', type: Int, value: IDPaymentType },
-            { name: 'Name', type: NVarChar(255), value: Name }
+            { name: 'IDPaymentType', type: sql.Int, value: IDPaymentType },
+            { name: 'Name', type: sql.NVarChar(255), value: Name }
         ], 
         201, 
         "Payment created successfully", 
@@ -18,7 +29,7 @@ async function CreatePayment(req: Request, res: Response) {
 
 async function ReadAllPayments(req: Request, res: Response) {
     await executeProcedure(res, 
-        'SPReadAllPayment', 
+        'ReadAllPayments', 
         [], 
         200, 
         "", 
@@ -28,8 +39,8 @@ async function ReadAllPayments(req: Request, res: Response) {
 async function ReadPaymentByID(req: Request, res: Response) {
     const IDPayment = req.params.id;
     await executeProcedure(res, 
-        'SPReadPaymentByID', 
-        [{ name: 'IDPayment', type: Int, value: IDPayment }], 
+        'ReadByIDPayment', 
+        [{ name: 'IDPayment', type: sql.Int, value: IDPayment }], 
         200, 
         "", 
         "Payment not retrieved");
@@ -37,12 +48,28 @@ async function ReadPaymentByID(req: Request, res: Response) {
 
 async function UpdatePayment(req: Request, res: Response) {
     const IDPayment = req.params.id;
-    const { Name } = req.body;
+
+    const payment = await getItem(res,
+        'ReadByIDPayment',
+        [{ name: 'IDPayment', type: sql.Int, value: IDPayment }]
+    );
+    if (payment?.recordset.length == 0) { return res.status(404).send("Payment not found"); }
+
+    const Name = req.body.Name || payment?.recordset[0].Name;
+    const IDPaymentType = req.body.IDPaymentType || payment?.recordset[0].IDPaymentType;
+
+    const paymentType = await getItem(res,
+        'ReadByIDPaymentType',
+        [{ name: 'IDPaymentType', type: sql.Int, value: IDPaymentType }]
+    );
+    if (paymentType?.recordset.length == 0) { return res.status(404).send("Payment not updated: Payment Type not found"); }
+
+
     await executeProcedure(res, 
-        'SPUpdatePayment', 
+        'UpdatePayment', 
         [
-            { name: 'IDPayment', type: Int, value: IDPayment },
-            { name: 'NewName', type: NVarChar(255), value: Name }
+            { name: 'IDPayment', type: sql.Int, value: IDPayment },
+            { name: 'NewName', type: sql.NVarChar(255), value: Name }
         ], 
         201,
         "Payment updated successfully", 
@@ -52,8 +79,8 @@ async function UpdatePayment(req: Request, res: Response) {
 async function DeletePayment(req: Request, res: Response) {
     const IDPayment = req.params.id;
     await executeProcedure(res, 
-        'SPDeletePayment', 
-        [{ name: 'IDPayment', type: Int, value: IDPayment }], 
+        'DeletePayment', 
+        [{ name: 'IDPayment', type: sql.Int, value: IDPayment }], 
         201, 
         "Payment removed successfully", 
         "Payment not removed");
