@@ -13,8 +13,16 @@ import store from '../controllers/store';
 import log from '../controllers/log';
 import logType from '../controllers/logType';
 import review from '../controllers/review';
-
+import userType from '../controllers/userType';
 const route = express.Router();
+
+// user type
+route.post('/userType', userType.CreateUserType);
+route.get('/userType', userType.AllUserTypes);
+route.get('/userType/:id', userType.UserTypeById);
+route.put('/userType/:id', userType.UpdateUserType);
+route.delete('/userType/:id', userType.DeleteUserType);
+
 // review
 route.post('/review', review.CreateReview);
 route.get('/review', review.AllReviews);
