@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 
 async function AllInventories(req: Request, res: Response) {
     await executeProcedure(res,
-        'GetAllInventories',
+        'ReadAllInventories',
         [],
         200,
         "Inventories retrieved successfully",
@@ -15,7 +15,7 @@ async function InventoryById(req: Request, res: Response) {
     const IDStore = req.params.IDStore;
     const IDProduct = req.params.IDProduct;
     await executeProcedure(res,
-        'GetInventoryByProductAndStore',
+        'ReadInventoryByProductAndStore',
         [{ name: 'IDStore', type: sql.Int, value: IDStore },
          { name: 'IDProduct', type: sql.Int, value: IDProduct }],
         200,
@@ -32,7 +32,7 @@ async function CreateInventory(req: Request, res: Response) {
     
     //validate idProduct
     const product = await getObject(res,
-        'GetProductById',
+        'ReadByIDProduct',
         [{ name: 'IDProduct', type: sql.Int, value: IDProduct }],
         200,
         "Product retrieved successfully",
@@ -41,7 +41,7 @@ async function CreateInventory(req: Request, res: Response) {
 
     //validate idStore
     const store = await getObject(res,
-        'GetStoreById',
+        'ReadByIDStore',
         [{ name: 'IDStore', type: sql.Int, value: IDStore }],
         200,
         "Store retrieved successfully",
@@ -63,7 +63,6 @@ async function CreateInventory(req: Request, res: Response) {
 async function DeleteInventory(req: Request, res: Response) {
     const IDProduct = req.params.IDProduct;
     const IDStore = req.params.IDStore;
-    console.log(IDProduct, IDStore);
     await executeProcedure(res,
         'DeleteInventory',
         [{ name: 'IDProduct', type: sql.Int, value: IDProduct },
