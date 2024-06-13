@@ -4,7 +4,7 @@ import { executeProcedure, getObject } from './executeProcedure';
 
 async function AllProductTypes(req: Request, res: Response) {
     await executeProcedure(res,
-        'GetAllProductTypes',
+        'ReadAllProductTypes',
         [],
         200,
         "Product types retrieved successfully",
@@ -14,7 +14,7 @@ async function AllProductTypes(req: Request, res: Response) {
 async function ProductTypeById(req: Request, res: Response) {
     const IDProductType = req.params.id;
     await executeProcedure(res,
-        'GetProductTypeById',
+        'ReadByIDProductType',
         [{ name: 'IDProductType', type: sql.Int, value: IDProductType }],
         200,
         "Product type retrieved successfully",
