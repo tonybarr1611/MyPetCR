@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 
 async function AllEmployees(req: Request, res: Response) {
     await executeProcedure(res,
-        'GetAllEmployees',
+        'ReadAllEmployees',
         [],
         200,
         "Employees retrieved successfully",
@@ -14,7 +14,7 @@ async function AllEmployees(req: Request, res: Response) {
 async function EmployeeById(req: Request, res: Response) {
     const IDEmployee = req.params.id;
     await executeProcedure(res,
-        'GetEmployeeById',
+        'ReadByIDEmployee',
         [{ name: 'IDEmployee', type: sql.Int, value: IDEmployee }],
         200,
         "Employee retrieved successfully",
@@ -27,7 +27,7 @@ async function UpdateEmployee(req: Request, res: Response) {
 
     //find the employee
     const employee = await getObject(res,
-        'GetEmployeeById',
+        'ReadByIDEmployee',
         [{ name: 'IDEmployee', type: sql.Int, value: IDEmployee }],
         200,
         "Employee retrieved successfully",
@@ -41,7 +41,7 @@ async function UpdateEmployee(req: Request, res: Response) {
 
     //validate idUser
     const user = await getObject(res,
-        'GetUserById',
+        'ReadByIDUser',
         [{ name: 'IDUser', type: sql.Int, value: IDUser }],
         200,
         "User retrieved successfully",
@@ -71,7 +71,7 @@ async function CreateEmployee(req: Request, res: Response) {
 
     //validate idUser
     const user = await getObject(res,
-        'GetUserById',
+        'ReadByIDUser',
         [{ name: 'IDUser', type: sql.Int, value: IDUser }],
         200,
         "User retrieved successfully",
