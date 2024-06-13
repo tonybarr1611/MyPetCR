@@ -37,7 +37,7 @@ async function CreateInventory(req: Request, res: Response) {
         200,
         "Product retrieved successfully",
         "Product not retrieved");
-    if (!product) { return res.status(404).send("Product not found"); }
+    if (!product || product.recordset.length === 0  ) { return res.status(404).send("Product not found"); }
 
     //validate idStore
     const store = await getObject(res,
@@ -46,7 +46,7 @@ async function CreateInventory(req: Request, res: Response) {
         200,
         "Store retrieved successfully",
         "Store not retrieved");
-    if (!store) { return res.status(404).send("Store not found"); }
+    if (!store || store.recordset.length === 0) { return res.status(404).send("Store not found"); }
 
     await executeProcedure(res,
         'CreateInventory',

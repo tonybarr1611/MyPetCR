@@ -32,7 +32,7 @@ async function UpdateEmployee(req: Request, res: Response) {
         200,
         "Employee retrieved successfully",
         "Employee not retrieved");
-    if (!employee) { return res.status(404).send("Employee not found");}
+    if (!employee || employee.recordset.length === 0) { return res.status(404).send("Employee not found");}
 
     //validate the json
     Name = Name || employee.recordset[0].Name;
@@ -46,7 +46,7 @@ async function UpdateEmployee(req: Request, res: Response) {
         200,
         "User retrieved successfully",
         "User not retrieved");
-    if (!user) { res.status(404).send("User not found"); }
+    if (!user || user.recordset.length === 0) { res.status(404).send("User not found"); }
 
     //update the employee
     await executeProcedure(res,
@@ -76,8 +76,9 @@ async function CreateEmployee(req: Request, res: Response) {
         200,
         "User retrieved successfully",
         "User not retrieved");
-    if (!user) { res.status(404).send("User not found"); }
+    if (!user || user.recordset.length === 0) { res.status(404).send("User not found"); }
 
+    //create the employee
     await executeProcedure(res,
         'CreateEmployee',
         [

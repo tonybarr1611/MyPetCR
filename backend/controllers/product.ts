@@ -36,7 +36,7 @@ async function CreateProduct(req: Request, res: Response) {
         200,
         "Product type retrieved successfully",
         "Product type not retrieved");
-    if (!productType) { return res.status(404).send("Product type not found"); }
+    if (!productType || productType.recordset.length === 0) { return res.status(404).send("Product type not found"); }
 
     await executeProcedure(res,
         'CreateProduct',
@@ -62,13 +62,22 @@ async function UpdateProduct(req: Request, res: Response) {
         200,
         "Product retrieved successfully",
         "Product not retrieved");
-    if (!product) { return res.status(404).send("Product not found"); }
+    if (!product || product.recordset.length === 0) { return res.status(404).send("Product not found"); }
 
     // validate the json
     Name = Name || product.recordset[0].Name;
     IDProductType = IDProductType || product.recordset[0].IDProductType;
     Description = Description || product.recordset[0].Description;
     Price = Price || product.recordset[0].Price;
+
+    // validate idProductType
+    const productType = await getObject(res,
+        'ReadByIDProductType',
+        [{ name: 'IDProductType', type: sql.Int, value: IDProductType }],
+        200,
+        "Product type retrieved successfully",
+        "Product type not retrieved");
+    if (!productType || productType.recordset.length === 0) { return res.status(404).send("Product type not found"); }
 
     // update the product
     await executeProcedure(res,

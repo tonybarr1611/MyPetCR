@@ -39,7 +39,7 @@ async function CreateClient(req: Request, res: Response) {
         200,
         "User retrieved successfully",
         "User not retrieved");
-    if (!user) { res.status(404).send("User not found");}
+    if (!user || user.recordset.length === 0) { res.status(404).send("User not found");}
     
     await executeProcedure(res,
         'CreateClient',
@@ -64,7 +64,7 @@ async function UpdateClient(req: Request, res: Response) {
         200,
         "Client retrieved successfully",
         "Client not retrieved");
-    if (!client) {
+    if (!client || client.recordset.length === 0) {
         return res.status(404).send("Client not found");
     }
 
@@ -80,7 +80,7 @@ async function UpdateClient(req: Request, res: Response) {
         200,
         "User retrieved successfully",
         "User not retrieved");
-    if (!user) { res.status(404).send("User not found");}
+    if (!user || user.recordset.length === 0) { res.status(404).send("User not found");}
     
     // Update the client
     await executeProcedure(res,
