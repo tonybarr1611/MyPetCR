@@ -1393,7 +1393,7 @@ CREATE PROCEDURE CreateUser
     @IDUserType INT
 AS
 BEGIN
-    INSERT INTO Users (LoginID, PasswordHash, IDUserType)
+    INSERT INTO [User] (LoginID, Password, IDUserType)
     VALUES (@LoginID, @Password, @IDUserType);
 END;
 GO
@@ -1403,9 +1403,10 @@ CREATE PROCEDURE ReadAllUsers
 AS
 BEGIN
     SELECT IDUser, LoginID, IDUserType
-    FROM Users;
+    FROM [User];
 END;
 GO
+
 
 -- Read By ID
 CREATE PROCEDURE ReadByIDUser
@@ -1413,7 +1414,7 @@ CREATE PROCEDURE ReadByIDUser
 AS
 BEGIN
     SELECT IDUser, LoginID, IDUserType
-    FROM Users
+    FROM [User]
     WHERE IDUser = @IDUser;
 END;
 GO
@@ -1423,8 +1424,8 @@ CREATE PROCEDURE ReadUserByMail
     @LoginID NVARCHAR(225)
 AS
 BEGIN
-    SELECT IDUser, LoginID, PasswordHash, IDUserType
-    FROM Users
+    SELECT IDUser, LoginID, Password, IDUserType
+    FROM [User]
     WHERE @LoginID = LoginID;
 END;
 GO
@@ -1437,8 +1438,8 @@ CREATE PROCEDURE UpdateUser
     @IDUserType INT
 AS
 BEGIN
-    UPDATE Users
-    SET PasswordHash = @NewPassword,
+    UPDATE [User]
+    SET Password = @NewPassword,
         LoginID = @LoginID,
         IDUserType = @IDUserType
     WHERE IDUser = @IDUser;
@@ -1450,10 +1451,11 @@ CREATE PROCEDURE DeleteUser
     @IDUser INT
 AS
 BEGIN
-    DELETE FROM Users
+    DELETE FROM [User]
     WHERE IDUser = @IDUser;
 END;
 GO
+
 
 -------------------------------UserType-------------------------------
 
