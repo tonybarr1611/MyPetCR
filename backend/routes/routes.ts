@@ -14,6 +14,7 @@ import invoice from '../controllers/invoice';
 import invoiceDetail from '../controllers/invoiceDetail';
 import petType from '../controllers/petType';
 import pet from '../controllers/pet';
+import breed from '../controllers/breed';
 
 import log from '../controllers/log';
 import logType from '../controllers/logType';
@@ -150,5 +151,12 @@ route.get('/pet', pet.ReadAllPets);
 route.get('/pet/:id', pet.ReadPetById);
 route.put('/pet/:id', pet.UpdatePet);
 route.delete('/pet/:id', pet.DeletePet);
+
+// Breed
+route.post('/breed', breed.CreateBreed);
+route.get('/breed', breed.ReadAllBreeds);
+route.get('/breed/:id', breed.ReadBreedById);
+route.put('/breed/:id', breed.UpdateBreed);
+route.delete('/breed/:id', breed.DeleteBreed);
 
 export default route;

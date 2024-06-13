@@ -265,12 +265,6 @@ BEGIN
         RETURN;
     END
 
-    IF NOT EXISTS (SELECT 1 FROM PetType WHERE IDPetType = @IDPetType)
-    BEGIN
-        RAISERROR ('Invalid PetType ID', 16, 1);
-        RETURN;
-    END
-
     UPDATE Breed
     SET IDPetType = @IDPetType,
         Name = @Name
@@ -283,7 +277,8 @@ CREATE PROCEDURE DeleteBreed
     @IDBreed INT
 AS
 BEGIN
-    DELETE FROM Breed WHERE IDBreed = @IDBreed;
+    DELETE FROM Breed 
+    WHERE IDBreed = @IDBreed;
 END;
 GO
 
@@ -1389,25 +1384,23 @@ GO
 -- Create
 CREATE PROCEDURE CreateUser
     @LoginID NVARCHAR(255),
-    @Password NVARCHAR(255),
+    @Password VARBINARY(255),
     @IDUserType INT
 AS
 BEGIN
-    INSERT INTO [User] (LoginID, Password, IDUserType)
+    INSERT INTO Users (LoginID, PasswordHash, IDUserType)
     VALUES (@LoginID, @Password, @IDUserType);
 END;
 GO
-
 
 -- Read All
 CREATE PROCEDURE ReadAllUsers
 AS
 BEGIN
     SELECT IDUser, LoginID, IDUserType
-    FROM [User];
+    FROM Users;
 END;
 GO
-
 
 -- Read By ID
 CREATE PROCEDURE ReadByIDUser
@@ -1415,7 +1408,7 @@ CREATE PROCEDURE ReadByIDUser
 AS
 BEGIN
     SELECT IDUser, LoginID, IDUserType
-    FROM [User]
+    FROM Users
     WHERE IDUser = @IDUser;
 END;
 GO
@@ -1425,8 +1418,8 @@ CREATE PROCEDURE ReadUserByMail
     @LoginID NVARCHAR(225)
 AS
 BEGIN
-    SELECT IDUser, LoginID, Password, IDUserType
-    FROM [User]
+    SELECT IDUser, LoginID, PasswordHash, IDUserType
+    FROM Users
     WHERE @LoginID = LoginID;
 END;
 GO
@@ -1435,12 +1428,12 @@ GO
 CREATE PROCEDURE UpdateUser
     @IDUser INT,
     @LoginID NVARCHAR(225),
-    @NewPassword NVARCHAR(255),
+    @NewPassword VARBINARY(255),
     @IDUserType INT
 AS
 BEGIN
-    UPDATE [User]
-    SET Password = @NewPassword,
+    UPDATE Users
+    SET PasswordHash = @NewPassword,
         LoginID = @LoginID,
         IDUserType = @IDUserType
     WHERE IDUser = @IDUser;
@@ -1452,11 +1445,10 @@ CREATE PROCEDURE DeleteUser
     @IDUser INT
 AS
 BEGIN
-    DELETE FROM [User]
+    DELETE FROM Users
     WHERE IDUser = @IDUser;
 END;
 GO
-
 
 -------------------------------UserType-------------------------------
 
