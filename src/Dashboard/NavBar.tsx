@@ -3,7 +3,7 @@ import { FaDog } from "react-icons/fa6";
 
 function NavBar() {
   return (
-    <Navbar bg="light" expand="lg">
+    <Navbar bg="light" expand="lg" style={{ width: "100%"}}>
       <Container>
         <Navbar.Brand href="/dashboard">
           <FaDog

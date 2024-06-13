@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import NavBar from "./NavBar";
 import "./Dashboard.css";
+import SearchMFile from "../Login/Appointments";
 
 const setBackgroundWhite = () => {
   var html = document.getElementsByTagName("html");
@@ -16,10 +17,9 @@ function Dashboard() {
     <div>
       <NavBar />
       <Routes>
-        {/* Routes shall be included relative to the last route, at this point every route has already considered localhost:5173/dashboard */}
         <Route path="/" />
         <Route path="/clients" />
-        <Route path="/appointments" />
+        <Route path="/appointments" element={<SearchMFile />} />
       </Routes>
     </div>
   );

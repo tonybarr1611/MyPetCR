@@ -7,8 +7,9 @@ import {
 import "./bootstrap/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
 import Login from "./Login/Login";
-import Register from "./Login/Register";
+import Register from "./Registration/RegisterUser";
 import Dashboard from "./Dashboard/Dashboard";
+
 
 function App() {
   return (
