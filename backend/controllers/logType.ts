@@ -4,7 +4,7 @@ import { executeProcedure, getObject } from './executeProcedure';
 
 async function AllLogTypes(req: Request, res: Response) {
     await executeProcedure(res,
-        'GetAllLogTypes',
+        'ReadAllLogTypes',
         [],
         200,
         "Logs retrieved successfully",
@@ -14,7 +14,7 @@ async function AllLogTypes(req: Request, res: Response) {
 async function LogTypeById(req: Request, res: Response) {
     const IDLog = req.params.id;
     await executeProcedure(res,
-        'GetLogTypeById',
+        'ReadByIDLogType',
         [{ name: 'IDLogType', type: sql.Int, value: IDLog }],
         200,
         "Log retrieved successfully",
