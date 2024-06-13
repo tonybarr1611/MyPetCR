@@ -6,7 +6,7 @@ import { executeProcedure, getObject } from './executeProcedure';
 
 async function AllClients(req: Request, res: Response) {
     await executeProcedure(res,
-        'GetAllClients',
+        'ReadAllClients',
         [],
         200,
         "Clients retrieved successfully",
@@ -16,7 +16,7 @@ async function AllClients(req: Request, res: Response) {
 async function ClientById(req: Request, res: Response) {
     const IDClient = req.params.id;
     await executeProcedure(res,
-        'GetClientById',
+        'ReadByIDClient',
         [{ name: 'IDClient', type : sql.Int , value: IDClient}],
         200,
         "Client retrieved successfully",
@@ -34,7 +34,7 @@ async function CreateClient(req: Request, res: Response) {
 
     //validate idUser
     const user = await getObject(res,
-        'GetUserById',
+        'ReadByIDUser',
         [{ name: 'IDUser', type: sql.Int, value: IDUser }],
         200,
         "User retrieved successfully",
@@ -59,7 +59,7 @@ async function UpdateClient(req: Request, res: Response) {
 
     // Search for the client
     const client = await getObject(res,
-        'GetClientById',
+        'ReadByIDClient',
         [{ name: 'IDClient', type : sql.Int , value: IDClient}],
         200,
         "Client retrieved successfully",
@@ -72,16 +72,16 @@ async function UpdateClient(req: Request, res: Response) {
     Name = Name || client.recordset[0].Name;
     PhoneNumber = PhoneNumber || client.recordset[0].PhoneNumber;
     IDUser = IDUser || client.recordset[0].IDUser;
-    
+
     //validate idUser
     const user = await getObject(res,
-        'GetUserById',
+        'ReadByIDUser',
         [{ name: 'IDUser', type: sql.Int, value: IDUser }],
         200,
         "User retrieved successfully",
         "User not retrieved");
     if (!user) { res.status(404).send("User not found");}
-
+    
     // Update the client
     await executeProcedure(res,
         'UpdateClient',
