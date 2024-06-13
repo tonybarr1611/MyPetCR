@@ -9,8 +9,15 @@ import employee from '../controllers/employee';
 import inventory from '../controllers/inventory';
 import product from '../controllers/product';
 import productType from '../controllers/productType';
-
+import store from '../controllers/store';
 const route = express.Router();
+
+// store
+route.post('/store', store.CreateStore);
+route.get('/store', store.AllStores);
+route.get('/store/:id', store.StoreById);
+route.put('/store/:id', store.UpdateStore);
+route.delete('/store/:id', store.DeleteStore);
 
 // product
 route.post('/product', product.CreateProduct);
