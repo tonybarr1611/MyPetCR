@@ -6,16 +6,19 @@ import inventory from '../controllers/inventory';
 import product from '../controllers/product';
 import productType from '../controllers/productType';
 import store from '../controllers/store';
+
 import paymentType from '../controllers/paymentType';
 import payment from '../controllers/payment';
 import status from '../controllers/status';
 import invoice from '../controllers/invoice';
 import invoiceDetail from '../controllers/invoiceDetail';
+import petType from '../controllers/petType';
 
 import log from '../controllers/log';
 import logType from '../controllers/logType';
 import review from '../controllers/review';
 import userType from '../controllers/userType';
+
 const route = express.Router();
 
 // user type
@@ -122,5 +125,12 @@ route.get('/invoiceDetail', invoiceDetail.ReadAllInvoiceDetails);
 route.get('/invoiceDetail/:id', invoiceDetail.ReadInvoiceDetailById);
 route.put('/invoiceDetail/:id', invoiceDetail.UpdateInvoiceDetail);
 route.delete('/invoiceDetail/:id', invoiceDetail.DeleteInvoiceDetail);
+
+// Pet Type
+route.post('/petType', petType.CreatePetType);
+route.get('/petType', petType.ReadAllPetTypes);
+route.get('/petType/:id', petType.ReadPetTypeById);
+route.put('/petType/:id', petType.UpdatePetType);
+route.delete('/petType/:id', petType.DeletePetType);
 
 export default route;

@@ -335,11 +335,11 @@ BEGIN
 END;
 
 -- Delete
-CREATE PROCEDURE SPDeletePetType (@PetTypeID INT)
+CREATE PROCEDURE SPDeletePetType (@IDPetType INT)
 AS
 BEGIN
     DELETE FROM PetType
-    WHERE IDPetType = @PetTypeID;
+    WHERE IDPetType = @IDPetType;
 END;
 
 ------------------ Pet ------------------
