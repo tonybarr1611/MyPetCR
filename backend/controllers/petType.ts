@@ -9,7 +9,7 @@ async function CreatePetType(req: Request, res: Response) {
     }
 
     await executeProcedure(res,
-        'SPCreatePetType',
+        'CreatePetType',
         [
             { name: 'Name', type: sql.NVarChar(255), value: Name },
         ],
@@ -20,7 +20,7 @@ async function CreatePetType(req: Request, res: Response) {
 
 async function ReadAllPetTypes(req: Request, res: Response) {
     await executeProcedure(res,
-        'SPReadAllPetTypes',
+        'ReadAllPetTypes',
         [],
         200,
         "Pet types retrieved successfully",
@@ -30,7 +30,7 @@ async function ReadAllPetTypes(req: Request, res: Response) {
 async function ReadPetTypeById(req: Request, res: Response) {
     const IDPetType = req.params.id;
     await executeProcedure(res,
-        'SPReadPetTypeById',
+        'ReadByIDPetType',
         [{ name: 'IDPetType', type: sql.Int, value: IDPetType }],
         200,
         "Pet type retrieved successfully",
@@ -42,7 +42,7 @@ async function UpdatePetType(req: Request, res: Response) {
     const Name = req.body.Name;
     
     await executeProcedure(res,
-        'SPUpdatePetType',
+        'UpdatePetType',
         [
             { name: 'IDPetType', type: sql.Int, value: IDPetType },
             { name: 'NewName', type: sql.NVarChar(255), value: Name },
@@ -57,13 +57,13 @@ async function DeletePetType(req: Request, res: Response) {
 
     //validate IDProduct
     const petType = await getItem(res,
-        'SPReadPetTypeById',
+        'ReadByIDPetType',
         [{ name: 'IDPetType', type: sql.Int, value: IDPetType }]
     );
     if (petType?.recordset.length == 0) { return res.status(404).send("Pet type not found"); }
 
     await executeProcedure(res,
-        'SPDeletePetType',
+        'DeletePetType',
         [{ name: 'IDPetType', type: sql.Int, value: IDPetType }],
         200,
         "Pet type deleted successfully",
