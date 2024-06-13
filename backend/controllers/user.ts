@@ -3,6 +3,41 @@ import sql from 'mssql';
 import { Request, Response } from 'express';
 import { executeProcedure, getObject } from './executeProcedure';
 
+async function UserByMail(req: Request, res: Response) {
+    const LoginID = req.params.mail;
+
+    await executeProcedure(res,
+        'ReadUserByMail',
+        [{ name: 'LoginID', type: sql.NVarChar, value: LoginID }],
+        200,
+        "User retrieved successfully",
+        "User not retrieved");
+};
+
+async function verifyPassword(req: Request, res: Response) {
+    const { Password, LoginID} = req.body;
+    //validate the json
+    if (!Password || !LoginID) {
+        return res.status(400).send("Missing required fields");
+    }
+
+    //search for the user
+    const user = await getObject(res,
+        'ReadUserByMail',
+        [{ name: 'LoginID', type: sql.NVarChar, value: LoginID }],
+        200,
+        "User retrieved successfully",
+        "User not retrieved");
+    if (!user || user.recordset.length === 0) return res.status(404).send("User not found");
+
+    //compare the passwords
+    const hashedPassword = user.recordset[0].Password;
+    const result = await bcript.compare(Password, hashedPassword);
+    
+    if (!result) return res.status(401).send("Invalid password"); 
+    else return res.status(200).send("Password correct");
+};
+
 async function AllUsers(req: Request, res: Response) {
     await executeProcedure(res,
         'ReadAllUsers',
@@ -40,13 +75,13 @@ async function CreateUser(req: Request, res: Response) {
     //hash the password
     const salt = await bcript.genSalt(10);
     let hashedPassword = await bcript.hash(Password, salt);
-    const binaryPassword = Buffer.from(hashedPassword, 'utf-8');
+
     
     //create the user
     await executeProcedure(res,
         'CreateUser',
         [{ name: 'LoginID', type: sql.NVarChar, value: LoginID },
-        { name: 'Password', type: sql.VarBinary, value: binaryPassword },
+        { name: 'Password', type: sql.NVarChar, value: hashedPassword},
         { name: 'IDUserType', type: sql.Int, value: IDUserType }],
         201,
         "User created successfully",
@@ -74,7 +109,6 @@ async function UpdateUser(req: Request, res: Response) {
     if (Password) {
         const salt = await bcript.genSalt(10);
         Password = await bcript.hash(Password, salt);
-        binaryPassword = Buffer.from(Password, 'utf-8');
     } else { binaryPassword = user.recordset[0].Password; }
 
     IDUserType = IDUserType || user.recordset[0].IDUserType;
@@ -93,7 +127,7 @@ async function UpdateUser(req: Request, res: Response) {
         'UpdateUser',
         [{ name: 'IDUser', type: sql.Int, value: IDUser },
         { name: 'LoginID', type: sql.NVarChar, value: LoginID },
-        { name: 'NewPassword', type: sql.VarBinary, value: binaryPassword },
+        { name: 'NewPassword', type: sql.NVarChar, value: Password },
         { name: 'IDUserType', type: sql.Int, value: IDUserType }],
         200,
         "User updated successfully",
@@ -115,5 +149,7 @@ export default {
     UserById,
     CreateUser,
     UpdateUser,
-    DeleteUser
+    DeleteUser,
+    UserByMail,
+    verifyPassword
 };
