@@ -19,8 +19,16 @@ import log from '../controllers/log';
 import logType from '../controllers/logType';
 import review from '../controllers/review';
 import userType from '../controllers/userType';
+import user from '../controllers/user';
 
 const route = express.Router();
+
+// user 
+route.post('/user', user.CreateUser);
+route.get('/user', user.AllUsers);
+route.get('/user/:id', user.UserById);
+route.put('/user/:id', user.UpdateUser);
+route.delete('/user/:id', user.DeleteUser);
 
 // user type
 route.post('/userType', userType.CreateUserType);
