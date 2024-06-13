@@ -1,15 +1,17 @@
 import express from 'express';
 
-import paymentType from '../controllers/paymentType';
-import payment from '../controllers/payment';
-import status from '../controllers/status';
-import invoice from '../controllers/invoice';
 import client from '../controllers/client';
 import employee from '../controllers/employee';
 import inventory from '../controllers/inventory';
 import product from '../controllers/product';
 import productType from '../controllers/productType';
 import store from '../controllers/store';
+import paymentType from '../controllers/paymentType';
+import payment from '../controllers/payment';
+import status from '../controllers/status';
+import invoice from '../controllers/invoice';
+import invoiceDetail from '../controllers/invoiceDetail';
+
 import log from '../controllers/log';
 import logType from '../controllers/logType';
 import review from '../controllers/review';
@@ -113,5 +115,12 @@ route.get('/invoice', invoice.ReadAllInvoices);
 route.get('/invoice/:id', invoice.ReadInvoicesByID);
 route.put('/invoice/:id', invoice.UpdateInvoice);
 route.delete('/invoice/:id', invoice.DeleteInvoice);
+
+// Invoice Detail
+route.post('/invoiceDetail', invoiceDetail.CreateInvoiceDetail);
+route.get('/invoiceDetail', invoiceDetail.ReadAllInvoiceDetails);
+route.get('/invoiceDetail/:id', invoiceDetail.ReadInvoiceDetailById);
+route.put('/invoiceDetail/:id', invoiceDetail.UpdateInvoiceDetail);
+route.delete('/invoiceDetail/:id', invoiceDetail.DeleteInvoiceDetail);
 
 export default route;

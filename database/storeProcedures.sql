@@ -248,7 +248,7 @@ END;
 GO
 
 -- Read All
-CREATE PROCEDURE SPReadAllInvoicesDetails
+CREATE PROCEDURE SPReadAllInvoiceDetails
 AS
 BEGIN
     SELECT IDInvoiceDetail, IDInvoice, IDProduct, Description, Quantity, Price

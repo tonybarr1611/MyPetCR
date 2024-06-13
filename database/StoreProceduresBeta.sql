@@ -109,8 +109,6 @@ BEGIN
     WHERE IDUser = @IDUser
 END
 
-DELETE PROCEDURE DeleteUser
-GO
 CREATE PROCEDURE DeleteUser
     @IDUser INT
 AS
@@ -667,7 +665,7 @@ BEGIN
 END
 GO
 
--- Procedimiento almacenado para obtener una reseña por su ID
+-- Procedimiento almacenado para obtener una reseï¿½a por su ID
 CREATE PROCEDURE GetReviewById
     @IDReview INT
 AS
@@ -680,7 +678,7 @@ BEGIN
 END
 GO
 
--- Procedimiento almacenado para crear una nueva reseña
+-- Procedimiento almacenado para crear una nueva reseï¿½a
 CREATE PROCEDURE CreateReview
     @IDProduct INT,
     @IDClient INT,
@@ -696,7 +694,7 @@ BEGIN
 END
 GO
 
--- Procedimiento almacenado para actualizar una reseña
+-- Procedimiento almacenado para actualizar una reseï¿½a
 CREATE PROCEDURE UpdateReview
     @IDReview INT,
     @IDProduct INT,
@@ -719,7 +717,7 @@ BEGIN
 END
 GO
 
--- Procedimiento almacenado para eliminar una reseña
+-- Procedimiento almacenado para eliminar una reseï¿½a
 CREATE PROCEDURE DeleteReview
     @IDReview INT
 AS
