@@ -1,13 +1,18 @@
 import { Request, Response } from 'express';
-import { Int, NVarChar } from 'mssql';
+import sql from 'mssql';
 
-import { executeProcedure } from './executeProcedure';
+import { executeProcedure, getItem } from './executeProcedure';
 
 async function CreateStatus(req: Request, res: Response) {
     const { Name } = req.body;
+
+    if (!Name) {
+        return res.status(400).send("Name is required");
+    }
+
     await executeProcedure(res, 
-        'SPCreateStatus', 
-        [{ name: 'Name', type: NVarChar(255), value: Name }], 
+        'CreateStatus', 
+        [{ name: 'Name', type: sql.NVarChar(255), value: Name }], 
         201, 
         "Status created successfully", 
         "Status not created");
@@ -15,7 +20,7 @@ async function CreateStatus(req: Request, res: Response) {
 
 async function ReadAllStatus(req: Request, res: Response) {
     await executeProcedure(res, 
-        'SPReadAllStatus', 
+        'ReadAllStatuses', 
         [], 
         200, 
         "", 
@@ -24,9 +29,10 @@ async function ReadAllStatus(req: Request, res: Response) {
 
 async function ReadStatusByID(req: Request, res: Response) {
     const IDStatus = req.params.id;
+
     await executeProcedure(res, 
-        'SPReadStatusByID', 
-        [{ name: 'IDStatus', type: Int, value: IDStatus }], 
+        'ReadByIDStatus', 
+        [{ name: 'IDStatus', type: sql.Int, value: IDStatus }], 
         200, 
         "", 
         "Status not retrieved");
@@ -34,12 +40,20 @@ async function ReadStatusByID(req: Request, res: Response) {
 
 async function UpdateStatus(req: Request, res: Response) {
     const IDStatus = req.params.id;
-    const { Name } = req.body;
+    
+    const status = await getItem(res,
+        'ReadByIDStatus',
+        [{ name: 'IDStatus', type: sql.Int, value: IDStatus }]
+    );
+    if (status?.recordset.length == 0) { return res.status(404).send("Status not found"); }
+
+    const Name = req.body.Name || status?.recordset[0].Name;
+
     await executeProcedure(res, 
-        'SPUpdateStatus', 
+        'UpdateStatus', 
         [
-            { name: 'IDStatus', type: Int, value: IDStatus },
-            { name: 'NewName', type: NVarChar(255), value: Name }
+            { name: 'IDStatus', type: sql.Int, value: IDStatus },
+            { name: 'NewName', type: sql.NVarChar(255), value: Name }
         ], 
         201,
         "Status updated successfully", 
@@ -48,9 +62,10 @@ async function UpdateStatus(req: Request, res: Response) {
 
 async function DeleteStatus(req: Request, res: Response) {
     const IDStatus = req.params.id;
+    
     await executeProcedure(res, 
-        'SPDeleteStatus', 
-        [{ name: 'IDStatus', type: Int, value: IDStatus }], 
+        'DeleteStatus', 
+        [{ name: 'IDStatus', type: sql.Int, value: IDStatus }], 
         201, 
         "Status removed successfully", 
         "Status not removed");
