@@ -4,7 +4,7 @@ import { executeProcedure, getObject } from './executeProcedure';
 
 async function AllUserTypes(req: Request, res: Response) {
     await executeProcedure(res,
-        'GetAllUserTypes',
+        'ReadAllUserTypes',
         [],
         200,
         "User types retrieved successfully",
@@ -14,7 +14,7 @@ async function AllUserTypes(req: Request, res: Response) {
 async function UserTypeById(req: Request, res: Response) {
     const IDUserType = req.params.id;
     await executeProcedure(res,
-        'GetUserTypeById',
+        'ReadByIDUserType',
         [{ name: 'IDUserType', type: sql.Int, value: IDUserType }],
         200,
         "User type retrieved successfully",
@@ -44,12 +44,12 @@ async function UpdateUserType(req: Request, res: Response) {
 
     //search for the user type
     const userType = await getObject(res,
-        'GetUserTypeById',
+        'ReadByIDUserType',
         [{ name: 'IDUserType', type: sql.Int, value: IDUserType }],
         200,
         "User type retrieved successfully",
         "User type not retrieved");
-    if (!userType) { return res.status(404).send("Not user type found"); }
+    if (!userType || userType.recordset.length === 0) { return res.status(404).send("Not user type found"); }
 
     //validate the json
     Name = Name || userType.recordset[0].Name;
