@@ -6,6 +6,11 @@ import inventory from '../controllers/inventory';
 import product from '../controllers/product';
 import productType from '../controllers/productType';
 import store from '../controllers/store';
+import log from '../controllers/log';
+import logType from '../controllers/logType';
+import review from '../controllers/review';
+import userType from '../controllers/userType';
+import user from '../controllers/user';
 
 import paymentType from '../controllers/paymentType';
 import payment from '../controllers/payment';
@@ -15,12 +20,7 @@ import invoiceDetail from '../controllers/invoiceDetail';
 import petType from '../controllers/petType';
 import pet from '../controllers/pet';
 import breed from '../controllers/breed';
-
-import log from '../controllers/log';
-import logType from '../controllers/logType';
-import review from '../controllers/review';
-import userType from '../controllers/userType';
-import user from '../controllers/user';
+import appointment from '../controllers/appointment';
 
 const route = express.Router();
 
@@ -158,5 +158,12 @@ route.get('/breed', breed.ReadAllBreeds);
 route.get('/breed/:id', breed.ReadBreedById);
 route.put('/breed/:id', breed.UpdateBreed);
 route.delete('/breed/:id', breed.DeleteBreed);
+
+// Appointment
+route.post('/appointment', appointment.CreateAppointment);
+route.get('/appointment', appointment.ReadAllAppointments);
+route.get('/appointment/:id', appointment.ReadAppointmentByID);
+route.put('/appointment/:id', appointment.UpdateAppointment);
+route.delete('/appointment/:id', appointment.DeleteAppointment);
 
 export default route;
