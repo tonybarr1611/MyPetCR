@@ -308,7 +308,7 @@ GO
 -- Create
 CREATE PROCEDURE CreateClient
     @Name NVARCHAR(255),
-    @PhoneNumber INT,
+    @PhoneNumber NVARCHAR(20),
     @IDUser INT
 AS
 BEGIN
@@ -341,7 +341,7 @@ GO
 CREATE PROCEDURE UpdateClient
     @IDClient INT,
     @Name NVARCHAR(255),
-    @PhoneNumber INT,
+    @PhoneNumber NVARCHAR(20),
     @IDUser INT
 AS
 BEGIN
@@ -369,7 +369,7 @@ GO
 CREATE PROCEDURE CreateEmployee
     @IDUser INT,
     @Name NVARCHAR(255),
-    @PhoneNumber BIGINT
+    @PhoneNumber NVARCHAR(20)
 AS
 BEGIN
     INSERT INTO Employee (IDUser, Name, PhoneNumber)
@@ -402,7 +402,7 @@ CREATE PROCEDURE UpdateEmployee
     @IDEmployee INT,
     @IDUser INT,
     @Name NVARCHAR(255),
-    @PhoneNumber BIGINT
+    @PhoneNumber NVARCHAR(20)
 AS
 BEGIN
     UPDATE Employee
@@ -412,6 +412,7 @@ BEGIN
     WHERE IDEmployee = @IDEmployee;
 END;
 GO
+
 
 -- Delete
 CREATE PROCEDURE DeleteEmployee
