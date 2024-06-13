@@ -10,7 +10,15 @@ import inventory from '../controllers/inventory';
 import product from '../controllers/product';
 import productType from '../controllers/productType';
 import store from '../controllers/store';
+import log from '../controllers/log';
 const route = express.Router();
+
+// log
+route.post('/log', log.CreateLog);
+route.get('/log', log.AllLogs);
+route.get('/log/:id', log.LogById);
+route.put('/log/:id', log.UpdateLog);
+route.delete('/log/:id', log.DeleteLog);
 
 // store
 route.post('/store', store.CreateStore);
