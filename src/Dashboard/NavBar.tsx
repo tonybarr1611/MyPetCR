@@ -1,5 +1,6 @@
-import { Container, Nav, NavDropdown, Navbar } from "react-bootstrap";
+import { Container, Nav, Navbar } from "react-bootstrap";
 import { FaDog } from "react-icons/fa6";
+
 
 function NavBar() {
   return (
@@ -16,22 +17,8 @@ function NavBar() {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <NavDropdown title="Clients" id="basic-nav-dropdown">
-              <NavDropdown.Item href="dashboard/clients">
-                Add Client
-              </NavDropdown.Item>
-              <NavDropdown.Item href="dashboard/clients">
-                View Clients
-              </NavDropdown.Item>
-            </NavDropdown>
-            <NavDropdown title="Appointments" id="basic-nav-dropdown">
-              <NavDropdown.Item href="dashboard/appointments">
-                Add Appointment
-              </NavDropdown.Item>
-              <NavDropdown.Item href="dashboard/appointments">
-                View Appointments
-              </NavDropdown.Item>
-            </NavDropdown>
+            <Nav.Link href="clients">Clients</Nav.Link>
+            <Nav.Link href="appointments">Appointments</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>
