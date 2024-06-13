@@ -342,6 +342,72 @@ BEGIN
     WHERE IDPetType = @PetTypeID;
 END;
 
+------------------ Pet ------------------
+
+-- Create
+CREATE PROCEDURE SPCreatePet (
+    @IDBreed INT,
+    @IDClient INT,
+    @Name NVARCHAR(128),
+    @Birthdate DATE,
+    @Weight INT,
+    @Notes NVARCHAR(512)
+)
+AS
+BEGIN
+    INSERT INTO Pet (IDBreed, IDClient, Name, Birthdate, Weight, Notes)
+    VALUES (@IDBreed, @IDClient, @Name, @Birthdate, @Weight, @Notes);
+END;
+GO
+
+-- Read all
+CREATE PROCEDURE SPReadAllPets
+AS
+BEGIN
+    SELECT IDPet, IDBreed, IDClient, Name, Birthdate, Weight, Notes
+    FROM Pet;
+END;
+GO
+
+-- Read by ID
+CREATE PROCEDURE SPReadPetByID (@PetID INT)
+AS
+BEGIN
+    SELECT IDPet, IDBreed, IDClient, Name, Birthdate, Weight, Notes
+    FROM Pet
+    WHERE IDPet = @PetID;
+END;
+GO
+
+-- Update
+CREATE PROCEDURE SPUpdatePet
+(
+    @PetID INT,
+    @Name NVARCHAR(128),
+    @Birthdate DATE,
+    @Weight INT,
+    @Notes NVARCHAR(512)
+)
+AS
+BEGIN
+    UPDATE Pet
+    SET Name = @Name,
+        Birthdate = @Birthdate,
+        Weight = @Weight,
+        Notes = @Notes
+    WHERE IDPet = @PetID;
+END;
+GO
+
+-- Delete
+CREATE PROCEDURE SPDeletePet(@IDPet INT)
+AS
+BEGIN
+    DELETE FROM Pet
+    WHERE IDPet = @IDPet;
+END;
+GO
+
 ------------------ Breed ------------------
 -- Create
 CREATE PROCEDURE SPCreateBreed
