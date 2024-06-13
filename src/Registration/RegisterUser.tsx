@@ -5,7 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { EyeFill, EyeSlashFill } from "react-bootstrap-icons";
 import { FaDog } from "react-icons/fa6";
 
-const Register = () => {
+const RegisterUser = () => {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
@@ -103,7 +103,7 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default RegisterUser;
 
 
 

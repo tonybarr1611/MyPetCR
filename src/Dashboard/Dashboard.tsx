@@ -1,7 +1,9 @@
 import { Routes, Route } from "react-router-dom";
 import NavBar from "./NavBar";
 import "./Dashboard.css";
-import SearchMFile from "../Login/Appointments";
+import Appointments from "../Login/Appointments";
+import RegisterAppointment from "../Registration/RegisterAppointment";
+import EditAppointment from "../Edit/EditAppointment";
 
 const setBackgroundWhite = () => {
   var html = document.getElementsByTagName("html");
@@ -19,7 +21,9 @@ function Dashboard() {
       <Routes>
         <Route path="/" />
         <Route path="/clients" />
-        <Route path="/appointments" element={<SearchMFile />} />
+        <Route path="/appointments" element={< Appointments />} />
+        <Route path="/appointments/registerappointment" element={< RegisterAppointment />}/>
+        <Route path="/appointments/editappointment" element={< EditAppointment />} />
       </Routes>
     </div>
   );
