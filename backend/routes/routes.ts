@@ -13,6 +13,7 @@ import status from '../controllers/status';
 import invoice from '../controllers/invoice';
 import invoiceDetail from '../controllers/invoiceDetail';
 import petType from '../controllers/petType';
+import pet from '../controllers/pet';
 
 import log from '../controllers/log';
 import logType from '../controllers/logType';
@@ -132,5 +133,12 @@ route.get('/petType', petType.ReadAllPetTypes);
 route.get('/petType/:id', petType.ReadPetTypeById);
 route.put('/petType/:id', petType.UpdatePetType);
 route.delete('/petType/:id', petType.DeletePetType);
+
+// Pet
+route.post('/pet', pet.CreatePet);
+route.get('/pet', pet.ReadAllPets);
+route.get('/pet/:id', pet.ReadPetById);
+route.put('/pet/:id', pet.UpdatePet);
+route.delete('/pet/:id', pet.DeletePet);
 
 export default route;

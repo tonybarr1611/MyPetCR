@@ -228,12 +228,6 @@ CREATE PROCEDURE CreateBreed
     @Name NVARCHAR(128)
 AS
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM PetType WHERE IDPetType = @IDPetType)
-    BEGIN
-        RAISERROR ('Invalid PetType ID', 16, 1);
-        RETURN;
-    END
-
     INSERT INTO Breed (IDPetType, Name)
     VALUES (@IDPetType, @Name);
 END;
@@ -243,7 +237,7 @@ GO
 CREATE PROCEDURE ReadAllBreeds
 AS
 BEGIN
-    SELECT * FROM Breed;
+    SELECT IDBreed, IDPetType, Name  FROM Breed;
 END;
 GO
 
@@ -252,13 +246,9 @@ CREATE PROCEDURE ReadByIDBreed
     @IDBreed INT
 AS
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM Breed WHERE IDBreed = @IDBreed)
-    BEGIN
-        RAISERROR ('Invalid Breed ID', 16, 1);
-        RETURN;
-    END
-
-    SELECT * FROM Breed WHERE IDBreed = @IDBreed;
+    SELECT IDBreed, IDPetType, Name 
+    FROM Breed 
+    WHERE IDBreed = @IDBreed;
 END;
 GO
 
@@ -293,12 +283,6 @@ CREATE PROCEDURE DeleteBreed
     @IDBreed INT
 AS
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM Breed WHERE IDBreed = @IDBreed)
-    BEGIN
-        RAISERROR ('Invalid Breed ID', 16, 1);
-        RETURN;
-    END
-
     DELETE FROM Breed WHERE IDBreed = @IDBreed;
 END;
 GO
