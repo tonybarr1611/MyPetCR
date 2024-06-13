@@ -11,7 +11,16 @@ import product from '../controllers/product';
 import productType from '../controllers/productType';
 import store from '../controllers/store';
 import log from '../controllers/log';
+import logType from '../controllers/logType';
+
 const route = express.Router();
+
+// logType
+route.post('/logType', logType.CreateLogType);
+route.get('/logType', logType.AllLogTypes);
+route.get('/logType/:id', logType.LogTypeById);
+route.put('/logType/:id', logType.UpdateLogType);
+route.delete('/logType/:id', logType.DeleteLogType);
 
 // log
 route.post('/log', log.CreateLog);
