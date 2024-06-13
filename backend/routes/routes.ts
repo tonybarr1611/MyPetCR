@@ -12,8 +12,15 @@ import productType from '../controllers/productType';
 import store from '../controllers/store';
 import log from '../controllers/log';
 import logType from '../controllers/logType';
+import review from '../controllers/review';
 
 const route = express.Router();
+// review
+route.post('/review', review.CreateReview);
+route.get('/review', review.AllReviews);
+route.get('/review/:id', review.ReviewById);
+route.put('/review/:id', review.UpdateReview);
+route.delete('/review/:id', review.DeleteReview);
 
 // logType
 route.post('/logType', logType.CreateLogType);
