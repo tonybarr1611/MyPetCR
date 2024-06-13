@@ -145,13 +145,8 @@ CREATE PROCEDURE ReadByIDAppointment
     @IDAppointment INT
 AS
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM Appointment WHERE IDAppointment = @IDAppointment)
-    BEGIN
-        RAISERROR ('Invalid Appointment ID', 16, 1);
-        RETURN;
-    END
-
-    SELECT * FROM Appointment WHERE IDAppointment = @IDAppointment;
+    SELECT IDAppointment, IDPet, IDEmployee, IDStore, IDStatus, DateTime FROM Appointment 
+    WHERE IDAppointment = @IDAppointment;
 END;
 GO
 

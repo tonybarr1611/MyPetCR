@@ -1,18 +1,25 @@
 import { Request, Response } from 'express';
-import { Int, DateTime  } from 'mssql';
+import sql from 'mssql';
 
-import { executeProcedure } from './executeProcedure';
+import { executeProcedure, getItem } from './executeProcedure';
 
 async function CreateInvoice(req: Request, res: Response) {
-    const { IDAppointment, IDClient, IDPayment, IDStatus, Date } = req.body;
+    const { IDAppointment, IDClient, IDPayment, IDStatus, DateTime } = req.body;
+
+    if (!IDAppointment || !IDClient || !IDPayment|| !IDStatus || !DateTime) {
+        return res.status(400).send("Missing required fields");
+    }
+    
+    
+
     await executeProcedure(res, 
-        'SPCreateInvoice', 
+        'CreateInvoice', 
         [
-            { name: 'IDAppointment', type: Int, value: IDAppointment },
-            { name: 'IDClient', type: Int, value: IDClient },
-            { name: 'IDPayment', type: Int, value: IDPayment },
-            { name: 'IDStatus', type: Int, value: IDStatus },
-            { name: 'DateTime', type: DateTime, value: Date }
+            { name: 'IDAppointment', type: sql.Int, value: IDAppointment },
+            { name: 'IDClient', type: sql.Int, value: IDClient },
+            { name: 'IDPayment', type: sql.Int, value: IDPayment },
+            { name: 'IDStatus', type: sql.Int, value: IDStatus },
+            { name: 'DateTime', type: sql.DateTime, value: DateTime }
         ], 
         201, 
         "Invoice created successfully", 
@@ -21,7 +28,7 @@ async function CreateInvoice(req: Request, res: Response) {
 
 async function ReadAllInvoices(req: Request, res: Response) {
     await executeProcedure(res, 
-        'SPReadAllInvoices', 
+        'ReadAllInvoices', 
         [], 
         200, 
         "", 
@@ -30,9 +37,10 @@ async function ReadAllInvoices(req: Request, res: Response) {
 
 async function ReadInvoicesByID(req: Request, res: Response) {
     const IDInvoice = req.params.id;
+
     await executeProcedure(res, 
-        'SPReadInvoiceByID', 
-        [{ name: 'IDInvoice', type: Int, value: IDInvoice }], 
+        'ReadByIDInvoice', 
+        [{ name: 'IDInvoice', type: sql.Int, value: IDInvoice }], 
         200, 
         "", 
         "Invoice not retrieved");
@@ -40,16 +48,52 @@ async function ReadInvoicesByID(req: Request, res: Response) {
 
 async function UpdateInvoice(req: Request, res: Response) {
     const IDInvoice = req.params.id;
-    const { IDAppointment, IDClient, IDPayment, IDStatus, Date } = req.body;
+
+    const invoice = await getItem(res,
+        'ReadByIDInvoice',
+        [{ name: 'IDInvoice', type: sql.Int, value: IDInvoice }]
+    );
+    if (invoice?.recordset.length == 0) { return res.status(404).send("Invoice not found"); }
+
+    const IDAppointment = req.body.IDAppointment || invoice?.recordset[0].IDAppointment;
+    const IDClient = req.body.IDClient || invoice?.recordset[0].IDClient;
+    const IDPayment = req.body.IDPayment || invoice?.recordset[0].IDPayment;
+    const IDStatus = req.body.IDStatus || invoice?.recordset[0].IDStatus;
+    const DateTime = req.body.DateTime || invoice?.recordset[0].DateTime;
+
+    const appointment = await getItem(res,
+        'ReadByIDAppointment',
+        [{ name: 'IDAppointment', type: sql.Int, value: IDAppointment }]
+    );
+    if (appointment?.recordset.length == 0) { return res.status(404).send("Invoice not updated: Appointment not found"); }
+
+    const client = await getItem(res,
+        'ReadByIDClient',
+        [{ name: 'IDClient', type: sql.Int, value: IDClient }]
+    );
+    if (client?.recordset.length == 0) { return res.status(404).send("Invoice not updated: Client not found"); }
+
+    const payment = await getItem(res,
+        'ReadByIDPayment',
+        [{ name: 'IDPayment', type: sql.Int, value: IDPayment }]
+    );
+    if (payment?.recordset.length == 0) { return res.status(404).send("Invoice not updated: Payment not found"); }
+
+    const status = await getItem(res,
+        'ReadByIDStatus',
+        [{ name: 'IDStatus', type: sql.Int, value: IDStatus }]
+    );
+    if (status?.recordset.length == 0) { return res.status(404).send("Invoice not updated: Status not found"); }    
+
     await executeProcedure(res, 
-        'SPUpdateInvoice', 
+        'UpdateInvoice', 
         [
-            { name: 'IDInvoice', type: Int, value: IDInvoice },
-            { name: 'IDAppointment', type: Int, value: IDAppointment },
-            { name: 'IDClient', type: Int, value: IDClient },
-            { name: 'IDPayment', type: Int, value: IDPayment },
-            { name: 'IDStatus', type: Int, value: IDStatus },
-            { name: 'DateTime', type: DateTime, value: Date }
+            { name: 'IDInvoice', type: sql.Int, value: IDInvoice },
+            { name: 'IDAppointment', type: sql.Int, value: IDAppointment },
+            { name: 'IDClient', type: sql.Int, value: IDClient },
+            { name: 'IDPayment', type: sql.Int, value: IDPayment },
+            { name: 'IDStatus', type: sql.Int, value: IDStatus },
+            { name: 'DateTime', type: sql.DateTime, value: DateTime }
         ], 
         201,
         "Invoice updated successfully", 
@@ -58,9 +102,10 @@ async function UpdateInvoice(req: Request, res: Response) {
 
 async function DeleteInvoice(req: Request, res: Response) {
     const IDInvoice = req.params.id;
+
     await executeProcedure(res, 
-        'SPDeleteInvoice', 
-        [{ name: 'IDInvoice', type: Int, value: IDInvoice }], 
+        'DeleteInvoice', 
+        [{ name: 'IDInvoice', type: sql.Int, value: IDInvoice }], 
         201, 
         "Invoice removed successfully", 
         "Invoice not removed");
