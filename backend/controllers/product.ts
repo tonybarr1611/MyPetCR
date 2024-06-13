@@ -5,7 +5,7 @@ import { executeProcedure, getObject } from './executeProcedure';
 
 async function AllProducts(req: Request, res: Response) {
     await executeProcedure(res,
-        'GetAllProducts',
+        'ReadAllProducts',
         [],
         200,
         "Products retrieved successfully",
@@ -15,7 +15,7 @@ async function AllProducts(req: Request, res: Response) {
 async function ProductById(req: Request, res: Response) {
     const IDProduct = req.params.id;
     await executeProcedure(res,
-        'GetProductById',
+        'ReadByIDProduct',
         [{ name: 'IDProduct', type: sql.Int, value: IDProduct }],
         200,
         "Product retrieved successfully",
@@ -31,7 +31,7 @@ async function CreateProduct(req: Request, res: Response) {
 
     // validate idProductType
     const productType = await getObject(res,
-        'GetProductTypeById',
+        'ReadByIDProductType',
         [{ name: 'IDProductType', type: sql.Int, value: IDProductType }],
         200,
         "Product type retrieved successfully",
@@ -57,7 +57,7 @@ async function UpdateProduct(req: Request, res: Response) {
 
     // search for the product
     const product = await getObject(res,
-        'GetProductById',
+        'ReadByIDProduct',
         [{ name: 'IDProduct', type: sql.Int, value: IDProduct }],
         200,
         "Product retrieved successfully",
