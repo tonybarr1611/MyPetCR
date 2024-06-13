@@ -4,7 +4,7 @@ import { executeProcedure, getObject } from './executeProcedure';
 
 async function AllStores(req: Request, res: Response) {
     await executeProcedure(res,
-        'GetAllStores',
+        'ReadAllStores',
         [],
         200,
         "Stores retrieved successfully",
@@ -14,7 +14,7 @@ async function AllStores(req: Request, res: Response) {
 async function StoreById(req: Request, res: Response) {
     const IDStore = req.params.id;
     await executeProcedure(res,
-        'GetStoreById',
+        'ReadByIDStore',
         [{ name: 'IDStore', type: sql.Int, value: IDStore }],
         200,
         "Store retrieved successfully",
