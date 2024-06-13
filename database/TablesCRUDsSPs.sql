@@ -1389,7 +1389,7 @@ GO
 -- Create
 CREATE PROCEDURE CreateUser
     @LoginID NVARCHAR(255),
-    @Password VARBINARY(255),
+    @Password NVARCHAR(255),
     @IDUserType INT
 AS
 BEGIN
@@ -1397,6 +1397,7 @@ BEGIN
     VALUES (@LoginID, @Password, @IDUserType);
 END;
 GO
+
 
 -- Read All
 CREATE PROCEDURE ReadAllUsers
@@ -1434,7 +1435,7 @@ GO
 CREATE PROCEDURE UpdateUser
     @IDUser INT,
     @LoginID NVARCHAR(225),
-    @NewPassword VARBINARY(255),
+    @NewPassword NVARCHAR(255),
     @IDUserType INT
 AS
 BEGIN
