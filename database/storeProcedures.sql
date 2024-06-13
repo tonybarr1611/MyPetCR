@@ -297,6 +297,51 @@ BEGIN
 END;
 GO
 
+------------------ Pet Type ------------------
+
+-- Create
+CREATE PROCEDURE SPCreatePetType (@Name NVARCHAR(64))
+AS
+BEGIN
+    INSERT INTO PetType (Name)
+    VALUES (@Name);
+END;
+
+-- Read all
+CREATE PROCEDURE SPReadAllPetTypes
+AS
+BEGIN
+    SELECT IDPetType, Name
+    FROM PetType;
+END;
+GO
+
+-- Read by ID
+CREATE PROCEDURE SPReadPetTypeById (@IDPetType int)
+AS
+BEGIN
+    SELECT IDPetType, Name
+    FROM PetType
+    WHERE IDPetType = @IDPetType;
+END;
+
+-- Update
+CREATE PROCEDURE SPUpdatePetType(@IDPetType INT, @NewName NVARCHAR(64))
+AS
+BEGIN
+    UPDATE PetType
+    SET Name = @NewName
+    WHERE IDPetType = @IDPetType;
+END;
+
+-- Delete
+CREATE PROCEDURE SPDeletePetType (@PetTypeID INT)
+AS
+BEGIN
+    DELETE FROM PetType
+    WHERE IDPetType = @PetTypeID;
+END;
+
 ------------------ Breed ------------------
 -- Create
 CREATE PROCEDURE SPCreateBreed

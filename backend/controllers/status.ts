@@ -56,7 +56,6 @@ async function DeleteStatus(req: Request, res: Response) {
         "Status not removed");
 };
 
-
 export default {
     CreateStatus,
     ReadAllStatus,
