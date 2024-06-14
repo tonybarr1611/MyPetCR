@@ -1,13 +1,10 @@
 import { SetStateAction, useState } from "react";
 import { Container, Row, Col, Form, Button, Table } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 import ManagementData from "./ManagementData";
 
 const Management = () => {
   const [searchTerm, setSearchTerm] = useState("");
-
-  const navigate = useNavigate();
 
   const [users, setUsers] = useState([
     { id: 1, user: "example@gmail.com", role: "Veterinarian" },
