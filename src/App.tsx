@@ -10,7 +10,6 @@ import Login from "./Login/Login";
 import Register from "./Registration/RegisterUser";
 import Dashboard from "./Dashboard/Dashboard";
 
-
 function App() {
   return (
     <Router>

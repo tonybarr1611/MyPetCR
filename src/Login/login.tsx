@@ -5,7 +5,6 @@ import { ToastContainer, toast } from "react-toastify";
 import { EyeFill, EyeSlashFill, PersonLock } from "react-bootstrap-icons";
 import "./Login.css";
 
-
 //personfilladd - personfillcheck - search
 
 const Login = () => {

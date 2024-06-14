@@ -1,12 +1,12 @@
 import { Routes, Route } from "react-router-dom";
 import NavBar from "./NavBar";
 import "./Dashboard.css";
-import Appointments from "../Login/Appointments";
-import RegisterAppointment from "../Registration/RegisterAppointment";
-import EditAppointment from "../Edit/EditAppointment";
-import Clients from "../Clients/Clients";
-import RegisterClient from "../Registration/RegisterClient";
-import EditClient from "../Edit/EditClient";
+import Appointments from "./Appointments/Appointments";
+import RegisterAppointment from "./Appointments/RegisterAppointment";
+import EditAppointment from "./Appointments/EditAppointment";
+import Clients from "./Clients/Clients";
+import RegisterClient from "./Clients/RegisterClient";
+import EditClient from "./Clients/EditClient";
 
 const setBackgroundWhite = () => {
   var html = document.getElementsByTagName("html");
@@ -23,12 +23,18 @@ function Dashboard() {
       <NavBar />
       <Routes>
         <Route path="/" />
-        <Route path="/appointments" element={< Appointments />} />
-        <Route path="/appointments/registerappointment" element={< RegisterAppointment />}/>
-        <Route path="/appointments/editappointment" element={< EditAppointment />} />
-        <Route path="/clients" element={< Clients />} />
-        <Route path="/clients/registerclient" element={< RegisterClient />} />
-        <Route path="/clients/editclient" element={< EditClient />} />
+        <Route path="/appointments" element={<Appointments />} />
+        <Route
+          path="/appointments/registerappointment"
+          element={<RegisterAppointment />}
+        />
+        <Route
+          path="/appointments/editappointment"
+          element={<EditAppointment />}
+        />
+        <Route path="/clients" element={<Clients />} />
+        <Route path="/clients/registerclient" element={<RegisterClient />} />
+        <Route path="/clients/editclient" element={<EditClient />} />
       </Routes>
     </div>
   );

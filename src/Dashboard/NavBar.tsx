@@ -1,10 +1,10 @@
 import { Container, Nav, Navbar } from "react-bootstrap";
 import { FaDog } from "react-icons/fa6";
-
+import { Link } from "react-router-dom";
 
 function NavBar() {
   return (
-    <Navbar bg="light" expand="lg" style={{ width: "100%"}}>
+    <Navbar bg="light" expand="lg" style={{ width: "100%" }}>
       <Container>
         <Navbar.Brand href="/dashboard">
           <FaDog
@@ -17,8 +17,16 @@ function NavBar() {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link href="clients">Clients</Nav.Link>
-            <Nav.Link href="appointments">Appointments</Nav.Link>
+            <Link to={"/dashboard/clients"}>
+              <Nav.Link href="dashboard/clients">
+                <Link to={"/dashboard/clients"}>Clients</Link>
+              </Nav.Link>
+            </Link>
+            <Link to={"/dashboard/clients"}>
+              <Nav.Link href="dashboard/appointments">
+                <Link to={"/dashboard/appointments"}>Appointments</Link>
+              </Nav.Link>
+            </Link>
           </Nav>
         </Navbar.Collapse>
       </Container>
