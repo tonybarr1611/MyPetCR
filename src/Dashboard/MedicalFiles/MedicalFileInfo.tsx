@@ -32,7 +32,7 @@ const MedicalFileInfo = () => {
       dateTime: "2023-06-10 02:00 PM",
     },
   ];
-
+  
   return (
     <Container fluid>
       <Row className="mt-3">
