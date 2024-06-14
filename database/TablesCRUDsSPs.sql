@@ -34,13 +34,9 @@ CREATE PROCEDURE ReadByIDAddress
     @IDAddress INT
 AS
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM Address WHERE IDAddress = @IDAddress)
-    BEGIN
-        RAISERROR ('Invalid Address ID', 16, 1);
-        RETURN;
-    END
-
-    SELECT * FROM Address WHERE IDAddress = @IDAddress;
+    SELECT IDClient, Province, City, District, ZIPCode, Description 
+    FROM Address 
+    WHERE IDAddress = @IDAddress;
 END;
 GO
 
@@ -1190,12 +1186,6 @@ CREATE PROCEDURE ReadByIDShipping
     @IDShipping INT
 AS
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM Shipping WHERE IDShipping = @IDShipping)
-    BEGIN
-        RAISERROR ('Invalid Shipping ID', 16, 1);
-        RETURN;
-    END
-
     SELECT * FROM Shipping WHERE IDShipping = @IDShipping;
 END;
 GO

@@ -22,6 +22,7 @@ import pet from '../controllers/pet';
 import breed from '../controllers/breed';
 import appointment from '../controllers/appointment';
 import address from '../controllers/address';
+import shipping from '../controllers/shipping';
 
 const route = express.Router();
 
@@ -173,5 +174,12 @@ route.get('/address', address.ReadAllAddresses);
 route.get('/address/:id', address.ReadAddressByID);
 route.put('/address/:id', address.UpdateAddress);
 route.delete('/address/:id', address.DeleteAddress);
+
+// Shipping
+route.post('/shipping', shipping.CreateAddress);
+route.get('/shipping', shipping.ReadAllShippings);
+route.get('/shipping/:id', shipping.ReadShippingByID);
+route.put('/shipping/:id', shipping.UpdateShipping);
+route.delete('/shipping/:id', shipping.DeleteShipping);
 
 export default route;
