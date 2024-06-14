@@ -7,7 +7,6 @@ import {
   Button,
   Table,
   Card,
-  Modal,
 } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import { PlusLg } from "react-bootstrap-icons";
@@ -236,9 +235,6 @@ const Appointments = () => {
                             }
                           >
                             Edit
-                          </Button>
-                          <Button variant="danger" size="sm">
-                            Delete
                           </Button>
                         </div>
                       </td>

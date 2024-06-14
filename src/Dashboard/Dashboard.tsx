@@ -8,6 +8,10 @@ import EditAppointment from "./Appointments/EditAppointment";
 import Clients from "./Clients/Clients";
 import RegisterClient from "./Clients/RegisterClient";
 import EditClient from "./Clients/EditClient";
+import MedicalFiles from "./MedicalFiles/MedicalFiles";
+import MedicalFileInfo from "./MedicalFiles/MedicalFileInfo";
+//import MedicalFileDetails from "./MedicalFiles/MedicalFileDetails";
+
 
 
 const setBackgroundWhite = () => {
@@ -32,6 +36,8 @@ function Dashboard() {
         <Route path="/clients" element={< Clients />} />
         <Route path="/clients/registerclient" element={< RegisterClient />} />
         <Route path="/clients/editclient" element={< EditClient />} />
+        <Route path="/medicalfiles" element={< MedicalFiles />} />
+        <Route path="/medicalfiles/medicalfileInfo" element={< MedicalFileInfo />} />
       </Routes>
     </div>
   );
