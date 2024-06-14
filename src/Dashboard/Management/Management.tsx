@@ -1,20 +1,18 @@
 import { SetStateAction, useState } from "react";
 import { Container, Row, Col, Form, Button, Table } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
-import { PlusLg } from "react-bootstrap-icons";
-import { useNavigate } from "react-router-dom";
-import MedicalFilesData from "./MedicalFilesData";
+import ManagementData from "./ManagementData";
 
-const MedicalFiles = () => {
+const Management = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const navigate = useNavigate();
-
-  const [pets, setPets] = useState([
-    { id: 1, petName: "Buddy", ownerName: "Tony", breed: "Golden Retriever" },
-    { id: 2, petName: "Milo", ownerName: "Sarah", breed: "Beagle" },
-    { id: 3, petName: "Max", ownerName: "John", breed: "Bulldog" },
-    { id: 4, petName: "Bella", ownerName: "Anna", breed: "Poodle" },
+  const [users, setUsers] = useState([
+    { id: 1, user: "example@gmail.com", role: "Veterinarian" },
+    { id: 2, user: "example@gmail.com", role: "Veterinarian" },
+    { id: 3, user: "example@gmail.com", role: "Admin" },
+    { id: 4, user: "example@gmail.com", role: "Admin" },
+    { id: 5, user: "example@gmail.com", role: "Manager" },
+    { id: 6, user: "example@gmail.com", role: "Manager" },
   ]);
 
   const handleSearchChange = (e: {
@@ -33,8 +31,6 @@ const MedicalFiles = () => {
     }
   };
 
-  const handleAddPet = () => {};
-
   return (
     <div>
       <Container fluid>
@@ -51,30 +47,21 @@ const MedicalFiles = () => {
                     onChange={handleSearchChange}
                   />
                 </Col>
-                <Col xs="auto">
-                  <Button
-                    variant="primary"
-                    type="button"
-                    className="me-2"
-                    onClick={handleAddPet}
-                  >
-                    <PlusLg />
-                  </Button>
-                </Col>
               </Row>
             </Form>
             <div className="contain-table">
               <Table striped bordered hover responsive>
                 <thead>
                   <tr>
-                    <th>Pet ID</th>
-                    <th>Pet Name</th>
-                    <th>Owner Name</th>
-                    <th>Breed</th>
-                    <th className="text-center">Actions</th>
+                    <th>User ID</th>
+                    <th>E-mail</th>
+                    <th>Current role</th>
+                    <th colSpan={2} className="text-center">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
-                <tbody>{pets.map((pet) => MedicalFilesData(pet))}</tbody>
+                <tbody>{users.map((client) => ManagementData(client))}</tbody>
               </Table>
             </div>
           </Col>
@@ -84,4 +71,4 @@ const MedicalFiles = () => {
   );
 };
 
-export default MedicalFiles;
+export default Management;

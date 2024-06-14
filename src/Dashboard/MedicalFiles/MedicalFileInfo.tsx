@@ -1,29 +1,38 @@
-import { Container, Row, Col, Table, Button } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { Container, Row, Col, Table, Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import MedicalFileInfoData from "./MedicalFileInfoData";
 
 const MedicalFileInfo = () => {
   const navigate = useNavigate();
 
   const petData = {
     id: 1,
-    petType: 'Dog',
-    breed: 'Golden Retriever',
-    owner: 'Tony',
-    petName: 'Buddy',
-    birthdate: '2020-01-01',
-    weight: '30kg',
-    notes: 'Healthy and active'
+    petType: "Dog",
+    breed: "Golden Retriever",
+    owner: "Tony",
+    petName: "Buddy",
+    birthdate: "2020-01-01",
+    weight: "30kg",
+    notes: "Healthy and active",
   };
 
   const appointments = [
-    { id: 101, employee: 'Dr. Smith', store: 'Main Clinic', status: 'Completed', dateTime: '2023-06-01 10:00 AM' },
-    { id: 102, employee: 'Dr. John', store: 'Main Clinic', status: 'Pending', dateTime: '2023-06-10 02:00 PM' },
+    {
+      id: 101,
+      employee: "Dr. Smith",
+      store: "Main Clinic",
+      status: "Completed",
+      dateTime: "2023-06-01 10:00 AM",
+    },
+    {
+      id: 102,
+      employee: "Dr. John",
+      store: "Main Clinic",
+      status: "Pending",
+      dateTime: "2023-06-10 02:00 PM",
+    },
   ];
-
-  const handleInvestigateAppointment = (appointmentId: number) => {
-    navigate("medicalfiledetails");
-  };
-
+  
   return (
     <Container fluid>
       <Row className="mt-3">
@@ -79,24 +88,9 @@ const MedicalFileInfo = () => {
               </tr>
             </thead>
             <tbody>
-              {appointments.map((appointment) => (
-                <tr key={appointment.id}>
-                  <td>{appointment.id}</td>
-                  <td>{appointment.employee}</td>
-                  <td>{appointment.store}</td>
-                  <td>{appointment.status}</td>
-                  <td>{appointment.dateTime}</td>
-                  <td className="text-center">
-                    <Button
-                      variant="primary"
-                      size="sm"
-                      onClick={() => handleInvestigateAppointment(appointment.id)}
-                    >
-                      Investigate
-                    </Button>
-                  </td>
-                </tr>
-              ))}
+              {appointments.map((appointment) =>
+                MedicalFileInfoData(appointment)
+              )}
             </tbody>
           </Table>
         </Col>

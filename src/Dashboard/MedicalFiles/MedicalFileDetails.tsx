@@ -1,9 +1,10 @@
-
 import { Container, Row, Col, Table, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { useParams } from "react-router";
 
 const MedicalFileDetails = () => {
   const navigate = useNavigate();
+  const { idParam } = useParams();
 
   const appointmentData = {
     id: 101,
