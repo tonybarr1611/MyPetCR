@@ -21,7 +21,7 @@ const MedicalFileInfo = () => {
   ];
 
   const handleInvestigateAppointment = (appointmentId: number) => {
-    navigate (`/medicalfileDetails/${appointmentId}`);
+    navigate("medicalfiledetails");
   };
 
   return (

@@ -10,7 +10,8 @@ import RegisterClient from "./Clients/RegisterClient";
 import EditClient from "./Clients/EditClient";
 import MedicalFiles from "./MedicalFiles/MedicalFiles";
 import MedicalFileInfo from "./MedicalFiles/MedicalFileInfo";
-//import MedicalFileDetails from "./MedicalFiles/MedicalFileDetails";
+import MedicalFileDetails from "./MedicalFiles/MedicalFileDetails";
+
 
 
 
@@ -38,6 +39,7 @@ function Dashboard() {
         <Route path="/clients/editclient" element={< EditClient />} />
         <Route path="/medicalfiles" element={< MedicalFiles />} />
         <Route path="/medicalfiles/medicalfileInfo" element={< MedicalFileInfo />} />
+        <Route path="/medicalfiles/medicalfileInfo/medicalfiledetails" element={< MedicalFileDetails />} />
       </Routes>
     </div>
   );
