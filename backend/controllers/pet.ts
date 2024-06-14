@@ -57,7 +57,6 @@ async function ReadPetById(req: Request, res: Response) {
 async function UpdatePet(req: Request, res: Response) {
     const IDPet = req.params.id;
 
-    //validate IDProduct
     const pet = await getItem(res,
             'ReadByIDPet',
             [{ name: 'IDPet', type: sql.Int, value: IDPet }]

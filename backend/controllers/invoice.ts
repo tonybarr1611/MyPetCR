@@ -9,9 +9,32 @@ async function CreateInvoice(req: Request, res: Response) {
     if (!IDAppointment || !IDClient || !IDPayment|| !IDStatus || !DateTime) {
         return res.status(400).send("Missing required fields");
     }
-    
-    
 
+    const appointment = await getItem(res,
+        'ReadByIDAppointment',
+        [{ name: 'IDAppointment', type: sql.Int, value: IDAppointment }]
+    );
+    if (appointment?.recordset.length == 0) { return res.status(404).send("Appointment not found"); }
+
+    const client = await getItem(res,
+        'ReadByIDClient',
+        [{ name: 'IDClient', type: sql.Int, value: IDClient }]
+    );
+    if (client?.recordset.length == 0) { return res.status(404).send("Client not found"); }
+
+    const payment = await getItem(res,
+        'ReadByIDPayment',
+        [{ name: 'IDPayment', type: sql.Int, value: IDPayment }]
+    );
+    if (payment?.recordset.length == 0) { return res.status(404).send("Payment not found"); }
+
+    const status = await getItem(res,
+        'ReadByIDStatus',
+        [{ name: 'IDStatus', type: sql.Int, value: IDStatus }]
+    );
+    if (status?.recordset.length == 0) { return res.status(404).send("Status not found"); }    
+
+    
     await executeProcedure(res, 
         'CreateInvoice', 
         [

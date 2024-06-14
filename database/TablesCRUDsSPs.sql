@@ -1186,7 +1186,9 @@ CREATE PROCEDURE ReadByIDShipping
     @IDShipping INT
 AS
 BEGIN
-    SELECT * FROM Shipping WHERE IDShipping = @IDShipping;
+    SELECT IDShipping ,IDInvoice, IDAddress, IDStatus, TrackingID 
+    FROM Shipping 
+    WHERE IDShipping = @IDShipping;
 END;
 GO
 
