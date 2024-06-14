@@ -21,6 +21,7 @@ import petType from '../controllers/petType';
 import pet from '../controllers/pet';
 import breed from '../controllers/breed';
 import appointment from '../controllers/appointment';
+import address from '../controllers/address';
 
 const route = express.Router();
 
@@ -165,5 +166,12 @@ route.get('/appointment', appointment.ReadAllAppointments);
 route.get('/appointment/:id', appointment.ReadAppointmentByID);
 route.put('/appointment/:id', appointment.UpdateAppointment);
 route.delete('/appointment/:id', appointment.DeleteAppointment);
+
+// Address
+route.post('/address', address.CreateAddress);
+route.get('/address', address.ReadAllAddresses);
+route.get('/address/:id', address.ReadAddressByID);
+route.put('/address/:id', address.UpdateAddress);
+route.delete('/address/:id', address.DeleteAddress);
 
 export default route;
