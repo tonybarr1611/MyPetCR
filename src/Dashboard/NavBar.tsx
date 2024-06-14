@@ -6,14 +6,18 @@ function NavBar() {
   return (
     <Navbar bg="light" expand="lg" style={{ width: "100%" }}>
       <Container>
-        <Navbar.Brand href="/dashboard">
-          <FaDog
-            size={40}
-            className="mb-3"
-            style={{ color: "var(--darkblue)" }}
-          />
-          {"    "}Dashboard
-        </Navbar.Brand>
+        <Link to={"/dashboard"}>
+          <Navbar.Brand href="/dashboard">
+            <Link to={"/dashboard"}>
+              <FaDog
+                size={40}
+                className="mb-3"
+                style={{ color: "var(--darkblue)" }}
+              />
+              {"    "}Dashboard
+            </Link>
+          </Navbar.Brand>
+        </Link>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
