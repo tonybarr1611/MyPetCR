@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Container, Form, Button, Card, Table } from 'react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify';
@@ -35,16 +35,16 @@ const RegisterAppointmentDetails: React.FC = () => {
 
   useEffect(() => {
     // Fetch pets, personnel, and stores data from backend
-    setPets([{ name: 'Buddy' }, { name: 'Bella' }]); // Example data
+    setPets([{ name: 'Buddy' }, { name: 'Bella' }]); 
     setPersonnel([{ id: 1, name: 'Dr. Smith', phoneNumber: 1234567890 }, { id: 2, name: 'Dr. Doe', phoneNumber: 9876543210 }]); // Example data
-    setStores([{ name: 'Store A' }, { name: 'Store B' }]); // Example data
+    setStores([{ name: 'Store A' }, { name: 'Store B' }]); 
   }, []);
 
   const handleOnChange = (e: { target: { name: any; value: any; }; }) => {
     setAppointment({ ...appointment, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
 
     try {
@@ -61,7 +61,7 @@ const RegisterAppointmentDetails: React.FC = () => {
   };
 
   const handleCancel = () => {
-    navigate('/dashboard/appointments'); // Navigate back to the appointments list or dashboard
+    navigate('/dashboard/appointments');
   };
 
   const togglePersonnelTable = () => {

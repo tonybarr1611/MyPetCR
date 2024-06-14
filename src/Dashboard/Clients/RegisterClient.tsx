@@ -51,7 +51,7 @@ const RegisterClient = () => {
           theme: "colored",
         });
       } else {
-        // Authentication logic (e.g., sending data to backend)
+        // Authentication logic to register the client
         navigate("/clients");
       }
     } catch (error) {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { SetStateAction, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Form, Button, Card } from 'react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify';
@@ -8,11 +8,11 @@ const RegisterAppointment: React.FC = () => {
   const [clientName, setClientName] = useState<string>("");
   const navigate = useNavigate();
 
-  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleOnChange = (e: { target: { value: SetStateAction<string>; }; }) => {
     setClientName(e.target.value);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
 
     if (!clientName) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Container, Form, Button, Card, Table } from 'react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify';
@@ -35,7 +35,6 @@ const EditAppointment: React.FC = () => {
   const { id } = useParams();
 
   useEffect(() => {
-    // Fetch the appointment details by ID from the backend or state
     const fetchAppointment = async () => {
       try {
         const response = { id, petName: "Buddy", personnelId: "1", store: "Pet Store 1", dateTime: "2024-06-15T10:00", status: "Pending" };
@@ -45,10 +44,9 @@ const EditAppointment: React.FC = () => {
       }
     };
 
-    // Fetch pets, personnel, and stores data from backend
-    setPets([{ name: 'Buddy' }, { name: 'Bella' }]); // Example data
+    setPets([{ name: 'Buddy' }, { name: 'Bella' }]); 
     setPersonnel([{ id: 1, name: 'Dr. Smith', phoneNumber: 1234567890 }, { id: 2, name: 'Dr. Doe', phoneNumber: 9876543210 }]); // Example data
-    setStores([{ name: 'Store A' }, { name: 'Store B' }]); // Example data
+    setStores([{ name: 'Store A' }, { name: 'Store B' }]); 
 
     fetchAppointment();
   }, [id]);
@@ -64,7 +62,7 @@ const EditAppointment: React.FC = () => {
       if (!appointment.petName || !appointment.personnelId || !appointment.store || !appointment.dateTime || !appointment.status) {
         toast.error("All fields are required", { autoClose: 1500, theme: 'colored' });
       } else {
-        // Backend request logic to update the appointment using appointment data
+        // Backend logic
         toast.success("Appointment updated successfully", { autoClose: 1500, theme: 'colored' });
         navigate('/dashboard/appointments');
       }
@@ -74,7 +72,7 @@ const EditAppointment: React.FC = () => {
   };
 
   const handleCancel = () => {
-    navigate('/dashboard/appointments'); // Navigate back to the appointments list or dashboard
+    navigate('/dashboard/appointments');
   };
 
   const togglePersonnelTable = () => {

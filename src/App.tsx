@@ -2,12 +2,11 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  useParams,
 } from "react-router-dom";
 import "./bootstrap/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
 import Login from "./Login/Login";
-import Register from "./Registration/RegisterUser";
+import Register from "./Registration/RegisterPet";
 import Dashboard from "./Dashboard/Dashboard";
 
 function App() {
