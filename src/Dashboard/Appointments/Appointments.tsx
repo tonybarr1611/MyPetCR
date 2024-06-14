@@ -11,6 +11,7 @@ import {
 import { ToastContainer, toast } from "react-toastify";
 import { PlusLg } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
+import AppointmentsDetail from "./AppointmentsData";
 
 const Appointments = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -28,7 +29,7 @@ const Appointments = () => {
       dateTime: "2024-06-15 10:00 AM",
     },
     {
-      id: 1,
+      id: 2,
       owner: "<Tony",
       pet: "Buddy",
       veterinary: 123,
@@ -37,7 +38,7 @@ const Appointments = () => {
       dateTime: "2024-06-15 10:00 AM",
     },
     {
-      id: 1,
+      id: 3,
       owner: "<Tony",
       pet: "Buddy",
       veterinary: 123,
@@ -46,7 +47,7 @@ const Appointments = () => {
       dateTime: "2024-06-15 10:00 AM",
     },
     {
-      id: 1,
+      id: 4,
       owner: "<Tony",
       pet: "Buddy",
       veterinary: 123,
@@ -55,7 +56,7 @@ const Appointments = () => {
       dateTime: "2024-06-15 10:00 AM",
     },
     {
-      id: 1,
+      id: 5,
       owner: "<Tony",
       pet: "Buddy",
       veterinary: 123,
@@ -64,7 +65,7 @@ const Appointments = () => {
       dateTime: "2024-06-15 10:00 AM",
     },
     {
-      id: 1,
+      id: 6,
       owner: "<Tony",
       pet: "Buddy",
       veterinary: 123,
@@ -73,7 +74,7 @@ const Appointments = () => {
       dateTime: "2024-06-15 10:00 AM",
     },
     {
-      id: 1,
+      id: 7,
       owner: "<Tony",
       pet: "Buddy",
       veterinary: 123,
@@ -82,7 +83,7 @@ const Appointments = () => {
       dateTime: "2024-06-15 10:00 AM",
     },
     {
-      id: 1,
+      id: 8,
       owner: "<Tony",
       pet: "Buddy",
       veterinary: 123,
@@ -91,7 +92,7 @@ const Appointments = () => {
       dateTime: "2024-06-15 10:00 AM",
     },
     {
-      id: 1,
+      id: 9,
       owner: "<Tony",
       pet: "Buddy",
       veterinary: 123,
@@ -100,7 +101,7 @@ const Appointments = () => {
       dateTime: "2024-06-15 10:00 AM",
     },
     {
-      id: 1,
+      id: 10,
       owner: "<Tony",
       pet: "Buddy",
       veterinary: 123,
@@ -128,10 +129,6 @@ const Appointments = () => {
 
   const handleAddAppointment = () => {
     navigate("registerappointment");
-  };
-
-  const handleEditAppointment = (id: number) => {
-    navigate("editappointment/");
   };
 
   return (
@@ -215,31 +212,9 @@ const Appointments = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {appointments.map((appointment, index) => (
-                    <tr key={index}>
-                      <td>{appointment.id}</td>
-                      <td>{appointment.owner}</td>
-                      <td>{appointment.pet}</td>
-                      <td>{appointment.veterinary}</td>
-                      <td>{appointment.store}</td>
-                      <td>{appointment.status}</td>
-                      <td>{appointment.dateTime}</td>
-                      <td className="text-center">
-                        <div className="d-flex justify-content-center">
-                          <Button
-                            variant="primary"
-                            size="sm"
-                            className=" mr-2"
-                            onClick={() =>
-                              handleEditAppointment(appointment.id)
-                            }
-                          >
-                            Edit
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                  {appointments.map((appointment) =>
+                    AppointmentsDetail(appointment)
+                  )}
                 </tbody>
               </Table>
             </div>
