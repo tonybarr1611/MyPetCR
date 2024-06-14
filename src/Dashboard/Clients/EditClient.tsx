@@ -38,7 +38,6 @@ const EditClient = () => {
             toast.error("Please enter a valid 8-digit phone number", { autoClose: 1500, theme: 'colored' });
         }
         else {
-        // Backend request logic to update the client using client data
         toast.success("Client updated successfully", { autoClose: 1500, theme: 'colored' });
         navigate('/dashboard/clients'); 
       }
@@ -48,7 +47,7 @@ const EditClient = () => {
   };
 
   const handleCancel = () => {
-    navigate('/dashboard/clients'); // Navigate back to the clients list or dashboard
+    navigate('/dashboard/clients'); 
   };
 
   return (

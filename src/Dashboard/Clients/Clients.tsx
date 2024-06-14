@@ -1,5 +1,5 @@
 import { SetStateAction, useState } from 'react';
-import { Container, Row, Col, Form, Button, Table, Modal } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Table } from 'react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify';
 import { PlusLg } from 'react-bootstrap-icons';
 import { useNavigate } from 'react-router-dom';

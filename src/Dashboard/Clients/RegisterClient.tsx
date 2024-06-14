@@ -7,13 +7,8 @@ import { FaDog } from "react-icons/fa6";
 
 const RegisterClient = () => {
   const [credentials, setCredentials] = useState({ name: "", phoneNumber: "", email: "", password: "" });
-  const [showPhoneNumber, setShowPhoneNumber] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-
-  const handleClickShowPhoneNumber = () => {
-    setShowPhoneNumber(!showPhoneNumber);
-  };
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -100,7 +95,7 @@ const RegisterClient = () => {
               <Form.Label>Phone Number</Form.Label>
               <div className="input-group">
                 <Form.Control
-                  type={showPhoneNumber ? "text" : "password"}
+                  type={ "text"}
                   name="phoneNumber"
                   value={credentials.phoneNumber}
                   onChange={handleOnChange}
@@ -130,7 +125,7 @@ const RegisterClient = () => {
                   onClick={handleClickShowPassword}
                   className="ml-1"
                 >
-                  {showPassword ? <EyeSlashFill /> : <EyeFill />}
+                {showPassword ? <EyeSlashFill /> : <EyeFill />}
                 </Button>
               </div>
             </Form.Group>
