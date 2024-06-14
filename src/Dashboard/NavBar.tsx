@@ -27,6 +27,11 @@ function NavBar() {
                 <Link to={"/dashboard/appointments"}>Appointments</Link>
               </Nav.Link>
             </Link>
+            <Link to={"/dashboard/management"}>
+              <Nav.Link href="dashboard/management">
+                <Link to={"/dashboard/management"}>Management</Link>
+              </Nav.Link>
+            </Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

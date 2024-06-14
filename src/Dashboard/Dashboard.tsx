@@ -8,7 +8,7 @@ import EditAppointment from "./Appointments/EditAppointment";
 import Clients from "./Clients/Clients";
 import RegisterClient from "./Clients/RegisterClient";
 import EditClient from "./Clients/EditClient";
-
+import Management from "./Management/Management";
 
 const setBackgroundWhite = () => {
   var html = document.getElementsByTagName("html");
@@ -25,13 +25,23 @@ function Dashboard() {
       <NavBar />
       <Routes>
         <Route path="/" />
-        <Route path="/appointments" element={< Appointments />} />
-        <Route path="/appointments/registerappointment" element={< RegisterAppointment />}/>
-        <Route path="/appointments/registerappointment/registerappointmentdetails" element={< RegisterAppointmentDetails />} />
-        <Route path="/appointments/editappointment" element={< EditAppointment />} />
-        <Route path="/clients" element={< Clients />} />
-        <Route path="/clients/registerclient" element={< RegisterClient />} />
-        <Route path="/clients/editclient" element={< EditClient />} />
+        <Route path="/appointments" element={<Appointments />} />
+        <Route
+          path="/appointments/registerappointment"
+          element={<RegisterAppointment />}
+        />
+        <Route
+          path="/appointments/registerappointment/registerappointmentdetails"
+          element={<RegisterAppointmentDetails />}
+        />
+        <Route
+          path="/appointments/editappointment"
+          element={<EditAppointment />}
+        />
+        <Route path="/clients" element={<Clients />} />
+        <Route path="/clients/registerclient" element={<RegisterClient />} />
+        <Route path="/clients/editclient" element={<EditClient />} />
+        <Route path="management" element={<Management />} />
       </Routes>
     </div>
   );
