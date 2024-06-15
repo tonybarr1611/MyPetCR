@@ -7,7 +7,7 @@ import "./UserLogin.css";
 
 //personfilladd - personfillcheck - search
 
-const Login = () => {
+const UserLogin = () => {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
@@ -125,4 +125,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default UserLogin;
