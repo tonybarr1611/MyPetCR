@@ -25,3 +25,27 @@
     margin-left: 45%;
     margin-right: 45%;
 }
+
+/* Media Queries for Responsive Design */
+@media (max-width: 1024px) {
+    .productContainers {
+        grid-template-columns: repeat(2, 48%);
+        grid-gap: 2%;
+    }
+}
+
+@media (max-width: 768px) {
+    .productContainers {
+        grid-template-columns: repeat(1, 98%);
+    }
+
+    .productCard {
+        padding-top: 20%;
+    }
+}
+
+@media (max-width: 576px) {
+    .productCard {
+        padding-top: 10%;
+    }
+}
