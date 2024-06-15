@@ -87,7 +87,7 @@ const AddMedicalFileAppointment = () => {
               className="mb-3"
               style={{ color: "var(--darkblue)" }}
             />
-            <h1 className="h4">Add Invoice Detail</h1>
+            <h1 className="h4">Add Procedure Detail</h1>
           </div>
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3" controlId="formProductName">

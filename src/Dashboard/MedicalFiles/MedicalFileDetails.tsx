@@ -11,7 +11,7 @@ const MedicalFileDetails = () => {
 
   const appointmentData = {
     id: 101,
-    status: "Confirmed",
+    status: "Pending",
     petName: "Buddy",
     owner: "Tony",
     dateTime: "2023-06-01 10:00 AM",
@@ -114,7 +114,7 @@ const MedicalFileDetails = () => {
             </tbody>
           </Table>
 
-          <h3>Invoice Details</h3>
+          <h3>Procedures</h3>
           <Table striped bordered hover responsive>
             <thead>
               <tr>
@@ -155,8 +155,7 @@ const MedicalFileDetails = () => {
               onClick={handleAddInvoiceDetail}
               disabled={status.toLowerCase() === "completed"}
             >
-              <PlusCircleDotted size={24} className="mb-1 mr-1" /> Add Invoice
-              Detail
+              <PlusCircleDotted size={24} className="mb-1 mr-1" /> Add Procedure
             </Button>
           </div>
         </Col>
