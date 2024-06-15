@@ -119,7 +119,7 @@ const MedicalFileDetails = () => {
             <thead>
               <tr>
                 <th>ID Invoice Detail</th>
-                <th>Product</th>
+                <th>Product Name </th>
                 <th>Description</th>
                 <th>Quantity</th>
                 <th>Price</th>
