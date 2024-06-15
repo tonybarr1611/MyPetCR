@@ -6,7 +6,12 @@ import { EyeFill, EyeSlashFill } from "react-bootstrap-icons";
 import { FaDog } from "react-icons/fa6";
 
 const RegisterClient = () => {
-  const [credentials, setCredentials] = useState({ name: "", phoneNumber: "", email: "", password: "" });
+  const [credentials, setCredentials] = useState({
+    name: "",
+    phoneNumber: "",
+    email: "",
+    password: "",
+  });
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
@@ -14,18 +19,23 @@ const RegisterClient = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleOnChange = (e: { target: { name: any; value: any; }; }) => {
+  const handleOnChange = (e: { target: { name: any; value: any } }) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: { preventDefault: () => void; }) => {
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    let phoneNumberRegex = /^[0-9]{8}$/; 
-    let emailRegex = 
-    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    let phoneNumberRegex = /^[0-9]{8}$/;
+    let emailRegex =
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
     try {
-      if (!credentials.name || !credentials.phoneNumber || !credentials.email || !credentials.password) {
+      if (
+        !credentials.name ||
+        !credentials.phoneNumber ||
+        !credentials.email ||
+        !credentials.password
+      ) {
         toast.error("All fields are required", {
           autoClose: 1500,
           theme: "colored",
@@ -63,13 +73,14 @@ const RegisterClient = () => {
   };
 
   const handleCancel = () => {
-    navigate('/dashboard/clients'); 
+    navigate("/dashboard/clients");
   };
 
   return (
     <Container
       className="d-flex justify-content-center align-items-center"
-      style={{ height: "100vh" }}>
+      style={{ height: "100vh" }}
+    >
       <ToastContainer position="top-center" />
       <Card style={{ width: "24rem", background: "#C9E5F0" }}>
         <Card.Body>
@@ -95,7 +106,7 @@ const RegisterClient = () => {
               <Form.Label>Phone Number</Form.Label>
               <div className="input-group">
                 <Form.Control
-                  type={ "text"}
+                  type={"text"}
                   name="phoneNumber"
                   value={credentials.phoneNumber}
                   onChange={handleOnChange}
@@ -125,15 +136,20 @@ const RegisterClient = () => {
                   onClick={handleClickShowPassword}
                   className="ml-1"
                 >
-                {showPassword ? <EyeSlashFill /> : <EyeFill />}
+                  {showPassword ? <EyeSlashFill /> : <EyeFill />}
                 </Button>
               </div>
             </Form.Group>
             <div className="d-flex justify-content-between">
               <Button variant="primary" type="submit" className="mb-3">
-                Create Appointment
+                Create Client
               </Button>
-              <Button variant="secondary" type="button" className="mb-3" onClick={handleCancel}>
+              <Button
+                variant="secondary"
+                type="button"
+                className="mb-3"
+                onClick={handleCancel}
+              >
                 Cancel
               </Button>
             </div>

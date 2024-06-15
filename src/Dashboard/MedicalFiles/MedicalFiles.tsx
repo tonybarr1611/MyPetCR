@@ -7,7 +7,6 @@ import MedicalFilesData from "./MedicalFilesData";
 const MedicalFiles = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
-
   const [pets, setPets] = useState([
     { id: 1, petName: "Buddy", ownerName: "Tony", breed: "Golden Retriever" },
     { id: 2, petName: "Milo", ownerName: "Sarah", breed: "Beagle" },
@@ -48,16 +47,6 @@ const MedicalFiles = () => {
                     name="search"
                     onChange={handleSearchChange}
                   />
-                </Col>
-                <Col xs="auto">
-                  <Button
-                    variant="primary"
-                    type="button"
-                    className="me-2"
-                    onClick={handleAddPet}
-                  >
-                    <PlusLg />
-                  </Button>
                 </Col>
               </Row>
             </Form>
