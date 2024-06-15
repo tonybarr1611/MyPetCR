@@ -112,7 +112,7 @@ const UserLogin = () => {
                     color: "#4D7381",
                     cursor: "pointer",
                   }}
-                  onClick={() => navigate("/page")}
+                  onClick={() => navigate("/dashboard")}
                 >
                   Continue as Guest
                 </span>
