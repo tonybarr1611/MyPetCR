@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import NavBar from "./NavBar";
+import Homepage from "./Store/Homepage";
 
 const setBackgroundWhite = () => {
   var html = document.getElementsByTagName("html");
@@ -15,7 +16,7 @@ function ClientSide() {
     <div>
       <NavBar />
       <Routes>
-        <Route path="/" />
+        <Route path="/" element={<Homepage />} />
         {/* <Route path="/shop" element={<Shop />} /> */}
         {/* <Route path="/management" element={<Management />} /> */}
       </Routes>

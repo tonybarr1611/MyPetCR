@@ -1,0 +1,27 @@
+.banner{
+    position: relative;
+    text-align: center;
+    color: white;
+    size: 50%;
+}
+.imageBanner{
+    width: 45%;
+}
+.productContainers{
+    display: grid;
+    grid-template-columns: repeat(3, 29%);
+    grid-gap: 2%;
+    /* margin: 10px; */
+}
+.productCard{
+    display: flex;
+    flex-direction: column;
+    padding-top: 50%;
+    background-color: white;
+    border-radius: 5px;
+}
+.cartBtn{
+    /* width: 10%; */
+    margin-left: 45%;
+    margin-right: 45%;
+}
