@@ -1,37 +1,68 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Container, Form, Button, Card } from 'react-bootstrap';
-import { ToastContainer, toast } from 'react-toastify';
+import { useState } from "react";
+import { Container, Form, Button, Card } from "react-bootstrap";
+import { ToastContainer, toast } from "react-toastify";
 import { MdPets } from "react-icons/md";
 
 const RegisterPet = () => {
-  const [petDetails, setPetDetails] = useState({ petType: "", breed: '', name: "", birthdate: '', weight: '', notes: "" });
-  const navigate = useNavigate();
+  const [petDetails, setPetDetails] = useState({
+    petType: "",
+    breed: "",
+    name: "",
+    birthdate: "",
+    weight: "",
+    notes: "",
+  });
 
-  const handleOnChange = (e: { target: { name: any; value: any; }; }) => {
+  const handleOnChange = (e: { target: { name: any; value: any } }) => {
     setPetDetails({ ...petDetails, [e.target.name]: e.target.value });
-  }
+  };
 
-  const handleSubmit = async (e: { preventDefault: () => void; }) => {
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     let weightRegex = /^[0-9]+$/;
-    
+
     try {
-      if (!petDetails.petType && !petDetails.breed && !petDetails.name && !petDetails.birthdate && !petDetails.weight) {
-        toast.error("All fields are required", { autoClose: 1500, theme: 'colored' });
+      if (
+        !petDetails.petType &&
+        !petDetails.breed &&
+        !petDetails.name &&
+        !petDetails.birthdate &&
+        !petDetails.weight
+      ) {
+        toast.error("All fields are required", {
+          autoClose: 1500,
+          theme: "colored",
+        });
       } else if (petDetails.name.length < 1 || petDetails.name.length > 128) {
-        toast.error("Please enter a valid name (1-128 characters)", { autoClose: 1500, theme: 'colored' });
+        toast.error("Please enter a valid name (1-128 characters)", {
+          autoClose: 1500,
+          theme: "colored",
+        });
       } else if (weightRegex.test(petDetails.weight) === false) {
-        toast.error("Please enter a valid weight (number)", { autoClose: 500, theme: 'colored' });
-      } else if (petDetails.petType && petDetails.breed && petDetails.name && petDetails.birthdate && petDetails.weight) {
-        
-        toast.success("Pet registered successfully!", { autoClose: 1500, theme: 'colored' });
+        toast.error("Please enter a valid weight (number)", {
+          autoClose: 500,
+          theme: "colored",
+        });
+      } else if (
+        petDetails.petType &&
+        petDetails.breed &&
+        petDetails.name &&
+        petDetails.birthdate &&
+        petDetails.weight
+      ) {
+        toast.success("Pet registered successfully!", {
+          autoClose: 1500,
+          theme: "colored",
+        });
         //navigate('');
       }
     } catch (error: any) {
-      toast.error("An error occurred. Please try again.", { autoClose: 500, theme: 'colored' });
+      toast.error("An error occurred. Please try again.", {
+        autoClose: 500,
+        theme: "colored",
+      });
     }
-  }
+  };
 
   return (
     <Container
@@ -39,10 +70,14 @@ const RegisterPet = () => {
       style={{ height: "100vh" }}
     >
       <ToastContainer position="top-center" />
-      <Card style={{ width: '24rem', background: "#C9E5F0" }}>
+      <Card style={{ width: "24rem", background: "#C9E5F0" }}>
         <Card.Body>
           <div className="text-center mb-4">
-            <MdPets size={40} className="mb-3" style={{ color: 'var(--darkblue)' }} />
+            <MdPets
+              size={40}
+              className="mb-3"
+              style={{ color: "var(--darkblue)" }}
+            />
             <h1 className="h4">Register Pet</h1>
           </div>
           <Form onSubmit={handleSubmit}>
@@ -114,6 +149,6 @@ const RegisterPet = () => {
       </Card>
     </Container>
   );
-}
+};
 
 export default RegisterPet;

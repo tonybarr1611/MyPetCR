@@ -2,7 +2,6 @@ import { Container, Row, Col, Table } from "react-bootstrap";
 import MedicalFileInfoData from "./MedicalFileInfoData";
 
 const MedicalFileInfo = () => {
-
   const petData = {
     id: 1,
     petType: "Dog",
@@ -30,7 +29,7 @@ const MedicalFileInfo = () => {
       dateTime: "2023-06-10 02:00 PM",
     },
   ];
-  
+
   return (
     <Container fluid>
       <Row className="mt-3">

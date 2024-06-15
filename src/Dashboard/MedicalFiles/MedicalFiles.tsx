@@ -1,7 +1,6 @@
 import { SetStateAction, useState } from "react";
-import { Container, Row, Col, Form, Button, Table } from "react-bootstrap";
+import { Container, Row, Col, Form, Table } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
-import { PlusLg } from "react-bootstrap-icons";
 import MedicalFilesData from "./MedicalFilesData";
 
 const MedicalFiles = () => {
@@ -29,8 +28,6 @@ const MedicalFiles = () => {
       });
     }
   };
-
-  const handleAddPet = () => {};
 
   return (
     <div>

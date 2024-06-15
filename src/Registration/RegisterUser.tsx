@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Container, Form, Button, Card } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import { EyeFill, EyeSlashFill } from "react-bootstrap-icons";
@@ -8,7 +7,6 @@ import { FaDog } from "react-icons/fa6";
 const RegisterUser = () => {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate();
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -53,7 +51,8 @@ const RegisterUser = () => {
   return (
     <Container
       className="d-flex justify-content-center align-items-center"
-      style={{ height: "100vh" }}>
+      style={{ height: "100vh" }}
+    >
       <ToastContainer position="top-center" />
       <Card style={{ width: "24rem", background: "#C9E5F0" }}>
         <Card.Body>
@@ -104,13 +103,6 @@ const RegisterUser = () => {
 };
 
 export default RegisterUser;
-
-
-
-
-
-
-
 
 /*import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
