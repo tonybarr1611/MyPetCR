@@ -23,6 +23,7 @@ import breed from '../controllers/breed';
 import appointment from '../controllers/appointment';
 import address from '../controllers/address';
 import shipping from '../controllers/shipping';
+import cart from '../controllers/cart';
 
 const route = express.Router();
 
@@ -181,5 +182,13 @@ route.get('/shipping', shipping.ReadAllShippings);
 route.get('/shipping/:id', shipping.ReadShippingByID);
 route.put('/shipping/:id', shipping.UpdateShipping);
 route.delete('/shipping/:id', shipping.DeleteShipping);
+
+// Cart, it has a composite key
+route.post('/cart', cart.CreateCart);
+route.get('/cart', cart.RealAllCarts);
+route.get('/cart/:IDClient/:IDProduct', cart.ReadCartByIDClientAndIDProduct);
+route.get('/cart/:IDClient/', cart.ReadCartByIDClient);
+route.put('/cart/:IDClient/:IDProduct', cart.UpdateCart);
+route.delete('/cart/:IDClient/:IDProduct', cart.DeleteCart);
 
 export default route;
