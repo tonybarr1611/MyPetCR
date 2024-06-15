@@ -43,7 +43,7 @@ async function CreateAddress(req: Request, res: Response) {
 
 async function ReadAllShippings(req: Request, res: Response) {
     await executeProcedure(res, 
-        'ReadAllShippings', 
+        'ReadAllShipments', 
         [], 
         200, 
         "", 

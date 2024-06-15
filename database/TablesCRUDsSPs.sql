@@ -25,7 +25,10 @@ GO
 CREATE PROCEDURE ReadAllAddresses
 AS
 BEGIN
-    SELECT * FROM Address;
+    SELECT A.IDAddress, A.IDClient, A.Province, A.City, A.District, A.ZIPCode, A.Description,
+           C.IDUser , C.Name 'UserName', C.PhoneNumber 'UserPhoneNumber'
+    FROM Address A
+    LEFT JOIN Client C on C.IDClient = A.IDClient;
 END;
 GO
 
@@ -34,9 +37,11 @@ CREATE PROCEDURE ReadByIDAddress
     @IDAddress INT
 AS
 BEGIN
-    SELECT IDClient, Province, City, District, ZIPCode, Description 
-    FROM Address 
-    WHERE IDAddress = @IDAddress;
+    SELECT A.IDAddress, A.IDClient, A.Province, A.City, A.District, A.ZIPCode, A.Description,
+           C.IDUser , C.Name 'UserName', C.PhoneNumber 'UserPhoneNumber'
+    FROM Address A
+    LEFT JOIN Client C on C.IDClient = A.IDClient
+    WHERE A.IDAddress = @IDAddress;
 END;
 GO
 
@@ -132,7 +137,16 @@ GO
 CREATE PROCEDURE ReadAllAppointments
 AS
 BEGIN
-    SELECT * FROM Appointment;
+    SELECT A.IDAppointment, A.IDPet, A.IDEmployee, A.IDStore, A.IDStatus, A.DateTime,
+           P.IDPet, P.IDBreed, P.IDClient, P.Name 'PetName', P.Birthdate 'PetBirthdate', P.Weight 'PetWeight', P.Notes 'PetNotes',
+           E.IDUser, E.Name 'UserName', E.PhoneNumber 'UserPhoneNumber',
+           S.IDStore, S.Location 'StoreLocation',
+           ST.Name 'StatusName'
+    FROM Appointment A
+    LEFT JOIN Pet P on A.IDPet = P.IDPet
+    LEFT JOIN Employee E on A.IDEmployee = E.IDEmployee
+    LEFT JOIN Store S on A.IDStore = S.IDStore
+    LEFT JOIN StatusType ST on A.IDStatus = ST.IDStatus
 END;
 GO
 
@@ -141,7 +155,16 @@ CREATE PROCEDURE ReadByIDAppointment
     @IDAppointment INT
 AS
 BEGIN
-    SELECT IDAppointment, IDPet, IDEmployee, IDStore, IDStatus, DateTime FROM Appointment 
+    SELECT A.IDAppointment, A.IDPet, A.IDEmployee, A.IDStore, A.IDStatus, A.DateTime,
+           P.IDPet, P.IDBreed, P.IDClient, P.Name 'PetName', P.Birthdate 'PetBirthdate', P.Weight 'PetWeight', P.Notes 'PetNotes',
+           E.IDUser, E.Name 'UserName', E.PhoneNumber 'UserPhoneNumber',
+           S.IDStore, S.Location 'StoreLocation',
+           ST.Name 'StatusName'
+    FROM Appointment A
+    LEFT JOIN Pet P on A.IDPet = P.IDPet
+    LEFT JOIN Employee E on A.IDEmployee = E.IDEmployee
+    LEFT JOIN Store S on A.IDStore = S.IDStore
+    LEFT JOIN StatusType ST on A.IDStatus = ST.IDStatus
     WHERE IDAppointment = @IDAppointment;
 END;
 GO
@@ -228,7 +251,10 @@ GO
 CREATE PROCEDURE ReadAllBreeds
 AS
 BEGIN
-    SELECT IDBreed, IDPetType, Name  FROM Breed;
+    SELECT B.IDBreed, B.IDPetType, B.Name,
+           PT.Name 'PetTypeName'
+    FROM Breed B
+    LEFT JOIN PetType PT on PT.IDPetType = B.IDPetType;
 END;
 GO
 
@@ -237,8 +263,10 @@ CREATE PROCEDURE ReadByIDBreed
     @IDBreed INT
 AS
 BEGIN
-    SELECT IDBreed, IDPetType, Name 
-    FROM Breed 
+    SELECT B.IDBreed, B.IDPetType, B.Name,
+           PT.Name 'PetTypeName'
+    FROM Breed B
+    LEFT JOIN PetType PT on PT.IDPetType = B.IDPetType
     WHERE IDBreed = @IDBreed;
 END;
 GO
@@ -291,8 +319,10 @@ GO
 CREATE PROCEDURE ReadAllClients
 AS
 BEGIN
-    SELECT IDClient, Name, PhoneNumber, IDUser
-    FROM Client;
+    SELECT C.IDClient, C.IDUser, C.Name, C.PhoneNumber,
+           U.IDUserType, U.LoginID
+    FROM Client C
+    LEFT JOIN [User] U on C.IDUser = U.IDUser
 END;
 GO
 
@@ -301,8 +331,10 @@ CREATE PROCEDURE ReadByIDClient
     @IDClient INT
 AS
 BEGIN
-    SELECT IDClient, Name, PhoneNumber, IDUser
-    FROM Client
+    SELECT C.IDClient, C.IDUser, C.Name, C.PhoneNumber,
+           U.IDUserType, U.LoginID
+    FROM Client C
+    LEFT JOIN [User] U on C.IDUser = U.IDUser
     WHERE IDClient = @IDClient;
 END;
 GO
@@ -351,8 +383,10 @@ GO
 CREATE PROCEDURE ReadAllEmployees
 AS
 BEGIN
-    SELECT IDEmployee, IDUser, Name, PhoneNumber
-    FROM Employee;
+    SELECT E.IDEmployee, E.IDUser, E.Name, E.PhoneNumber,
+           U.IDUserType, U.LoginID
+    FROM Employee E
+    LEFT JOIN [User] U on E.IDUser = U.IDUser;
 END;
 GO
 
@@ -361,8 +395,10 @@ CREATE PROCEDURE ReadByIDEmployee
     @IDEmployee INT
 AS
 BEGIN
-    SELECT IDEmployee, IDUser, Name, PhoneNumber
-    FROM Employee
+    SELECT E.IDEmployee, E.IDUser, E.Name, E.PhoneNumber,
+           U.IDUserType, U.LoginID
+    FROM Employee E
+    LEFT JOIN [User] U on E.IDUser = U.IDUser
     WHERE IDEmployee = @IDEmployee;
 END;
 GO
@@ -412,8 +448,10 @@ GO
 CREATE PROCEDURE ReadAllInventories
 AS
 BEGIN
-    SELECT IDProduct, IDStore, Quantity
-    FROM Inventory;
+    SELECT I.IDProduct, I.IDStore, I.Quantity,
+           P.Name 'ProductName', P.Description 'ProductDescription', P.Price 'ProductPrice', P.IDProductType
+    FROM Inventory I
+    LEFT JOIN Product P on I.IDProduct = P.IDProduct;
 END;
 GO
 
@@ -423,9 +461,11 @@ CREATE PROCEDURE ReadInventoryByProductAndStore
     @IDStore INT
 AS
 BEGIN
-    SELECT IDProduct, IDStore, Quantity
-    FROM Inventory
-    WHERE IDProduct = @IDProduct AND IDStore = @IDStore;
+    SELECT I.IDProduct, I.IDStore, I.Quantity,
+           P.Name 'ProductName', P.Description 'ProductDescription', P.Price 'ProductPrice', P.IDProductType
+    FROM Inventory I
+    LEFT JOIN Product P on I.IDProduct = P.IDProduct
+    WHERE I.IDProduct = @IDProduct AND I.IDStore = @IDStore;
 END;
 GO
 
@@ -473,18 +513,36 @@ GO
 CREATE PROCEDURE ReadAllInvoices
 AS
 BEGIN
-    SELECT IDInvoice, IDAppointment, IDClient, IDPayment, IDStatus, DateTime
-    FROM Invoice;
+    SELECT I.IDInvoice, I.DateTime 'InvoiceDateTime',
+           I.IDAppointment,A.IDPet, A.IDEmployee, A.IDStore, A.IDStatus 'AppointmentIDStatus', A.DateTime 'AppointmentDateTime',
+           I.IDClient, C.IDUser, C.Name 'UserName', C.PhoneNumber 'UserPhoneNumber',
+           I.IDPayment, P.IDPaymentType, P.Name 'PaymentName',
+           I.IDStatus, ST.Name 'StatusName'
+    FROM Invoice I
+    LEFT JOIN Appointment A on I.IDAppointment = A.IDAppointment
+    LEFT JOIN Client C ON I.IDClient = C.IDClient
+    LEFT JOIN Payment P on I.IDPayment = P.IDPayment
+    LEFT JOIN StatusType ST on I.IDStatus = ST.IDStatus;
 END;
 GO
+
+
 
 -- Read By ID
 CREATE PROCEDURE ReadByIDInvoice
     @IDInvoice INT
 AS
 BEGIN
-    SELECT IDInvoice, IDAppointment, IDClient, IDPayment, IDStatus, DateTime
-    FROM Invoice
+    SELECT I.IDInvoice, I.DateTime 'InvoiceDateTime',
+           I.IDAppointment,A.IDPet, A.IDEmployee, A.IDStore, A.IDStatus 'AppointmentIDStatus', A.DateTime 'AppointmentDateTime',
+           I.IDClient, C.IDUser, C.Name 'UserName', C.PhoneNumber 'UserPhoneNumber',
+           I.IDPayment, P.IDPaymentType, P.Name 'PaymentName',
+           I.IDStatus, ST.Name 'StatusName'
+    FROM Invoice I
+    LEFT JOIN Appointment A on I.IDAppointment = A.IDAppointment
+    LEFT JOIN Client C ON I.IDClient = C.IDClient
+    LEFT JOIN Payment P on I.IDPayment = P.IDPayment
+    LEFT JOIN StatusType ST on I.IDStatus = ST.IDStatus
     WHERE IDInvoice = @IDInvoice;
 END;
 GO
@@ -538,8 +596,12 @@ GO
 CREATE PROCEDURE ReadAllInvoiceDetails
 AS
 BEGIN
-    SELECT IDInvoiceDetail, IDInvoice, IDProduct, Description, Quantity, Price
-    FROM InvoiceDetail;
+    SELECT ID.IDInvoiceDetail, ID.Description,ID.Quantity, ID.Price,
+           ID.IDInvoice, I.IDAppointment, I.IDClient, I.IDPayment, I.IDStatus, I.DateTime 'InvoiceDateTime',
+           ID.IDProduct, P.IDProductType, P.Name 'ProductName', P.Description 'ProductDescription', P.Price 'ProductPrice'
+    FROM InvoiceDetail ID
+    LEFT JOIN Invoice I on ID.IDInvoice = I.IDInvoice
+    LEFT JOIN Product P on ID.IDProduct = P.IDProduct;
 END;
 GO
 
@@ -548,8 +610,12 @@ CREATE PROCEDURE ReadByIDInvoiceDetail
     @IDInvoiceDetail INT
 AS
 BEGIN
-    SELECT IDInvoiceDetail, IDInvoice, IDProduct, Description, Quantity, Price
-    FROM InvoiceDetail
+    SELECT ID.IDInvoiceDetail, ID.Description,ID.Quantity, ID.Price,
+           ID.IDInvoice, I.IDAppointment, I.IDClient, I.IDPayment, I.IDStatus, I.DateTime 'InvoiceDateTime',
+           ID.IDProduct, P.IDProductType, P.Name 'ProductName', P.Description 'ProductDescription', P.Price 'ProductPrice'
+    FROM InvoiceDetail ID
+    LEFT JOIN Invoice I on ID.IDInvoice = I.IDInvoice
+    LEFT JOIN Product P on ID.IDProduct = P.IDProduct
     WHERE IDInvoiceDetail = @IDInvoiceDetail;
 END;
 GO
@@ -603,8 +669,10 @@ GO
 CREATE PROCEDURE ReadAllLogs
 AS
 BEGIN
-    SELECT IDLog, IDLogType, IDUser, DateTime, Description
-    FROM Log;
+    SELECT L.IDLog, L.IDUser, L.DateTime, L.Description,
+           L.IDLogType, LT.Name 'LogTypeName'
+    FROM Log L
+    LEFT JOIN LogType LT on L.IDLogType = LT.IDLogType;
 END;
 GO
 
@@ -613,8 +681,10 @@ CREATE PROCEDURE ReadByIDLog
     @IDLog INT
 AS
 BEGIN
-    SELECT IDLog, IDLogType, IDUser, DateTime, Description
-    FROM Log
+    SELECT L.IDLog, L.IDUser, L.DateTime, L.Description,
+           L.IDLogType, LT.Name 'LogTypeName'
+    FROM Log L
+    LEFT JOIN LogType LT on L.IDLogType = LT.IDLogType
     WHERE IDLog = @IDLog;
 END;
 GO
@@ -724,8 +794,10 @@ GO
 CREATE PROCEDURE ReadAllPayments
 AS
 BEGIN
-    SELECT IDPayment, IDPaymentType, Name
-    FROM Payment;
+    SELECT P.IDPayment, P.Name 'PaymentName',
+           P.IDPaymentType, PT.Name 'PaymentTypeName'
+    FROM Payment P
+    LEFT JOIN PaymentType PT on P.IDPaymentType = PT.IDPaymentType;
 END;
 GO
 
@@ -734,8 +806,10 @@ CREATE PROCEDURE ReadByIDPayment
     @IDPayment INT
 AS
 BEGIN
-    SELECT IDPayment, IDPaymentType, Name
-    FROM Payment
+    SELECT P.IDPayment, P.Name 'PaymentName',
+           P.IDPaymentType, PT.Name 'PaymentTypeName'
+    FROM Payment P
+    LEFT JOIN PaymentType PT on P.IDPaymentType = PT.IDPaymentType
     WHERE IDPayment = @IDPayment;
 END;
 GO
@@ -855,8 +929,12 @@ GO
 CREATE PROCEDURE ReadAllPets
 AS
 BEGIN
-    SELECT IDPet, IDBreed, IDClient, Name, Birthdate, Weight, Notes
-    FROM Pet;
+    SELECT P.IDPet, P.Name 'PetName', P.Birthdate, P.Weight, P.Notes,
+           P.IDBreed, B.IDPetType, B.Name 'BreedName',
+           P.IDClient, C.IDUser, C.Name 'UserName', C.PhoneNumber 'UserPhoneNumber'
+    FROM Pet P
+    LEFT JOIN Breed B on P.IDBreed = B.IDBreed
+    LEFT JOIN Client C on P.IDClient = C.IDClient;
 END;
 GO
 
@@ -865,8 +943,12 @@ CREATE PROCEDURE ReadByIDPet
     @IDPet INT
 AS
 BEGIN
-    SELECT IDPet, IDBreed, IDClient, Name, Birthdate, Weight, Notes
-    FROM Pet
+    SELECT P.IDPet, P.Name 'PetName', P.Birthdate, P.Weight, P.Notes,
+           P.IDBreed, B.IDPetType, B.Name 'BreedName',
+           P.IDClient, C.IDUser, C.Name 'UserName', C.PhoneNumber 'UserPhoneNumber'
+    FROM Pet P
+    LEFT JOIN Breed B on P.IDBreed = B.IDBreed
+    LEFT JOIN Client C on P.IDClient = C.IDClient
     WHERE IDPet = @IDPet;
 END;
 GO
@@ -976,8 +1058,10 @@ GO
 CREATE PROCEDURE ReadAllProducts
 AS
 BEGIN
-    SELECT IDProduct, IDProductType, Name, Description, Price
-    FROM Product;
+    SELECT P.IDProduct, P.Name 'ProductName', P.Description, P.Price,
+           P.IDProductType, PT.Name 'ProductTypeName'
+    FROM Product P
+    LEFT JOIN ProductType PT on P.IDProductType = PT.IDProductType;
 END;
 GO
 
@@ -986,8 +1070,10 @@ CREATE PROCEDURE ReadByIDProduct
     @IDProduct INT
 AS
 BEGIN
-    SELECT IDProduct, IDProductType, Name, Description, Price
-    FROM Product
+    SELECT P.IDProduct, P.Name 'ProductName', P.Description, P.Price,
+           P.IDProductType, PT.Name 'ProductTypeName'
+    FROM Product P
+    LEFT JOIN ProductType PT on P.IDProductType = PT.IDProductType
     WHERE IDProduct = @IDProduct;
 END;
 GO
@@ -1094,8 +1180,12 @@ GO
 CREATE PROCEDURE ReadAllReviews
 AS
 BEGIN
-    SELECT IDReview, IDProduct, IDClient, Description, Rating, DateTime
-    FROM Review;
+    SELECT R.IDReview, R.Description 'ReviewDescription', R.Rating, R.DateTime,
+           R.IDProduct, P.IDProductType, P.Name 'ProductName', P.Description 'ProductDescription', P.Price,
+           R.IDClient, C.IDUser, C.Name 'ClientName', PhoneNumber 'ClientPhoneNumber'
+    FROM Review R
+    LEFT JOIN Product P on R.IDProduct = P.IDProduct
+    LEFT JOIN Client C on R.IDClient = C.IDClient;
 END;
 GO
 
@@ -1104,8 +1194,12 @@ CREATE PROCEDURE ReadByIDReview
     @IDReview INT
 AS
 BEGIN
-    SELECT IDReview, IDProduct, IDClient, Description, Rating, DateTime
-    FROM Review
+    SELECT R.IDReview, R.Description 'ReviewDescription', R.Rating, R.DateTime,
+           R.IDProduct, P.IDProductType, P.Name 'ProductName', P.Description 'ProductDescription', P.Price,
+           R.IDClient, C.IDUser, C.Name 'ClientName', PhoneNumber 'ClientPhoneNumber'
+    FROM Review R
+    LEFT JOIN Product P on R.IDProduct = P.IDProduct
+    LEFT JOIN Client C on R.IDClient = C.IDClient
     WHERE IDReview = @IDReview;
 END;
 GO
@@ -1174,10 +1268,17 @@ END;
 GO
 
 -- Read All
-CREATE PROCEDURE ReadAllShippings
+CREATE PROCEDURE ReadAllShipments
 AS
 BEGIN
-    SELECT * FROM Shipping;
+    SELECT S.IDShipping, S.TrackingID,
+           S.IDInvoice, I.IDAppointment, I.IDClient 'InvoiceClient', I.IDPayment, I.IDStatus 'InvoiceIDStatus', I.DateTime,
+           S.IDAddress, A.IDClient 'AddressClient', A.Province, A.City, A.District, A.ZIPCode, A.Description,
+           S.IDStatus 'ShippingIDStatus', ST.Name 'StatusName'
+    FROM Shipping S
+    LEFT JOIN Invoice I on S.IDInvoice = I.IDInvoice
+    LEFT JOIN Address A on S.IDAddress = A.IDAddress
+    LEFT JOIN StatusType ST on S.IDStatus = ST.IDStatus;
 END;
 GO
 
@@ -1186,8 +1287,14 @@ CREATE PROCEDURE ReadByIDShipping
     @IDShipping INT
 AS
 BEGIN
-    SELECT IDShipping ,IDInvoice, IDAddress, IDStatus, TrackingID 
-    FROM Shipping 
+    SELECT S.IDShipping, S.TrackingID,
+           S.IDInvoice, I.IDAppointment, I.IDClient 'InvoiceClient', I.IDPayment, I.IDStatus 'InvoiceIDStatus', I.DateTime,
+           S.IDAddress, A.IDClient 'AddressClient', A.Province, A.City, A.District, A.ZIPCode, A.Description,
+           S.IDStatus 'ShippingIDStatus', ST.Name 'StatusName'
+    FROM Shipping S
+    LEFT JOIN Invoice I on S.IDInvoice = I.IDInvoice
+    LEFT JOIN Address A on S.IDAddress = A.IDAddress
+    LEFT JOIN StatusType ST on S.IDStatus = ST.IDStatus
     WHERE IDShipping = @IDShipping;
 END;
 GO
@@ -1375,7 +1482,7 @@ CREATE PROCEDURE CreateUser
     @IDUserType INT
 AS
 BEGIN
-    INSERT INTO Users (LoginID, PasswordHash, IDUserType)
+    INSERT INTO [User] (LoginID, Password, IDUserType)
     VALUES (@LoginID, @Password, @IDUserType);
 END;
 GO
@@ -1384,8 +1491,10 @@ GO
 CREATE PROCEDURE ReadAllUsers
 AS
 BEGIN
-    SELECT IDUser, LoginID, IDUserType
-    FROM Users;
+    SELECT U.IDUser, U.LoginID,
+           U.IDUserType, UT.Name 'UserTypeName'
+    FROM [User] U
+    LEFT JOIN UserType UT on U.IDUserType = UT.IDUserType;
 END;
 GO
 
@@ -1394,8 +1503,10 @@ CREATE PROCEDURE ReadByIDUser
     @IDUser INT
 AS
 BEGIN
-    SELECT IDUser, LoginID, IDUserType
-    FROM Users
+    SELECT U.IDUser, U.LoginID,
+           U.IDUserType, UT.Name 'UserTypeName'
+    FROM [User] U
+    LEFT JOIN UserType UT on U.IDUserType = UT.IDUserType
     WHERE IDUser = @IDUser;
 END;
 GO
@@ -1405,8 +1516,10 @@ CREATE PROCEDURE ReadUserByMail
     @LoginID NVARCHAR(225)
 AS
 BEGIN
-    SELECT IDUser, LoginID, PasswordHash, IDUserType
-    FROM Users
+    SELECT U.IDUser, U.LoginID,
+           U.IDUserType, UT.Name 'UserTypeName'
+    FROM [User] U
+    LEFT JOIN UserType UT on U.IDUserType = UT.IDUserType
     WHERE @LoginID = LoginID;
 END;
 GO
@@ -1419,8 +1532,8 @@ CREATE PROCEDURE UpdateUser
     @IDUserType INT
 AS
 BEGIN
-    UPDATE Users
-    SET PasswordHash = @NewPassword,
+    UPDATE [User]
+    SET Password = @NewPassword,
         LoginID = @LoginID,
         IDUserType = @IDUserType
     WHERE IDUser = @IDUser;
@@ -1432,7 +1545,7 @@ CREATE PROCEDURE DeleteUser
     @IDUser INT
 AS
 BEGIN
-    DELETE FROM Users
+    DELETE FROM [User]
     WHERE IDUser = @IDUser;
 END;
 GO
@@ -1512,8 +1625,11 @@ GO
 CREATE PROCEDURE ReadAllCarts
 AS
 BEGIN
-    SELECT IDClient, IDProduct, Quantity
-    FROM Cart;
+    SELECT C.IDClient, C2.IDUser, C2.Name 'ClientName', C2.PhoneNumber,
+           C.IDProduct, p.IDProductType, P.Name 'ProductName', Description, Price, C.Quantity
+    FROM Cart C
+    LEFT JOIN Client C2 on C.IDClient = C2.IDClient
+    LEFT JOIN Product P on C.IDProduct = P.IDProduct;
 END;
 GO
 
@@ -1523,9 +1639,12 @@ CREATE PROCEDURE ReadCartByClientAndProduct
     @IDProduct INT
 AS
 BEGIN
-    SELECT IDClient, IDProduct, Quantity
-    FROM Cart
-    WHERE IDClient = @IDClient AND IDProduct = @IDProduct;
+    SELECT C.IDClient, C2.IDUser, C2.Name 'ClientName', C2.PhoneNumber,
+           C.IDProduct, p.IDProductType, P.Name 'ProductName', Description, Price, C.Quantity
+    FROM Cart C
+    LEFT JOIN Client C2 on C.IDClient = C2.IDClient
+    LEFT JOIN Product P on C.IDProduct = P.IDProduct
+    WHERE C.IDClient = @IDClient AND C.IDProduct = @IDProduct;
 END;
 GO
 

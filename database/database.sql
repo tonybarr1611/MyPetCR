@@ -186,7 +186,7 @@ CREATE TABLE Cart (
     IDClient INT,
     IDProduct INT,
     Quantity INT,
-    PRIMARY KEY (idClient, idProduct),
+    PRIMARY KEY (IDClient, IDProduct),
     FOREIGN KEY (IDProduct) REFERENCES Product(IDProduct),
     FOREIGN KEY (IDClient) REFERENCES Client(IDClient)
 );
