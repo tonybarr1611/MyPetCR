@@ -47,6 +47,7 @@ route.delete('/userType/:id', userType.DeleteUserType);
 route.post('/review', review.CreateReview);
 route.get('/review', review.AllReviews);
 route.get('/review/:id', review.ReviewById);
+route.get('/review/average/:id', review.AverageReviewById);
 route.put('/review/:id', review.UpdateReview);
 route.delete('/review/:id', review.DeleteReview);
 

@@ -1189,6 +1189,20 @@ BEGIN
 END;
 GO
 
+-- Read Average by ID
+CREATE PROCEDURE ReadAverageByIDReview
+    @IDReview INT
+AS
+BEGIN
+    SELECT AVG(R.Rating)
+    FROM Review R
+    LEFT JOIN Product P on R.IDProduct = P.IDProduct
+    LEFT JOIN Client C on R.IDClient = C.IDClient
+    WHERE R.IDReview = @IDReview
+    GROUP BY R.IDReview;
+END;
+GO
+
 -- Read By ID
 CREATE PROCEDURE ReadByIDReview
     @IDReview INT

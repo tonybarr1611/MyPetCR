@@ -21,6 +21,16 @@ async function ReviewById(req: Request, res: Response) {
         "Review not retrieved");
 }
 
+async function AverageReviewById(req: Request, res: Response) {
+    const IDReview = req.params.id;
+    await executeProcedure(res,
+        'ReadAverageByIDReview',
+        [{ name: 'IDReview', type: sql.Int, value: IDReview }],
+        200,
+        "Average Review retrieved successfully",
+        "Average Review not retrieved");
+}
+
 async function CreateReview(req: Request, res: Response) {
     const { IDProduct, IDClient, Description, Rating, DateTime  } = req.body;
     //validate the json
@@ -125,6 +135,7 @@ async function DeleteReview(req: Request, res: Response) {
 export default {
     AllReviews,
     ReviewById,
+    AverageReviewById,
     CreateReview,
     UpdateReview,
     DeleteReview
