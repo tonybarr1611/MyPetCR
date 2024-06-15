@@ -1,14 +1,19 @@
-import { Container, Row, Col, Table, Button } from 'react-bootstrap';
+import { useState } from 'react';
+import { Container, Row, Col, Table, Button, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from "react-router";
+import { PlusCircleDotted } from 'react-bootstrap-icons';
+import { ToastContainer, toast } from 'react-toastify';
 
 const MedicalFileDetails = () => {
   const navigate = useNavigate();
   const { idParam } = useParams();
 
+  const [status, setStatus] = useState('Completed');
+
   const appointmentData = {
     id: 101,
-    status: 'Completed',
+    status: 'Pending',
     petName: 'Buddy',
     owner: 'Tony',
     dateTime: '2023-06-01 10:00 AM',
@@ -21,8 +26,35 @@ const MedicalFileDetails = () => {
   ];
 
   const handleEditInvoiceDetail = (detailId: number) => {
-    navigate(`/editinvoicedetail/${detailId}`);
+    navigate(`medicalfileappointmentedit`);
   };
+
+  const handleAddInvoiceDetail = () => {
+    navigate(`medicalfileappointmentadd`); 
+  };
+
+  const handleStatusChange = (e: { target: { value: any; }; }) => {
+    const newStatus = e.target.value;
+    const currentStatus = appointmentData.status.toLowerCase();
+
+    if (currentStatus === 'completed' || newStatus.toLowerCase() === 'completed') {
+      toast.error("This appointment is already completed and cannot be edited.", { autoClose: 2000, theme: 'colored' });
+      return;
+    }
+    else if (newStatus.toLowerCase() === 'completed') {
+      disableCombobox();
+      setStatus(newStatus);
+    } 
+    else { 
+      setStatus(newStatus);
+    }
+  };
+
+  const disableCombobox = () => {
+    const combobox = document.querySelector('select');
+    combobox!.setAttribute('disabled', 'true');
+  };
+
 
   return (
     <Container fluid>
@@ -37,7 +69,18 @@ const MedicalFileDetails = () => {
               </tr>
               <tr>
                 <td>Status</td>
-                <td>{appointmentData.status}</td>
+                <td>
+                  {appointmentData.status === 'Completed' || appointmentData.status === 'completed'? (
+                    appointmentData.status
+                  ) : (
+                    <Form.Control as="select" value={status} onChange={handleStatusChange}>
+                      <option value="Pending">Pending</option>
+                      <option value="Confirmed">Confirmed</option>
+                      <option value="Cancelled">Cancelled</option>
+                      <option value="Completed">Completed</option>
+                    </Form.Control>
+                  )}
+                </td>
               </tr>
               <tr>
                 <td>Dog</td>
@@ -79,10 +122,12 @@ const MedicalFileDetails = () => {
                   <td>{detail.quantity}</td>
                   <td>{detail.price.toFixed(2)}</td>
                   <td className="text-center">
+                    {/* Edit button should be disabled if the appointment status is Completed */}
                     <Button
                       variant="primary"
                       size="sm"
                       onClick={() => handleEditInvoiceDetail(detail.id)}
+                      disabled={status === 'Completed'}
                     >
                       Edit
                     </Button>
@@ -91,8 +136,15 @@ const MedicalFileDetails = () => {
               ))}
             </tbody>
           </Table>
+
+          <div className="text-center mt-3">
+            <Button variant="success" onClick={handleAddInvoiceDetail}>
+              <PlusCircleDotted size={24} className="mb-1 mr-1" /> Add Invoice Detail
+            </Button>
+          </div>
         </Col>
       </Row>
+      <ToastContainer />
     </Container>
   );
 };

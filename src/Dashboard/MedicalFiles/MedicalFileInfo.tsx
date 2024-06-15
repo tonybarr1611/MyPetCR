@@ -1,9 +1,7 @@
-import { Container, Row, Col, Table, Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { Container, Row, Col, Table } from "react-bootstrap";
 import MedicalFileInfoData from "./MedicalFileInfoData";
 
 const MedicalFileInfo = () => {
-  const navigate = useNavigate();
 
   const petData = {
     id: 1,
