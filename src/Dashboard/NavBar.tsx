@@ -36,6 +36,11 @@ function NavBar() {
                 <Link to={"/dashboard/management"}>Management</Link>
               </Nav.Link>
             </Link>
+            <Link to={"/dashboard/medicalfiles"}>
+              <Nav.Link href="dashboard/medicalfiles">
+                <Link to={"/dashboard/medicalfiles"}>Medical files</Link>
+              </Nav.Link>
+            </Link>
           </Nav>
         </Navbar.Collapse>
       </Container>
