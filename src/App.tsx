@@ -4,6 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import UserLogin from "./Login/UserLogin";
 import Register from "./Registration/RegisterPet";
 import Dashboard from "./Dashboard/Dashboard";
+import ClientSide from "./ClientSide/ClientSide";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/" element={<UserLogin />} />
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard/*" element={<Dashboard />} />
+        <Route path="/clientside/*" element={<ClientSide />} />
       </Routes>
     </Router>
   );

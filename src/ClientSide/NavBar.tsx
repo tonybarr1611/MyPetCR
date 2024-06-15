@@ -1,39 +1,36 @@
 import React from "react";
-import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
-import { FaDog, FaCircleUser } from "react-icons/fa6"; // Importing the UserCircle icon
+import { Container, Nav, NavDropdown, Navbar } from "react-bootstrap";
+import { FaDog, FaCartPlus, FaCircleUser } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
 function NavBar() {
   return (
     <Navbar bg="light" expand="lg" style={{ width: "100%" }}>
       <Container>
-        <Link to={"/dashboard"}>
+        <Link to={"/clientside"}>
           <Navbar.Brand>
             <FaDog
               size={40}
               className="mb-3"
               style={{ color: "var(--darkblue)" }}
             />
-            {"    "}Dashboard
+            {"    "}MyPetCR
           </Navbar.Brand>
         </Link>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Link to={"/dashboard/clients"} className="nav-link">
-              Clients
+            <Link to={"/clientside/shop"} className="nav-link">
+              Shop
             </Link>
-            <Link to={"/dashboard/appointments"} className="nav-link">
-              Appointments
-            </Link>
-            <Link to={"/dashboard/management"} className="nav-link">
-              Management
-            </Link>
-            <Link to={"/dashboard/medicalfiles"} className="nav-link">
-              Medical files
+            <Link to={"/clientside/management"} className="nav-link">
+              Pet management
             </Link>
           </Nav>
           <Nav className="ml-auto">
+            <Link to={"/clientside/cart"} className="nav-link mr-2">
+              <FaCartPlus size={24} />
+            </Link>
             <NavDropdown title={<FaCircleUser size={24} />}>
               <NavDropdown.Item>Sign out</NavDropdown.Item>
             </NavDropdown>
