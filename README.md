@@ -18,7 +18,7 @@ To locally deploy this project run
 
 Likewise, you can access the URL
 
-- [mypetcr.netlify.app](mypetcr.netlify.app)
+- [mypetcr.netlify.app](https://mypetcr.netlify.app)
 ## Authors
 
 - [Andrés Arias](https://github.com/andco97)
