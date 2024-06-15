@@ -12,7 +12,8 @@ import Management from "./Management/Management";
 import MedicalFiles from "./MedicalFiles/MedicalFiles";
 import MedicalFileInfo from "./MedicalFiles/MedicalFileInfo";
 import MedicalFileDetails from "./MedicalFiles/MedicalFileDetails";
-//import MedicalFileDetails from "./MedicalFiles/MedicalFileDetails";
+import MedicalFileAppointmentEdit from "./MedicalFiles/MedicalFileAppointmentEdit";
+import MedicalFileAppointmentAdd from "./MedicalFiles/MedicalFileAppointmentAdd";
 
 const setBackgroundWhite = () => {
   var html = document.getElementsByTagName("html");
@@ -47,13 +48,18 @@ function Dashboard() {
         <Route path="/clients/editclient" element={<EditClient />} />
         <Route path="management" element={<Management />} />
         <Route path="/medicalfiles" element={<MedicalFiles />} />
+        <Route path="/medicalfiles/info" element={<MedicalFileInfo />} />
         <Route
-          path="/medicalfiles/medicalfileInfo"
-          element={<MedicalFileInfo />}
+          path="/medicalfiles/info/details"
+          element={<MedicalFileDetails />}
         />
         <Route
-          path="/medicalfiles/medicalfileInfo/:id"
-          element={<MedicalFileDetails />}
+          path="/medicalfiles/info/details/edit"
+          element={<MedicalFileAppointmentEdit />}
+        />
+        <Route
+          path="/medicalfiles/info/details/add"
+          element={<MedicalFileAppointmentAdd />}
         />
       </Routes>
     </div>

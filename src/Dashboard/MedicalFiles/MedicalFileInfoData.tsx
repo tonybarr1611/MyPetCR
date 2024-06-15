@@ -19,7 +19,7 @@ function MedicalFileInfoData({
   const navigate = useNavigate();
 
   const handleInvestigateAppointment = () => {
-    navigate(`${id}`);
+    navigate(`details`);
   };
 
   return (
