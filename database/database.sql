@@ -181,3 +181,12 @@ CREATE TABLE Shipping (
     FOREIGN KEY (IDAddress) REFERENCES Address(IDAddress),
     FOREIGN KEY (IDStatus) REFERENCES StatusType(IDStatus)
 );
+
+CREATE TABLE Cart (
+    IDClient INT,
+    IDProduct INT,
+    Quantity INT,
+    PRIMARY KEY (idClient, idProduct),
+    FOREIGN KEY (IDProduct) REFERENCES Product(IDProduct),
+    FOREIGN KEY (IDClient) REFERENCES Client(IDClient)
+);

@@ -1493,3 +1493,75 @@ BEGIN
     WHERE IDUserType = @IDUserType;
 END;
 GO
+
+-------------------------------Cart-------------------------------
+
+-- Create
+CREATE PROCEDURE CreateCart
+    @IDClient INT,
+    @IDProduct INT,
+    @Quantity INT
+AS
+BEGIN
+    INSERT INTO Cart (IDClient, IDProduct, Quantity)
+    VALUES (@IDClient, @IDProduct, @Quantity);
+END;
+GO
+
+-- Read All
+CREATE PROCEDURE ReadAllCarts
+AS
+BEGIN
+    SELECT IDClient, IDProduct, Quantity
+    FROM Cart;
+END;
+GO
+
+-- Read By Product And Store
+CREATE PROCEDURE ReadCartByClientAndProduct
+    @IDClient INT,
+    @IDProduct INT
+AS
+BEGIN
+    SELECT IDClient, IDProduct, Quantity
+    FROM Cart
+    WHERE IDClient = @IDClient AND IDProduct = @IDProduct;
+END;
+GO
+
+-- Read By Product And Store
+CREATE PROCEDURE ReadCartByClient
+    @IDClient INT
+AS
+BEGIN
+    SELECT IDClient, IDProduct, Quantity
+    FROM Cart
+    WHERE IDClient = @IDClient;
+END;
+GO
+
+-- Update
+CREATE PROCEDURE UpdateCart
+    @IDClient INT,
+    @IDProduct INT,
+    @Quantity INT
+AS
+BEGIN
+    UPDATE Cart
+    SET IDClient = @IDClient,
+        IDProduct = @IDProduct,
+        Quantity = @Quantity
+    WHERE IDClient = @IDClient AND IDProduct = @IDProduct;
+END;
+GO
+
+-- Delete
+CREATE PROCEDURE DeleteCart
+    @IDClient INT,
+    @IDProduct INT
+AS
+BEGIN
+    DELETE FROM Cart
+    WHERE IDClient = @IDClient AND IDProduct = @IDProduct;
+END;
+GO
