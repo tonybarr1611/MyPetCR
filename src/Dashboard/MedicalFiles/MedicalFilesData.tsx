@@ -18,7 +18,7 @@ function MedicalFilesData({
 
   const handleViewPetDetails = () => {
     // No need to pass the id here as it's already available in the component
-    navigate(`medicalfileInfo`);
+    navigate(`info`);
     //navigate(`petdetails/${id}`);
   };
 

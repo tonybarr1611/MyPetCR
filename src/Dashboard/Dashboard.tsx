@@ -48,10 +48,19 @@ function Dashboard() {
         <Route path="/clients/editclient" element={<EditClient />} />
         <Route path="management" element={<Management />} />
         <Route path="/medicalfiles" element={<MedicalFiles />} />
-        <Route path="/medicalfiles/medicalfileInfo"  element={<MedicalFileInfo />} />
-        <Route path="/medicalfiles/medicalfileInfo/medicalfiledetails" element={<MedicalFileDetails />} />
-        <Route path="/medicalfiles/medicalfileInfo/medicalfiledetails/medicalfileappointmentedit" element={<MedicalFileAppointmentEdit />}/>
-        <Route path="/medicalfiles/medicalfileInfo/medicalfiledetails/medicalfileappointmentadd" element={<MedicalFileAppointmentAdd />}/>
+        <Route path="/medicalfiles/info" element={<MedicalFileInfo />} />
+        <Route
+          path="/medicalfiles/info/details"
+          element={<MedicalFileDetails />}
+        />
+        <Route
+          path="/medicalfiles/info/details/edit"
+          element={<MedicalFileAppointmentEdit />}
+        />
+        <Route
+          path="/medicalfiles/info/details/add"
+          element={<MedicalFileAppointmentAdd />}
+        />
       </Routes>
     </div>
   );

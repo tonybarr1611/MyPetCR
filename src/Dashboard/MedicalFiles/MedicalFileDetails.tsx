@@ -1,60 +1,68 @@
-import { useState } from 'react';
-import { Container, Row, Col, Table, Button, Form } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { Container, Row, Col, Table, Button, Form } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router";
-import { PlusCircleDotted } from 'react-bootstrap-icons';
-import { ToastContainer, toast } from 'react-toastify';
+import { PlusCircleDotted } from "react-bootstrap-icons";
+import { ToastContainer, toast } from "react-toastify";
 
 const MedicalFileDetails = () => {
   const navigate = useNavigate();
   const { idParam } = useParams();
 
-  const [status, setStatus] = useState('Completed');
-
   const appointmentData = {
     id: 101,
-    status: 'Pending',
-    petName: 'Buddy',
-    owner: 'Tony',
-    dateTime: '2023-06-01 10:00 AM',
+    status: "Confirmed",
+    petName: "Buddy",
+    owner: "Tony",
+    dateTime: "2023-06-01 10:00 AM",
     invoiceId: 5001,
   };
 
+  const [status, setStatus] = useState(appointmentData.status);
+
+  console.log(status.toLowerCase() === "completed");
+
   const invoiceDetails = [
-    { id: 1, product: 1001, description: 'Rabies Vaccine', quantity: 1, price: 50.00 },
-    { id: 2, product: 1002, description: 'Heartworm Prevention', quantity: 3, price: 30.00 },
+    {
+      id: 1,
+      product: 1001,
+      description: "Rabies Vaccine",
+      quantity: 1,
+      price: 50.0,
+    },
+    {
+      id: 2,
+      product: 1002,
+      description: "Heartworm Prevention",
+      quantity: 3,
+      price: 30.0,
+    },
   ];
 
   const handleEditInvoiceDetail = (detailId: number) => {
-    navigate(`medicalfileappointmentedit`);
+    navigate(`edit`);
   };
 
   const handleAddInvoiceDetail = () => {
-    navigate(`medicalfileappointmentadd`); 
+    navigate(`add`);
   };
 
-  const handleStatusChange = (e: { target: { value: any; }; }) => {
-    const newStatus = e.target.value;
-    const currentStatus = appointmentData.status.toLowerCase();
+  const handleStatusChange = () => {
+    const combobox = document.querySelector("select") as HTMLSelectElement;
+    setStatus(combobox.value);
 
-    if (currentStatus === 'completed' || newStatus.toLowerCase() === 'completed') {
-      toast.error("This appointment is already completed and cannot be edited.", { autoClose: 2000, theme: 'colored' });
-      return;
-    }
-    else if (newStatus.toLowerCase() === 'completed') {
+    if (combobox.value.toLowerCase() === "completed") {
       disableCombobox();
-      setStatus(newStatus);
-    } 
-    else { 
-      setStatus(newStatus);
+      toast.success("Appointment status updated successfully");
+    } else {
+      toast.warn("Appointment status updated successfully");
     }
   };
 
   const disableCombobox = () => {
-    const combobox = document.querySelector('select');
-    combobox!.setAttribute('disabled', 'true');
+    const combobox = document.querySelector("select");
+    combobox!.setAttribute("disabled", "true");
   };
-
 
   return (
     <Container fluid>
@@ -70,10 +78,15 @@ const MedicalFileDetails = () => {
               <tr>
                 <td>Status</td>
                 <td>
-                  {appointmentData.status === 'Completed' || appointmentData.status === 'completed'? (
+                  {appointmentData.status.toLowerCase() === "completed" ? (
                     appointmentData.status
                   ) : (
-                    <Form.Control as="select" value={status} onChange={handleStatusChange}>
+                    <Form.Control
+                      as="select"
+                      value={status}
+                      id="statusCombobox"
+                      onChange={handleStatusChange}
+                    >
                       <option value="Pending">Pending</option>
                       <option value="Confirmed">Confirmed</option>
                       <option value="Cancelled">Cancelled</option>
@@ -122,12 +135,11 @@ const MedicalFileDetails = () => {
                   <td>{detail.quantity}</td>
                   <td>{detail.price.toFixed(2)}</td>
                   <td className="text-center">
-                    {/* Edit button should be disabled if the appointment status is Completed */}
                     <Button
                       variant="primary"
                       size="sm"
                       onClick={() => handleEditInvoiceDetail(detail.id)}
-                      disabled={status === 'Completed'}
+                      disabled={status.toLowerCase() === "completed"}
                     >
                       Edit
                     </Button>
@@ -138,8 +150,13 @@ const MedicalFileDetails = () => {
           </Table>
 
           <div className="text-center mt-3">
-            <Button variant="success" onClick={handleAddInvoiceDetail}>
-              <PlusCircleDotted size={24} className="mb-1 mr-1" /> Add Invoice Detail
+            <Button
+              variant="success"
+              onClick={handleAddInvoiceDetail}
+              disabled={status.toLowerCase() === "completed"}
+            >
+              <PlusCircleDotted size={24} className="mb-1 mr-1" /> Add Invoice
+              Detail
             </Button>
           </div>
         </Col>
