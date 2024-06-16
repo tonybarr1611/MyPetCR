@@ -90,6 +90,18 @@
     background-color: white;
     border-radius: 5px;
 }
+.transparentBtn {
+    background-color: transparent;
+    border: none;
+    color: #4D7381;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
 .setSizeDiv {
     height: 90px;
     overflow-y: auto;

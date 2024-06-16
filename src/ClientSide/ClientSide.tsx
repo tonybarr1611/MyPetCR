@@ -3,6 +3,7 @@ import NavBar from "./NavBar";
 import Homepage from "./Store/Homepage";
 import ProductDetail from "./Store/Products/ProductDetail";
 import Shop from "./Store/Products/Shop";
+import Cart from "./Store/Checkout/Cart";
 
 const setBackgroundWhite = () => {
   var html = document.getElementsByTagName("html");
@@ -238,6 +239,7 @@ function ClientSide() {
           element={<ProductDetail products={products} />}
         />
         <Route path="/shop" element={<Shop />} />
+        <Route path="/cart" element={<Cart />} />
         {/* <Route path="/management" element={<Management />} /> */}
       </Routes>
     </div>
