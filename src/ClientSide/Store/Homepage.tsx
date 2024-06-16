@@ -4,6 +4,10 @@ import Banner from "./Banner";
 import { products } from "../ClientSide";
 
 function Homepage() {
+  let randomProducts = products;
+  randomProducts.sort(() => Math.random() - 0.5);
+  randomProducts = randomProducts.slice(0, 3);
+
   return (
     <div>
       <Container className="mt-4">
@@ -11,7 +15,7 @@ function Homepage() {
         <br />
         <h2 style={{ color: "#4D7381" }}>Recommended products</h2>
         <div className="productContainers">
-          {products.map((product) => (
+          {randomProducts.map((product) => (
             <div className="col-md-2 col-sm-6 col-12">
               <Product
                 id={product.id}
