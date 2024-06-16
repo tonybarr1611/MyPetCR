@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Container, Form, Button, Card } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import { MdPets } from "react-icons/md";
 
 const RegisterPet = () => {
+  const navigate = useNavigate()
   const [petDetails, setPetDetails] = useState({
     petType: "",
     breed: "",
@@ -17,6 +19,10 @@ const RegisterPet = () => {
     setPetDetails({ ...petDetails, [e.target.name]: e.target.value });
   };
 
+  const handleCancel = () => {
+    navigate('/clientside/management/pets');
+  }
+  
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     let weightRegex = /^[0-9]+$/;
@@ -54,7 +60,7 @@ const RegisterPet = () => {
           autoClose: 1500,
           theme: "colored",
         });
-        //navigate('');
+        navigate('/clientside/management/pets');
       }
     } catch (error: any) {
       toast.error("An error occurred. Please try again.", {
@@ -141,9 +147,14 @@ const RegisterPet = () => {
                 maxLength={512}
               />
             </Form.Group>
-            <Button variant="primary" type="submit" className="w-100 mb-3">
+            <div className="d-flex justify-content-between">
+            <Button variant="primary" type="submit" className="w-100 mb-3 mr-5">
               Register Pet
             </Button>
+            <Button variant="secondary" type="button" className="w-100 mb-3" onClick={handleCancel}>
+              Cancel
+            </Button>
+            </div>
           </Form>
         </Card.Body>
       </Card>
