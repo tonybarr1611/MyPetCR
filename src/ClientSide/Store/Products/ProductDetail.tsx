@@ -1,12 +1,13 @@
 import { Container, Button } from "react-bootstrap";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import Ratings from "react-ratings-declarative";
 import { FaCartPlus } from "react-icons/fa6";
-import { useState } from "react";
+import { getProductByID, getAverageRatingByID } from "../../Functions";
+import { useState, useEffect } from "react";
+import Ratings from "react-ratings-declarative";
 import RateEntry from "./Reviews/RateEntry";
 import ReviewsDisplay from "./Reviews/ReviewsDisplay";
 
-type Product = {
+type ProductProp = {
   id: number;
   name: string;
   type: string;
@@ -15,7 +16,7 @@ type Product = {
 };
 
 type ProductDetailProps = {
-  products: Product[];
+  products: ProductProp[];
 };
 
 const iconPath =
@@ -23,10 +24,28 @@ const iconPath =
 
 function ProductDetail({ products }: ProductDetailProps) {
   const { id } = useParams<{ id: string }>();
-  const productId = parseInt(id ?? "", 10);
-  const product = products.find((p) => p.id === productId);
-
+  const [product, setProduct] = useState<ProductProp | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [rating, setRating] = useState(0.0); // [1, 2, 3, 4, 5
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // TODO fetch ratings
+    async function fetchProduct() {
+      if (id) {
+        const product = await getProductByID(id);
+        setProduct(product);
+      }
+    }
+    async function fetchRatings() {
+      if (id) {
+        const ratingAvg = await getAverageRatingByID(id);
+        setRating(ratingAvg);
+      }
+    }
+    fetchProduct();
+    fetchRatings();
+  }, [id]);
 
   if (!product) {
     return <div>Product not found</div>;
@@ -46,8 +65,6 @@ function ProductDetail({ products }: ProductDetailProps) {
     ));
   };
 
-  const [showModal, setShowModal] = useState(false);
-
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
 
@@ -57,7 +74,6 @@ function ProductDetail({ products }: ProductDetailProps) {
     console.log(rate);
     handleShow();
   }
-  window.scrollTo(0, 0);
 
   return (
     <Container>
@@ -75,11 +91,11 @@ function ProductDetail({ products }: ProductDetailProps) {
         <div className="productDetailInfo columnItem">
           <h2>{product.name}</h2>
           <p className="description">{product.description}</p>
-          <Ratings rating={4} changeRating={changeRating}>
+          <Ratings rating={rating} changeRating={changeRating}>
             {renderRatingWidgets()}
           </Ratings>
           <p className="price">
-            {product.price.toLocaleString("es-CR", {
+            {(product.price || 0).toLocaleString("es-CR", {
               style: "currency",
               currency: "CRC",
             })}
@@ -95,11 +111,11 @@ function ProductDetail({ products }: ProductDetailProps) {
         productRated={product}
       />
       <div>
-        <ReviewsDisplay />
+        <ReviewsDisplay id={parseInt(id || "0")} />
       </div>
     </Container>
   );
 }
 
 export default ProductDetail;
-export type { Product };
+export type { ProductProp, ProductDetailProps };

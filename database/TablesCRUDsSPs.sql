@@ -1191,21 +1191,21 @@ GO
 
 -- Read Average by ID
 CREATE PROCEDURE ReadAverageByIDReview
-    @IDReview INT
+    @IDProduct INT
 AS
 BEGIN
-    SELECT AVG(R.Rating)
+    SELECT CAST(AVG(CAST(R.Rating AS FLOAT)) AS FLOAT) AS 'Average'
     FROM Review R
     LEFT JOIN Product P on R.IDProduct = P.IDProduct
     LEFT JOIN Client C on R.IDClient = C.IDClient
-    WHERE R.IDReview = @IDReview
-    GROUP BY R.IDReview;
+    WHERE R.IDProduct = @IDProduct
+    GROUP BY R.IDProduct;
 END;
 GO
 
 -- Read By ID
 CREATE PROCEDURE ReadByIDReview
-    @IDReview INT
+    @IDProduct INT
 AS
 BEGIN
     SELECT R.IDReview, R.Description 'ReviewDescription', R.Rating, R.DateTime,
@@ -1214,7 +1214,7 @@ BEGIN
     FROM Review R
     LEFT JOIN Product P on R.IDProduct = P.IDProduct
     LEFT JOIN Client C on R.IDClient = C.IDClient
-    WHERE IDReview = @IDReview;
+    WHERE R.IDProduct = @IDProduct;
 END;
 GO
 
