@@ -24,7 +24,7 @@ function NavBar() {
               Shop
             </Link>
             <Link to={"/clientside/management"} className="nav-link">
-              Pet management
+              Pet Management
             </Link>
           </Nav>
           <Nav className="ml-auto">
@@ -32,6 +32,7 @@ function NavBar() {
               <FaCartShopping size={24} />
             </Link>
             <NavDropdown title={<FaCircleUser size={24} />}>
+              <NavDropdown.Item><Link to={"/clientside/profile"}>Profile</Link></NavDropdown.Item>
               <NavDropdown.Item>Sign out</NavDropdown.Item>
             </NavDropdown>
           </Nav>

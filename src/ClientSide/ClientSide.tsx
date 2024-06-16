@@ -5,6 +5,13 @@ import ProductDetail from "./Store/Products/ProductDetail";
 import Shop from "./Store/Products/Shop";
 import Cart from "./Store/Checkout/Cart";
 import Checkout from "./Store/Checkout/Checkout";
+import AccessDenied_SignIn from "./Pet Management/AccessDenied_SignIn";
+import ClientOptions from "./Pet Management/ClientOptions";
+import ClientPets from "./Pet Management/ClientPets/ClientPets";
+import ClientAppointments from "./Pet Management/ClientAppointments/ClientAppointments";
+import RegisterPet from "./Pet Management/ClientPets/RegisterPet";
+import RequestAppointment from "./Pet Management/ClientAppointments/RequestAppointment";
+import Profile from "./Profile";
 
 const setBackgroundWhite = () => {
   var html = document.getElementsByTagName("html");
@@ -242,7 +249,14 @@ function ClientSide() {
         <Route path="/shop" element={<Shop />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
-        {/* <Route path="/management" element={<Management />} /> */}
+
+        <Route path="/accessdeniedsignin" element={<AccessDenied_SignIn />} />
+        <Route path="/management" element={<ClientOptions />} />
+        <Route path="/management/pets" element={<ClientPets />} />
+        <Route path="/management/appointments" element={<ClientAppointments />} />
+        <Route path="/management/pets/addpet" element={<RegisterPet />} />
+        <Route path="/management/appointments/requestappointment" element={<RequestAppointment />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </div>
   );
