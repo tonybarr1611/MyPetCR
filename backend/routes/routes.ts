@@ -102,6 +102,7 @@ route.delete('/employee/:id', employee.DeleteEmployee);
 
 // Client 
 route.post('/client', client.CreateClient);
+route.post('/clientAndUser', client.CreateClientAndUser);
 route.get('/client', client.AllClients);
 route.get('/client/:id', client.ClientById);
 route.put('/client/:id', client.UpdateClient);

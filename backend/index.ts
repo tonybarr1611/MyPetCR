@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 import routes from "./routes/routes";
 
 dotenv.config();
@@ -11,6 +12,14 @@ app.use((req, res, next) => {
     process.env.TZ;
     next();
 });
+
+const allowedOrigins = ['http://localhost:5173'];
+
+const options: cors.CorsOptions = {
+  origin: allowedOrigins
+};
+
+app.use(cors(options));
 
 app.use(express.json());
 

@@ -315,6 +315,26 @@ BEGIN
 END;
 GO
 
+CREATE PROCEDURE CreateClientAndUser
+    @Name NVARCHAR(255),
+    @PhoneNumber NVARCHAR(20),
+    @Password NVARCHAR(255),
+    @LoginID NVARCHAR(255),
+    @IDUserType INT
+AS
+BEGIN
+    DECLARE @NewUserID INT;
+
+    INSERT INTO [User] (Password, LoginID, IDUserType)
+    VALUES (@Password, @LoginID, @IDUserType);
+
+    SET @NewUserID = SCOPE_IDENTITY();  -- Or @@IDENTITY depending on your SQL Server version
+
+    INSERT INTO Client (Name, PhoneNumber, IDUser)
+    VALUES (@Name, @PhoneNumber, @NewUserID);
+END;
+GO
+
 -- Read All
 CREATE PROCEDURE ReadAllClients
 AS
@@ -1492,7 +1512,7 @@ GO
 -- Create
 CREATE PROCEDURE CreateUser
     @LoginID NVARCHAR(255),
-    @Password VARBINARY(255),
+    @Password NVARCHAR(255),
     @IDUserType INT
 AS
 BEGIN

@@ -76,8 +76,6 @@ async function CreateUser(req: Request, res: Response) {
     const salt = await bcript.genSalt(10);
     let hashedPassword = await bcript.hash(Password, salt);
 
-    
-    //create the user
     await executeProcedure(res,
         'CreateUser',
         [{ name: 'LoginID', type: sql.NVarChar, value: LoginID },

@@ -1,27 +1,34 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useState, useEffect  } from 'react';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { Container, Form, Button, Card } from 'react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify';
 import { FaUserEdit } from "react-icons/fa";
+import axios from 'axios';
 
 const EditClient = () => {
   const [client, setClient] = useState({ name: "", phoneNumber: ""});
   const navigate = useNavigate();
-  const { id } = useParams();
+  const location = useLocation();
+  const id = location.state;
 
   useEffect(() => {
-    // Fetch the client details by ID from the backend 
     const fetchClient = async () => {
       try {
-        const response = { id, name: "John Doe", phoneNumber: "12345678"};
-        setClient(response);
+        const response = await axios.get(`http://localhost:8080/api/v1/client/${id}`);
+        setClient({name: response.data[0].Name, phoneNumber: response.data[0].PhoneNumber});
       } catch (error) {
-        toast.error("Failed to fetch client details", { autoClose: 1500, theme: 'colored' });
+        console.error("Error fetching clients:", error);
+        toast.error("Failed to fetch clients", {
+          autoClose: 1500,
+          theme: "colored",
+        });
       }
     };
 
     fetchClient();
-  }, [id]);
+  }, []);
+
+  
 
   const handleOnChange = (e: { target: { name: any; value: any; }; }) => {
     setClient({ ...client, [e.target.name]: e.target.value });
@@ -38,6 +45,19 @@ const EditClient = () => {
             toast.error("Please enter a valid 8-digit phone number", { autoClose: 1500, theme: 'colored' });
         }
         else {
+          try {
+            const url = `http://localhost:8080/api/v1/client/${id}`;
+            const param = {
+              "Name": client.name,
+              "PhoneNumber": client.phoneNumber
+            }
+            await axios.put(url, param);
+          } catch (error) {
+            toast.error("Failed to update client", {
+              autoClose: 1500,
+              theme: "colored",
+            });
+          }
         toast.success("Client updated successfully", { autoClose: 1500, theme: 'colored' });
         navigate('/dashboard/clients'); 
       }
@@ -67,6 +87,7 @@ const EditClient = () => {
               <Form.Label>Name</Form.Label>
               <Form.Control
                 type="text"
+                id="clientName"
                 name="name"
                 value={client.name}
                 onChange={handleOnChange}
@@ -76,6 +97,7 @@ const EditClient = () => {
               <Form.Label>Phone Number</Form.Label>
               <Form.Control
                 type="text"
+                id="clientPhoneNumber"
                 name="phoneNumber"
                 value={client.phoneNumber}
                 onChange={handleOnChange}
