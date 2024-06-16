@@ -31,7 +31,7 @@ function Product({ id, name, type, description, price }: ProductProps) {
                     <small>{description}</small>
                   </p>
                 </div>
-                <p>
+                <p style={{ marginTop: "10px" }}>
                   {price.toLocaleString("es-CR", {
                     style: "currency",
                     currency: "CRC",
