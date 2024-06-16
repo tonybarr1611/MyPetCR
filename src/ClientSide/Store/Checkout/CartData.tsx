@@ -6,10 +6,15 @@ import "../Store.css";
 
 type CartDataProps = {
   product: CartProduct;
-  updateQuantity: (id: number, quantity: number) => void;
+  updateQuantity?: (id: number, quantity: number) => void;
+  modifiable?: boolean;
 };
 
-function CartData({ product, updateQuantity }: CartDataProps) {
+function CartData({
+  product,
+  updateQuantity,
+  modifiable = true,
+}: CartDataProps) {
   const productImage = `/src/ClientSide/Store/productImages/Thumbnail${product.id}.jpg`;
   const [quantity, setQuantity] = useState(product.quantity);
 
@@ -21,7 +26,9 @@ function CartData({ product, updateQuantity }: CartDataProps) {
     const newQuantity = quantity + numQuantity;
     if (newQuantity >= 0) {
       setQuantity(newQuantity);
-      updateQuantity(product.id, newQuantity);
+      if (updateQuantity) {
+        updateQuantity(product.id, newQuantity);
+      }
     }
   };
 
@@ -54,8 +61,8 @@ function CartData({ product, updateQuantity }: CartDataProps) {
             })}
           </p>
         </Col>
-        <Col>
-          <div>
+        {modifiable && (
+          <Col>
             <div>
               <button
                 className="transparentBtn"
@@ -71,8 +78,8 @@ function CartData({ product, updateQuantity }: CartDataProps) {
                 <PlusCircle size={20} />
               </button>
             </div>
-          </div>
-        </Col>
+          </Col>
+        )}
       </Row>
     </div>
   );

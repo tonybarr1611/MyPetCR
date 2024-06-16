@@ -4,6 +4,7 @@ import Homepage from "./Store/Homepage";
 import ProductDetail from "./Store/Products/ProductDetail";
 import Shop from "./Store/Products/Shop";
 import Cart from "./Store/Checkout/Cart";
+import Checkout from "./Store/Checkout/Checkout";
 
 const setBackgroundWhite = () => {
   var html = document.getElementsByTagName("html");
@@ -240,6 +241,7 @@ function ClientSide() {
         />
         <Route path="/shop" element={<Shop />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<Checkout />} />
         {/* <Route path="/management" element={<Management />} /> */}
       </Routes>
     </div>

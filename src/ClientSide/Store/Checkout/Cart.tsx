@@ -2,6 +2,7 @@ import { Col, Container, Row } from "react-bootstrap";
 import { products } from "../../ClientSide";
 import CartData from "./CartData";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 type CartProduct = {
   id: number;
@@ -26,6 +27,7 @@ function Cart() {
     price: product.price,
     quantity: product.id, // This can be set to 1 or any default value
   }));
+  const navigate = useNavigate();
 
   const [cartProducts, setCartProducts] = useState<CartProduct[]>(initialCart);
 
@@ -50,6 +52,7 @@ function Cart() {
             key={product.id}
             product={product}
             updateQuantity={updateQuantity}
+            modifiable={true}
           />
         ))
       )}
@@ -72,7 +75,7 @@ function Cart() {
           <button
             className="btn btn-primary"
             style={{ marginBottom: "5%", float: "right" }}
-            onClick={() => alert("Checkout")}
+            onClick={() => navigate("/clientside/checkout")}
           >
             Checkout
           </button>

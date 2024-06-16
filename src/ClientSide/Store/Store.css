@@ -119,6 +119,10 @@
     padding: 10px;
 }
 
+.centerBtn {
+    text-align: center;
+}
+
 /* For WebKit browsers (Chrome, Safari, etc.) */
 .setSizeDiv::-webkit-scrollbar {
     width: 5px; /* Adjust the width as needed */
