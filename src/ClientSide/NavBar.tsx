@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, Nav, NavDropdown, Navbar } from "react-bootstrap";
-import { FaDog, FaCartPlus, FaCircleUser } from "react-icons/fa6";
+import { FaDog, FaCartShopping, FaCircleUser } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
 function NavBar() {
@@ -29,7 +29,7 @@ function NavBar() {
           </Nav>
           <Nav className="ml-auto">
             <Link to={"/clientside/cart"} className="nav-link mr-2">
-              <FaCartPlus size={24} />
+              <FaCartShopping size={24} />
             </Link>
             <NavDropdown title={<FaCircleUser size={24} />}>
               <NavDropdown.Item>Sign out</NavDropdown.Item>

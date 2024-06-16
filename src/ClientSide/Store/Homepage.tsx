@@ -1,5 +1,5 @@
 import { Container } from "react-bootstrap";
-import Product from "./Product";
+import Product from "./Products/Product";
 import Banner from "./Banner";
 
 function Homepage() {
