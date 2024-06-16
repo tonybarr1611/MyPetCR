@@ -20,6 +20,6 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "include": ["src", "src/ClientSide/Store/Products/Reviews/declarations.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
