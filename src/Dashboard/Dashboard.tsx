@@ -14,6 +14,8 @@ import MedicalFileInfo from "./MedicalFiles/MedicalFileInfo";
 import MedicalFileDetails from "./MedicalFiles/MedicalFileDetails";
 import MedicalFileAppointmentEdit from "./MedicalFiles/MedicalFileAppointmentEdit";
 import MedicalFileAppointmentAdd from "./MedicalFiles/MedicalFileAppointmentAdd";
+import AccessDenied from "./AccessDenied";
+import StoreClinicOptions from "./StoreClinicOptions";
 
 const setBackgroundWhite = () => {
   var html = document.getElementsByTagName("html");
@@ -61,6 +63,8 @@ function Dashboard() {
           path="/medicalfiles/info/details/add"
           element={<MedicalFileAppointmentAdd />}
         />
+        <Route path="/accessdenied" element={<AccessDenied />} />
+        <Route path="/storeclinic" element={<StoreClinicOptions />} />
       </Routes>
     </div>
   );
