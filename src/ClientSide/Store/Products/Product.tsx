@@ -13,7 +13,7 @@ type ProductProps = {
 
 function Product({ id, name, type, description, price }: ProductProps) {
   const productUrl = `/clientside/product/${id}`;
-  const productImage = `src/ClientSide/Store/productImages/Thumbnail${id}.jpg`;
+  const productImage = `/src/ClientSide/Store/productImages/Thumbnail${id}.jpg`;
 
   return (
     <div className="productCard">

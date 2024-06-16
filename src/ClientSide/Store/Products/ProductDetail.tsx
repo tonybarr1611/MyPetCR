@@ -57,6 +57,7 @@ function ProductDetail({ products }: ProductDetailProps) {
     console.log(rate);
     handleShow();
   }
+  window.scrollTo(0, 0);
 
   return (
     <Container>

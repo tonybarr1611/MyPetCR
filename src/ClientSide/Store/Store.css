@@ -13,6 +13,12 @@
     grid-gap: 2%;
     /* margin: 10px; */
 }
+.twoColumnSpan{
+    grid-column: span 2;
+}
+.oneColumnSpan{
+    grid-column: span 1;
+}
 .productCard{
     display: flex;
     flex-direction: column;
@@ -87,6 +93,18 @@
 .setSizeDiv {
     height: 90px;
     overflow-y: auto;
+}
+
+.paddedContent {
+    padding-left: 10%;
+    padding-right: 10%;
+    padding-top: 3%;
+}
+
+.borderedContainer {
+    border: 1px solid #7fa3b03a;
+    border-radius: 5px;
+    padding: 10px;
 }
 
 /* For WebKit browsers (Chrome, Safari, etc.) */
