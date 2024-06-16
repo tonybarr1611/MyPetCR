@@ -84,6 +84,27 @@
     background-color: white;
     border-radius: 5px;
 }
+.setSizeDiv {
+    height: 90px;
+    overflow-y: auto;
+}
+
+/* For WebKit browsers (Chrome, Safari, etc.) */
+.setSizeDiv::-webkit-scrollbar {
+    width: 5px; /* Adjust the width as needed */
+    background: transparent;
+    color: black;
+}
+
+.setSizeDiv::-webkit-scrollbar-track {
+    width: 15px; /* Adjust the width as needed */
+    background: transparent;
+}
+
+.setSizeDiv::-webkit-scrollbar-thumb {
+    background: #888; /* color of the scroll thumb */
+    border-radius: 10px; /* roundness of the scroll thumb */
+}
 
 
 /* Media Queries for Responsive Design */

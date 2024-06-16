@@ -1,6 +1,7 @@
 import { Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { FaCartPlus } from "react-icons/fa6";
+import "../Store.css";
 
 type ProductProps = {
   id: number;
@@ -25,9 +26,11 @@ function Product({ id, name, type, description, price }: ProductProps) {
             <div>
               <Link to={productUrl}>
                 <h5 className="card-title">{name}</h5>
-                <p>
-                  <small>{description}</small>
-                </p>
+                <div className="setSizeDiv">
+                  <p>
+                    <small>{description}</small>
+                  </p>
+                </div>
                 <p>
                   {price.toLocaleString("es-CR", {
                     style: "currency",
