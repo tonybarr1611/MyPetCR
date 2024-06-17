@@ -1,7 +1,10 @@
 import { Container, Row, Col, Table } from "react-bootstrap";
 import MedicalFileInfoData from "./MedicalFileInfoData";
+import { guestRedirection, handleExpiration } from "../../Commons/AuthCommons";
 
 const MedicalFileInfo = () => {
+  guestRedirection();
+  handleExpiration();
   const petData = {
     id: 1,
     petType: "Dog",

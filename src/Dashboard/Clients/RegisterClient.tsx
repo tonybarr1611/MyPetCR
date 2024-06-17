@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Form, Button, Card } from "react-bootstrap";
+import { guestRedirection, handleExpiration } from "../../Commons/AuthCommons";
 import { ToastContainer, toast } from "react-toastify";
 import { EyeFill, EyeSlashFill } from "react-bootstrap-icons";
 import { FaDog } from "react-icons/fa6";
@@ -13,6 +14,8 @@ const RegisterClient = () => {
     email: "",
     password: "",
   });
+  guestRedirection();
+  handleExpiration();
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
@@ -65,12 +68,12 @@ const RegisterClient = () => {
         try {
           const url = `http://localhost:8080/api/v1/clientAndUser/`;
           const param = {
-            "Name": credentials.name,
-            "PhoneNumber": credentials.phoneNumber,
-            "Password": credentials.password,
-            "LoginID": credentials.email,
-            "IDUserType": 2
-          }
+            Name: credentials.name,
+            PhoneNumber: credentials.phoneNumber,
+            Password: credentials.password,
+            LoginID: credentials.email,
+            IDUserType: 2,
+          };
           await axios.post(url, param);
         } catch (error) {
           toast.error(`Failed to add client: ${error}`, {
