@@ -1,57 +1,119 @@
+import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { Form, Button, Container, Row, Col, Card } from "react-bootstrap";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { EyeFill, EyeSlashFill, PersonLock } from "react-bootstrap-icons";
 import "./UserLogin.css";
 
-//personfilladd - personfillcheck - search
+interface Credentials {
+  email: string;
+  password: string;
+}
 
-const UserLogin = () => {
-  const [credentials, setCredentials] = useState({ email: "", password: "" });
+interface LoginResponse {
+  success: boolean;
+  message: string;
+  userType?: number;
+}
+
+async function sendLogin(
+  email: string,
+  password: string
+): Promise<LoginResponse> {
+  const url = "http://localhost:8080/api/v1/user/verify";
+  const body = JSON.stringify({ LoginID: email, Password: password });
+  const headers = {
+    "Content-Type": "application/json",
+  };
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: headers,
+      body: body,
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("userType", data.userType);
+      localStorage.setItem("client", JSON.stringify(data.client));
+      return { success: true, message: data.message, userType: data.userType };
+    } else {
+      const errorMessage = await response.text();
+      return { success: false, message: errorMessage };
+    }
+  } catch (error) {
+    return { success: false, message: error.message };
+  }
+}
+
+const UserLogin: React.FC = () => {
+  const [credentials, setCredentials] = useState<Credentials>({
+    email: "",
+    password: "",
+  });
+
+  useEffect(() => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userType");
+    localStorage.removeItem("client");
+  });
+
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleOnChange = (e: { target: { name: any; value: any } }) => {
+  const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: { preventDefault: () => void }) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    let emailRegex =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    try {
-      if (!credentials.email && !credentials.password) {
-        toast.error("All fields are required", {
+    const emailRegex =
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    if (!credentials.email || !credentials.password) {
+      toast.error("All fields are required", {
+        autoClose: 1500,
+        theme: "colored",
+      });
+    } else if (!emailRegex.test(credentials.email)) {
+      toast.error("Please enter a valid email", {
+        autoClose: 1500,
+        theme: "colored",
+      });
+    } else if (credentials.password.length < 5) {
+      toast.error("Please enter a valid password", {
+        autoClose: 1500,
+        theme: "colored",
+      });
+    } else {
+      const result = await sendLogin(credentials.email, credentials.password);
+      if (result.success) {
+        toast.success(result.message, {
           autoClose: 1500,
           theme: "colored",
         });
-      } else if (!emailRegex.test(credentials.email)) {
-        toast.error("Please enter a valid email", {
-          autoClose: 1500,
-          theme: "colored",
-        });
-      } else if (credentials.password.length < 5) {
-        toast.error("Please enter valid password", {
+        if (result.userType === 2) {
+          navigate("/dashboard");
+        } else if (result.userType === 1) {
+          navigate("/clientside");
+        } else {
+          navigate("/dashboard");
+        }
+      } else {
+        toast.error(result.message, {
           autoClose: 1500,
           theme: "colored",
         });
       }
-    } catch (error: any) {
-      error.response.data.error.length === 1
-        ? toast.error(error.response.data.error[0].msg, {
-            autoClose: 1500,
-            theme: "colored",
-          })
-        : toast.error(error.response.data.error, {
-            autoClose: 1500,
-            theme: "colored",
-          });
     }
   };
+
   return (
     <Container
       className="d-flex justify-content-center align-items-center"
@@ -98,12 +160,8 @@ const UserLogin = () => {
                 </Button>
               </div>
             </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicCheckbox">
-              <Form.Check type="checkbox" label="Remember me" />
-            </Form.Group>
             <Button variant="primary" type="submit" className="w-100 mb-3">
               Sign In
-              {/* TODO: enviar log */}
             </Button>
             <Row>
               <Col className="text-end">

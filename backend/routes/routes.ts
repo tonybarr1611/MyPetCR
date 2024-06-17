@@ -29,7 +29,7 @@ const route = express.Router();
 
 // user 
 route.get('/user/mail/:mail', user.UserByMail); // alternative to id this one gives the hashedpassword
-route.get('/user/verify', user.verifyPassword); // this is for the login
+route.post('/user/verify', user.verifyPassword); // this is for the login
 route.post('/user', user.CreateUser);
 route.get('/user', user.AllUsers);
 route.get('/user/:id', user.UserById);

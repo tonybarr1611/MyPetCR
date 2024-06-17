@@ -27,6 +27,8 @@ const setBackgroundWhite = () => {
 function Dashboard() {
   // Change html, body property
   setBackgroundWhite();
+  console.log(localStorage);
+
   return (
     <div>
       <NavBar />

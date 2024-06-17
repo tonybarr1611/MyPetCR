@@ -31,6 +31,16 @@ async function verifyPassword(req: Request, res: Response) {
         "User not retrieved");
     if (!user || user.recordset.length === 0) return res.status(404).send("User not found");
 
+    const clients = await getObject(res,
+        'ReadAllClients',
+        [],
+        200,
+        "Clients retrieved successfully",
+        "Clients not retrieved");
+    if (!clients || clients.recordset.length === 0) return res.status(404).send("Clients not found");
+
+    const client = clients.recordset.find((client: any) => client.IDUser === user.recordset[0].IDUser);
+
     //compare the passwords
     const hashedPassword = user.recordset[0].Password;
     const result = await bcript.compare(Password, hashedPassword);
@@ -43,11 +53,13 @@ async function verifyPassword(req: Request, res: Response) {
                 IDUserType: user?.recordset[0].IDUserType,
             },
             "RANDOM-TOKEN",
-            { expiresIn: "24h" }
+            { expiresIn: "30m" }
         );
         return res.status(200).send({
           message: "Login Successful",
           token,
+          userType: user?.recordset[0].IDUserType,
+          client: client
         });
     };
 };

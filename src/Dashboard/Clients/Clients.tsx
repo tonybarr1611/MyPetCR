@@ -32,7 +32,9 @@ const Clients = () => {
     fetchClients();
   }, []);
 
-  const handleSearchChange = (e: { target: { value: SetStateAction<string> } }) => {
+  const handleSearchChange = (e: {
+    target: { value: SetStateAction<string> };
+  }) => {
     setSearchTerm(e.target.value);
   };
 
