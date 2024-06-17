@@ -132,7 +132,7 @@ async function UpdateUser(req: Request, res: Response) {
     //password
     if (Password) {
         const salt = await bcript.genSalt(10);
-        Password = await bcript.hash(Password, salt);
+        binaryPassword = await bcript.hash(Password, salt);
     } else { binaryPassword = user.recordset[0].Password; }
 
     IDUserType = IDUserType || user.recordset[0].IDUserType;
@@ -151,7 +151,7 @@ async function UpdateUser(req: Request, res: Response) {
         'UpdateUser',
         [{ name: 'IDUser', type: sql.Int, value: IDUser },
         { name: 'LoginID', type: sql.NVarChar, value: LoginID },
-        { name: 'NewPassword', type: sql.NVarChar, value: Password },
+        { name: 'NewPassword', type: sql.NVarChar, value: binaryPassword },
         { name: 'IDUserType', type: sql.Int, value: IDUserType }],
         200,
         "User updated successfully",
