@@ -105,6 +105,7 @@ route.delete('/employee/:id', employee.DeleteEmployee);
 route.post('/client', client.CreateClient);
 route.post('/clientAndUser', client.CreateClientAndUser);
 route.get('/client', client.AllClients);
+route.get('/clientMock/', client.CreateMockClient);
 route.get('/client/:id', client.ClientById);
 route.put('/client/:id', client.UpdateClient);
 route.delete('/client/:id', client.DeleteClient);
@@ -132,6 +133,7 @@ route.delete('/status/:id', status.DeleteStatus);
 
 // Invoice
 route.post('/invoice', invoice.CreateInvoice);
+route.post('/invoiceByCart', invoice.CreateInvoiceByCart);
 route.get('/invoice', invoice.ReadAllInvoices);
 route.get('/invoice/:id', invoice.ReadInvoicesByID);
 route.put('/invoice/:id', invoice.UpdateInvoice);

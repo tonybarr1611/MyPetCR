@@ -49,6 +49,36 @@ async function CreateInvoice(req: Request, res: Response) {
         "Invoice not created");
 };
 
+async function CreateInvoiceByCart(req: Request, res: Response) {
+    const { IDClient, IDPayment } = req.body;
+
+    if (!IDClient || !IDPayment) {
+        return res.status(400).send("Missing required fields");
+    }
+
+    const client = await getItem(res,
+        'ReadByIDClient',
+        [{ name: 'IDClient', type: sql.Int, value: IDClient }]
+    );
+    if (client?.recordset.length == 0) { return res.status(404).send("Client not found"); }
+
+    const payment = await getItem(res,
+        'ReadByIDPayment',
+        [{ name: 'IDPayment', type: sql.Int, value: IDPayment }]
+    );
+    if (payment?.recordset.length == 0) { return res.status(404).send("Payment not found"); }
+
+    await executeProcedure(res, 
+        'CreateInvoiceByCart', 
+        [
+            { name: 'IDClient', type: sql.Int, value: IDClient },
+            { name: 'IDPayment', type: sql.Int, value: IDPayment }
+        ], 
+        201, 
+        "Invoice created successfully", 
+        "Invoice not created");
+};
+
 async function ReadAllInvoices(req: Request, res: Response) {
     await executeProcedure(res, 
         'ReadAllInvoices', 
@@ -136,6 +166,7 @@ async function DeleteInvoice(req: Request, res: Response) {
 
 export default {
     CreateInvoice,
+    CreateInvoiceByCart,
     ReadAllInvoices,
     ReadInvoicesByID,
     UpdateInvoice,
