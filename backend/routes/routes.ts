@@ -195,5 +195,6 @@ route.get('/cart/:IDClient/:IDProduct', cart.ReadCartByIDClientAndIDProduct);
 route.get('/cart/:IDClient/', cart.ReadCartByIDClient);
 route.put('/cart/:IDClient/:IDProduct', cart.UpdateCart);
 route.delete('/cart/:IDClient/:IDProduct', cart.DeleteCart);
+route.delete('/cart/:IDClient', cart.DeleteAllCartByClient);
 
 export default route;

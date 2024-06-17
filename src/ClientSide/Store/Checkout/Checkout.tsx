@@ -13,7 +13,8 @@ import { CartProduct } from "./Cart";
 import { FaCreditCard } from "react-icons/fa";
 import CartData from "./CartData";
 import "../Store.css";
-import { getCartEntries } from "../../Functions";
+import { clearCart, getCartEntries } from "../../Functions";
+import { Navigate } from "react-router-dom";
 
 interface FormState {
   fullName: string;
@@ -117,11 +118,26 @@ function Checkout() {
     e.preventDefault();
     if (validate()) {
       // Submit form
+      // TODO handle invoice creation
+      clearCart();
+      window.location.assign("/clientside");
       setSubmitted(true);
     } else {
       setSubmitted(false);
     }
   };
+
+  if (cart.length === 0) {
+    return (
+      <Container>
+        <h1 style={{ paddingTop: "2%" }}>Checkout</h1>
+        <h3>Your cart is empty</h3>
+        <Button onClick={() => window.location.assign("/clientside")}>
+          Back to store
+        </Button>
+      </Container>
+    );
+  }
 
   return (
     <Container>

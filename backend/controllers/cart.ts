@@ -122,5 +122,6 @@ export default {
     ReadCartByIDClientAndIDProduct,
     ReadCartByIDClient,
     UpdateCart,
-    DeleteCart
+    DeleteCart,
+    DeleteAllCartByClient
 };

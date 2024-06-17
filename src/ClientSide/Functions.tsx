@@ -120,10 +120,22 @@ async function getCartEntries() {
 }
 
 // Clear cart by client ID
-async function clearCart(clientID: any) {
-  await axios.delete(`${backendURL}cart/${clientID}`);
+async function clearCart() {
+  await axios.delete(`${backendURL}cart/${getClientID()}`);
+}
+
+// Get client and user data from the backend
+async function getProfileData() {
+  const client = JSON.parse(localStorage.getItem("client") || "{}");
+  const clientDB = await axios.get(`${backendURL}client/${client.IDClient}`);
+  return {
+    name: client.Name,
+    email: client.LoginID,
+    phone: clientDB.data[0].PhoneNumber,
+  };
 }
 
 export { getProductsClient, getProductByID };
 export { getReviewsByID, getAverageRatingByID };
 export { addCartEntry, getCartEntries, clearCart };
+export { getProfileData };
