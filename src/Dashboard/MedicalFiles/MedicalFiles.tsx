@@ -1,17 +1,36 @@
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { Container, Row, Col, Form, Table } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import MedicalFilesData from "./MedicalFilesData";
+import axios from "axios";
 
 const MedicalFiles = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [pets, setPets] = useState([]);
 
-  const [pets, setPets] = useState([
-    { id: 1, petName: "Buddy", ownerName: "Tony", breed: "Golden Retriever" },
-    { id: 2, petName: "Milo", ownerName: "Sarah", breed: "Beagle" },
-    { id: 3, petName: "Max", ownerName: "John", breed: "Bulldog" },
-    { id: 4, petName: "Bella", ownerName: "Anna", breed: "Poodle" },
-  ]);
+
+  useEffect(() => {
+    const fetchPets = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/api/v1/pet");
+        const newList = response.data.map((obj: any) => ({
+          id: obj.IDPet,
+          petName: obj.PetName,
+          ownerName: obj.UserName,
+          breed: obj.BreedName,
+        }));
+        setPets(newList);
+      } catch (error) {
+        console.error("Error fetching pets:", error);
+        toast.error("Failed to fetch pets", {
+          autoClose: 1500,
+          theme: "colored",
+        });
+      }
+    };
+    fetchPets();
+  }, []);
+
 
   const handleSearchChange = (e: {
     target: { value: SetStateAction<string> };

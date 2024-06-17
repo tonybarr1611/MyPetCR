@@ -22,12 +22,11 @@ function ClientsData({ id, name, phonenumber }: ClientsDataProps) {
       <td className="text-center">
         <div className="d-flex justify-content-center">
           <Link to={"editclient"} 
-                state={id}
-                variant="primary"
+                state={id}> 
+            <Button                 variant="primary"
                 size="sm"
                 className="mr-2"
-                style={{ width: "25%" }}> 
-            <Button
+                style={{ width: "25%" }}
             >
               Edit
             </Button>
