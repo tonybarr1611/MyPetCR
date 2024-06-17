@@ -237,6 +237,28 @@ BEGIN
     DELETE FROM Appointment WHERE IDAppointment = @IDAppointment;
 END;
 GO
+-- ask by pet
+CREATE PROCEDURE GetAppointmentsByPet
+    @IDPet INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        a.IDAppointment,
+        e.Name AS EmployeeName,
+        s.Location AS Location,
+        st.Name AS StatusName,
+        a.DateTime
+    FROM 
+        Appointment a
+        INNER JOIN Employee e ON a.IDEmployee = e.IDEmployee
+        INNER JOIN Store s ON a.IDStore = s.IDStore
+        INNER JOIN StatusType st ON a.IDStatus = st.IDStatus
+    WHERE 
+        a.IDPet = @IDPet;
+END;
+GO
 
 -------------------------------Breed-------------------------------
 
