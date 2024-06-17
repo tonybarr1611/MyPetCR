@@ -628,9 +628,10 @@ END;
 GO
 
 -- Create Invoice and Invoice Details by Cart
-CREATE or alter PROCEDURE CreateInvoiceByCart
+CREATE PROCEDURE CreateInvoiceByCart
     @IDClient INT,
-    @IDPayment INT
+    @IDPayment INT,
+    @Shipping NVARCHAR(5)
 AS
 BEGIN
     -- Insert New Invoice
@@ -641,6 +642,11 @@ BEGIN
 
     SET @NewIDInvoice = SCOPE_IDENTITY();
 
+    IF LOWER(@Shipping) = 'true'
+    BEGIN
+        INSERT INTO InvoiceDetail (IDInvoice, IDProduct, Description, Quantity, Price)
+        VALUES (@NewIDInvoice, 2, 'Shipping', 1, 3000) -- TODO change mockup shipping
+    END
     -- Initialize cursor
     DECLARE @IDProduct INT;
     DECLARE @Quantity INT;
@@ -659,7 +665,7 @@ BEGIN
         DECLARE @EnoughQuantity NVARCHAR(8);
         EXEC EnoughQuantityByIDProduct @IDProduct, @Quantity, @EnoughQuantity = @EnoughQuantity OUTPUT;
 
-        IF @EnoughQuantity = 'True'
+        IF LOWER(@EnoughQuantity) = 'true'
             BEGIN
                 DECLARE @Description NVARCHAR(512);
                 DECLARE @Price MONEY;
@@ -675,9 +681,9 @@ BEGIN
             END
         FETCH NEXT FROM CURSOR_ITEM INTO @IDProduct, @Quantity;
     END;
-
     CLOSE CURSOR_ITEM;
     DEALLOCATE CURSOR_ITEM;
+
 END;
 GO
 
