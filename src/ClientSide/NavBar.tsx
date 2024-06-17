@@ -38,9 +38,11 @@ function NavBar() {
               <FaCartShopping size={24} />
             </Link>
             <NavDropdown title={<FaCircleUser size={24} />}>
-              <NavDropdown.Item>
-                <Link to={"/clientside/profile"}>Profile</Link>
-              </NavDropdown.Item>
+              {localStorage.getItem("token") !== "guest" && (
+                <NavDropdown.Item>
+                  <Link to={"/clientside/profile"}>Profile</Link>
+                </NavDropdown.Item>
+              )}
               <NavDropdown.Item onClick={handleSignOut}>
                 Sign out
               </NavDropdown.Item>
