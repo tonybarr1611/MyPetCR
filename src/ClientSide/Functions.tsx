@@ -1,6 +1,12 @@
 import axios from "axios";
 import { backendURL } from "../main";
 
+// Get ClientID from localStorage
+function getClientID() {
+  const client = JSON.parse(localStorage.getItem("client") || "{}");
+  return client.IDClient;
+}
+
 // Function that retrieves the data from the backend at "/product"
 // and returns the data as an array of objects with the required format
 async function getProductsClient() {
@@ -67,8 +73,7 @@ async function getAverageRatingByID(id: any) {
 
 // Function that adds a product to the cart
 async function addCartEntry(productID: any, quantity: any) {
-  const client = JSON.parse(localStorage.getItem("client") || "{}");
-  const clientID = client.IDClient;
+  const clientID = getClientID();
   const currentCart = await axios.get(
     `${backendURL}cart/${clientID}/${productID}`
   );
@@ -92,7 +97,8 @@ async function addCartEntry(productID: any, quantity: any) {
 
 // Function that retrieves the data from the backend at "/cart/:idClient"
 // and returns the data as an array of objects with the required format
-async function getCartEntries(clientID: any) {
+async function getCartEntries() {
+  const clientID = getClientID();
   const response = await axios.get(`${backendURL}cart/${clientID}`);
   return response.data.map(
     (entry: {

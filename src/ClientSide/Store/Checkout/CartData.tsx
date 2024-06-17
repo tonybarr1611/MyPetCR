@@ -3,6 +3,7 @@ import { CartProduct } from "./Cart";
 import { useState, useEffect } from "react";
 import { PlusCircle, DashCircle } from "react-bootstrap-icons";
 import "../Store.css";
+import { addCartEntry } from "../../Functions";
 
 type CartDataProps = {
   product: CartProduct;
@@ -26,6 +27,7 @@ function CartData({
     const newQuantity = quantity + numQuantity;
     if (newQuantity >= 0) {
       setQuantity(newQuantity);
+      addCartEntry(product.id, numQuantity);
       if (updateQuantity) {
         updateQuantity(product.id, newQuantity);
       }
