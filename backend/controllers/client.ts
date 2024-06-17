@@ -54,7 +54,7 @@ async function CreateClient(req: Request, res: Response) {
 
 async function CreateMockClient(req: Request, res: Response) {
     await executeProcedure(res,
-        'CreateClientAndUser',
+        'CreateMockClient',
         [],
         201,
         "Client mock created successfully",
