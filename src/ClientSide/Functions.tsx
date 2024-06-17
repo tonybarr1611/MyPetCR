@@ -135,7 +135,30 @@ async function getProfileData() {
   };
 }
 
+// Check stock of products in cart
+async function checkStock() {
+  console.log("Checking stock...");
+  const clientID = getClientID();
+  const response = await axios.get(`${backendURL}cart/stock/${clientID}`);
+  console.log("Stock response: ");
+  // console.log(response);
+  // console.log(response.status);
+  // The response (response.data[0].BoolValue) is either "True" or "False" but in string format, parse it to boolean
+  return response.data[0].BoolValue === "True";
+}
+
+// Create invoice from cart
+async function createInvoice() {
+  const clientID = getClientID();
+  const paymentID = "4";
+  const response = await axios.post(`${backendURL}invoiceByCart`, {
+    IDClient: clientID,
+    IDPayment: paymentID,
+  });
+}
+
 export { getProductsClient, getProductByID };
 export { getReviewsByID, getAverageRatingByID };
 export { addCartEntry, getCartEntries, clearCart };
 export { getProfileData };
+export { checkStock, createInvoice };
