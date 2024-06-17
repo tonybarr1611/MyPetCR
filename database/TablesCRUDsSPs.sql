@@ -339,6 +339,29 @@ BEGIN
 END;
 GO
 
+-- Create client by Mockup
+CREATE PROCEDURE CreateMockClient
+AS
+BEGIN
+    DECLARE @IDClient INT;
+
+    INSERT INTO Client (Name, PhoneNumber, IDUser)
+    VALUES ('MockUser', NULL, 1); -- TODO: Change for mockup ID
+
+    SET @IDClient = SCOPE_IDENTITY();
+
+    UPDATE Client
+    SET Name = Concat(Name, IDClient)
+    WHERE IDClient = @IDClient;
+
+    SELECT C.IDClient, C.IDUser, C.Name, C.PhoneNumber,
+           U.IDUserType, U.LoginID
+    FROM Client C
+    LEFT JOIN [User] U on C.IDUser = U.IDUser
+    WHERE IDClient = @IDClient;
+END;
+GO
+
 -- Read All
 CREATE PROCEDURE ReadAllClients
 AS
