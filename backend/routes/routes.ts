@@ -78,6 +78,7 @@ route.get('/product', product.AllProducts);
 route.get('/product/:id', product.ProductById);
 route.put('/product/:id', product.UpdateProduct);
 route.delete('/product/:id', product.DeleteProduct);
+route.get('/medicine', product.ReadMedicineOrServiceProducts);
 
 // productType
 route.post('/productType', productType.CreateProductType);
