@@ -105,6 +105,17 @@ async function DeleteCart(req: Request, res: Response) {
         "Cart not deleted");
 };
 
+async function DeleteAllCartByClient(req: Request, res: Response) {
+    const IDClient = req.params.IDClient;
+
+    await executeProcedure(res,
+        'DeleteAllCartByClient',
+        [{ name: 'IDClient', type: sql.Int, value: IDClient }],
+        200,
+        "Cart deleted successfully",
+        "Cart not deleted");
+}
+
 export default {
     CreateCart,
     RealAllCarts,

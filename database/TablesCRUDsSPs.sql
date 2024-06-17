@@ -732,7 +732,7 @@ BEGIN
         RETURN;
     END
 
-    -- Recupera los detalles de la factura junto con la información de la factura
+    -- Recupera los detalles de la factura junto con la informaciï¿½n de la factura
     SELECT 
         inv.IDInvoice,
         invd.IDInvoiceDetail,
@@ -1789,8 +1789,14 @@ CREATE PROCEDURE ReadCartByClient
     @IDClient INT
 AS
 BEGIN
-    SELECT IDClient, IDProduct, Quantity
-    FROM Cart
+    SELECT			  C.IDClient
+					, C.IDProduct
+					, P.Name				'ProductName'
+					, P.IDProductType		'ProductType'
+					, P.Description			'ProductDescription'
+					, P.Price				'ProductPrice'
+					, C.Quantity			'CartQuantity'
+    FROM Cart C LEFT JOIN Product P ON C.IDProduct = P.IDProduct
     WHERE IDClient = @IDClient;
 END;
 GO
@@ -1810,7 +1816,7 @@ BEGIN
 END;
 GO
 
--- Delete
+-- Delete specific product from cart
 CREATE PROCEDURE DeleteCart
     @IDClient INT,
     @IDProduct INT
@@ -1818,6 +1824,15 @@ AS
 BEGIN
     DELETE FROM Cart
     WHERE IDClient = @IDClient AND IDProduct = @IDProduct;
+END;
+GO
+-- Delete all products from cart
+CREATE PROCEDURE DeleteAllCartByClient
+    @IDClient INT
+AS
+BEGIN
+    DELETE FROM Cart
+    WHERE IDClient = @IDClient;
 END;
 GO
 
