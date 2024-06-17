@@ -529,6 +529,55 @@ BEGIN
 END;
 GO
 
+-- Update Quantity Inventory by IDProduct
+CREATE PROCEDURE UpdateInventoryByIDProduct (
+    @IDProduct INT,
+    @Quantity INT
+)
+AS
+BEGIN
+    -- Initialize cursor
+    DECLARE @IDStore INT;
+    DECLARE @ActualQuantity INT;
+    DECLARE @RemainingQuantity INT;
+    SET @RemainingQuantity = @Quantity;
+
+    DECLARE CURSOR_INVENTORY CURSOR FOR
+    SELECT IDStore, Quantity
+    FROM Inventory
+    WHERE IDProduct = @IDProduct
+    ORDER BY IDStore; -- Ensures a consistent order of processing
+
+    OPEN CURSOR_INVENTORY;
+
+    FETCH NEXT FROM CURSOR_INVENTORY INTO @IDStore, @ActualQuantity;
+    WHILE @@FETCH_STATUS = 0 AND @RemainingQuantity > 0
+    BEGIN
+        IF @ActualQuantity >= @RemainingQuantity
+        BEGIN
+            UPDATE Inventory
+            SET Quantity = Quantity - @RemainingQuantity
+            WHERE IDStore = @IDStore AND IDProduct = @IDProduct;
+
+            SET @RemainingQuantity = 0;
+        END
+        ELSE
+        BEGIN
+            UPDATE Inventory
+            SET Quantity = 0
+            WHERE IDStore = @IDStore AND IDProduct = @IDProduct;
+
+            SET @RemainingQuantity = @RemainingQuantity - @ActualQuantity;
+        END
+
+        FETCH NEXT FROM CURSOR_INVENTORY INTO @IDStore, @ActualQuantity;
+    END;
+
+    CLOSE CURSOR_INVENTORY;
+    DEALLOCATE CURSOR_INVENTORY;
+END;
+GO
+
 -- Delete
 CREATE PROCEDURE DeleteInventory
     @IDProduct INT,
@@ -556,6 +605,59 @@ BEGIN
 END;
 GO
 
+-- Create Invoice and Invoice Details by Cart
+CREATE or alter PROCEDURE CreateInvoiceByCart
+    @IDClient INT,
+    @IDPayment INT
+AS
+BEGIN
+    -- Insert New Invoice
+    DECLARE @NewIDInvoice INT;
+
+    INSERT INTO Invoice (IDAppointment, IDClient, IDPayment, IDStatus, DateTime)
+    VALUES (2, @IDClient, @IDPayment, 4, GETDATE()) -- TODO change status code
+
+    SET @NewIDInvoice = SCOPE_IDENTITY();
+
+    -- Initialize cursor
+    DECLARE @IDProduct INT;
+    DECLARE @Quantity INT;
+
+    DECLARE CURSOR_ITEM CURSOR FOR
+    SELECT IDProduct, Quantity
+    FROM Cart
+    WHERE IDClient = @IDClient;
+
+    OPEN CURSOR_ITEM;
+
+    FETCH NEXT FROM CURSOR_ITEM INTO @IDProduct, @Quantity;
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        DECLARE @EnoughQuantity NVARCHAR(8);
+        EXEC EnoughQuantityByIDProduct @IDProduct, @Quantity, @EnoughQuantity = @EnoughQuantity OUTPUT;
+
+        IF @EnoughQuantity = 'True'
+            BEGIN
+                DECLARE @Description NVARCHAR(512);
+                DECLARE @Price MONEY;
+
+                SELECT @Description = Description, @Price = Price
+                FROM Product
+                WHERE IDProduct = @IDProduct;
+
+                INSERT INTO InvoiceDetail (IDInvoice, IDProduct, Description, Quantity, Price)
+                VALUES (@NewIDInvoice, @IDProduct, @Description, @Quantity, (@Price * @Quantity))
+
+                EXEC UpdateInventoryByIDProduct @IDProduct, @Quantity;
+            END
+        FETCH NEXT FROM CURSOR_ITEM INTO @IDProduct, @Quantity;
+    END;
+
+    CLOSE CURSOR_ITEM;
+    DEALLOCATE CURSOR_ITEM;
+END;
+GO
+
 -- Read All
 CREATE PROCEDURE ReadAllInvoices
 AS
@@ -572,8 +674,6 @@ BEGIN
     LEFT JOIN StatusType ST on I.IDStatus = ST.IDStatus;
 END;
 GO
-
-
 
 -- Read By ID
 CREATE PROCEDURE ReadByIDInvoice
@@ -1679,6 +1779,31 @@ AS
 BEGIN
     INSERT INTO Cart (IDClient, IDProduct, Quantity)
     VALUES (@IDClient, @IDProduct, @Quantity);
+END;
+GO
+
+-- Read available quantity of a product
+CREATE or alter PROCEDURE EnoughQuantityByIDProduct (
+    @IDProduct INT,
+    @Quantity INT,
+    @EnoughQuantity NVARCHAR(8) OUTPUT
+)
+AS
+BEGIN
+    DECLARE @ActualQuantity INT;
+
+    SELECT @ActualQuantity = SUM(Quantity)
+    FROM Inventory
+    WHERE IDProduct = @IDProduct;
+
+    IF @Quantity <= @ActualQuantity
+    BEGIN
+        SET @EnoughQuantity = 'True';
+    END
+    ELSE
+    BEGIN
+        SET @EnoughQuantity = 'False';
+    END;
 END;
 GO
 
