@@ -1,32 +1,120 @@
-import { SetStateAction, useState } from "react";
+import { useState, useEffect } from "react";
 import { Container, Row, Col, Form, Button, Table } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
+import axios from "axios";
 import ManagementData from "./ManagementData";
 import { guestRedirection } from "../../Commons/AuthCommons";
 
 const Management = () => {
   guestRedirection();
   const [searchTerm, setSearchTerm] = useState("");
+  const [users, setUsers] = useState([]);
 
-  const [users, setUsers] = useState([
-    { id: 1, user: "example@gmail.com", role: "Veterinarian" },
-    { id: 2, user: "example@gmail.com", role: "Veterinarian" },
-    { id: 3, user: "example@gmail.com", role: "Admin" },
-    { id: 4, user: "example@gmail.com", role: "Admin" },
-    { id: 5, user: "example@gmail.com", role: "Manager" },
-    { id: 6, user: "example@gmail.com", role: "Manager" },
-  ]);
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
-  const handleSearchChange = (e: {
-    target: { value: SetStateAction<string> };
-  }) => {
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/v1/user");
+      if (Array.isArray(response.data)) {
+        setUsers(response.data);
+      } else {
+        throw new Error("Response data is not an array");
+      }
+    } catch (error) {
+      console.error("Error fetching users:", error.message);
+      toast.error("Error fetching users", {
+        autoClose: 1500,
+        theme: "colored",
+      });
+    }
+  };
+
+  const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
 
-  const handleSubmit = (e: { preventDefault: () => void }) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (!searchTerm) {
-      toast.error("Search field is required", {
+    const filteredUsers = users.filter((user) =>
+      user.LoginID.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setUsers(filteredUsers);
+  };
+
+  const handleUpgrade = async (id) => {
+    try {
+      const userToUpdate = users.find((user) => user.IDUser === id);
+      if (!userToUpdate) {
+        throw new Error(`User with ID ${id} not found`);
+      }
+
+      let newIDUserType;
+      // Example logic: Increment IDUserType
+      if (userToUpdate.IDUserType === 1) {
+        newIDUserType = 2; // Upgrade from level 1 to level 2
+      } else if (userToUpdate.IDUserType === 2) {
+        newIDUserType = 3; // Upgrade from level 2 to level 3
+      } else {
+        newIDUserType = userToUpdate.IDUserType; // Handle other cases gracefully
+      }
+
+      const response = await axios.put(`http://localhost:8080/api/v1/user/${id}`, {
+        IDUserType: newIDUserType,
+      });
+      
+      if (response.status === 200) {
+        fetchUsers(); // Refresh users list after upgrade
+        toast.success("User level upgraded successfully", {
+          autoClose: 1500,
+          theme: "colored",
+        });
+      } else {
+        throw new Error("Failed to update user");
+      }
+    } catch (error) {
+      console.error("Error upgrading user level:", error);
+      toast.error("Error upgrading user level", {
+        autoClose: 1500,
+        theme: "colored",
+      });
+    }
+  };
+
+  const handleDowngrade = async (id) => {
+    try {
+      const userToUpdate = users.find((user) => user.IDUser === id);
+      if (!userToUpdate) {
+        throw new Error(`User with ID ${id} not found`);
+      }
+
+      let newIDUserType;
+      // Example logic: Decrement IDUserType
+      if (userToUpdate.IDUserType === 3) {
+        newIDUserType = 2; // Downgrade from level 3 to level 2
+      } else if (userToUpdate.IDUserType === 2) {
+        newIDUserType = 1; // Downgrade from level 2 to level 1
+      } else {
+        newIDUserType = userToUpdate.IDUserType; // Handle other cases gracefully
+      }
+
+      const response = await axios.put(`http://localhost:8080/api/v1/user/${id}`, {
+        IDUserType: newIDUserType,
+      });
+      
+      if (response.status === 200) {
+        fetchUsers(); // Refresh users list after downgrade
+        toast.success("User level downgraded successfully", {
+          autoClose: 1500,
+          theme: "colored",
+        });
+      } else {
+        throw new Error("Failed to update user");
+      }
+    } catch (error) {
+      console.error("Error downgrading user level:", error);
+      toast.error("Error downgrading user level", {
         autoClose: 1500,
         theme: "colored",
       });
@@ -47,7 +135,11 @@ const Management = () => {
                     placeholder="Search"
                     name="search"
                     onChange={handleSearchChange}
+                    value={searchTerm}
                   />
+                </Col>
+                <Col>
+                  <Button type="submit">Search</Button>
                 </Col>
               </Row>
             </Form>
@@ -56,14 +148,33 @@ const Management = () => {
                 <thead>
                   <tr>
                     <th>User ID</th>
-                    <th>E-mail</th>
-                    <th>Current role</th>
+                    <th>Login ID</th>
+                    <th>User Type</th>
                     <th colSpan={2} className="text-center">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody>{users.map((client) => ManagementData(client))}</tbody>
+                <tbody>
+                  {users.length > 0 ? (
+                    users.map((user) => (
+                      <ManagementData
+                        key={user.IDUser}
+                        id={user.IDUser}
+                        user={user.LoginID}
+                        role={user.UserTypeName} // Assuming UserTypeName is the role
+                        handleUpgrade={() => handleUpgrade(user.IDUser)}
+                        handleDowngrade={() => handleDowngrade(user.IDUser)}
+                      />
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="5" className="text-center">
+                        No users found
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
               </Table>
             </div>
           </Col>
