@@ -82,6 +82,11 @@ function CartData({
             </div>
           </Col>
         )}
+        {!modifiable && (
+          <Col>
+            <div>Quantity: {quantity}</div>
+          </Col>
+        )}
       </Row>
     </div>
   );

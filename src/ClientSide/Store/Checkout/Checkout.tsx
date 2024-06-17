@@ -7,12 +7,13 @@ import {
   Col,
   Alert,
 } from "react-bootstrap";
-import { useState, ChangeEvent, FormEvent } from "react";
+import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { products } from "../../ClientSide";
 import { CartProduct } from "./Cart";
 import { FaCreditCard } from "react-icons/fa";
 import CartData from "./CartData";
 import "../Store.css";
+import { getCartEntries } from "../../Functions";
 
 interface FormState {
   fullName: string;
@@ -32,15 +33,7 @@ interface FormErrors {
 }
 
 function Checkout() {
-  const initialCart: CartProduct[] = products.map((product) => ({
-    id: product.id,
-    name: product.name,
-    type: product.type,
-    description: product.description,
-    price: product.price,
-    quantity: product.id, // This can be set to 1 or any default value
-  }));
-
+  const [cart, setCart] = useState<CartProduct[]>([]);
   const [showCart, setShowCart] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("card");
 
@@ -59,6 +52,14 @@ function Checkout() {
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    async function fetchCart() {
+      const cart = await getCartEntries();
+      setCart(cart);
+    }
+    fetchCart();
+  }, []);
 
   const toggleCartVisibility = () => {
     setShowCart(!showCart);
@@ -130,10 +131,10 @@ function Checkout() {
       </Button>
       {showCart && (
         <>
-          {initialCart.length === 0 ? (
+          {cart.length === 0 ? (
             <h3>Your cart is empty</h3>
           ) : (
-            initialCart.map((product) => (
+            cart.map((product) => (
               <CartData key={product.id} product={product} modifiable={false} />
             ))
           )}
@@ -226,7 +227,7 @@ function Checkout() {
               <Card.Text>
                 Your total is {"   "}
                 <strong style={{ fontSize: "120%" }}>
-                  {initialCart
+                  {cart
                     .reduce(
                       (acc, product) => acc + product.price * product.quantity,
                       0
