@@ -65,5 +65,59 @@ async function getAverageRatingByID(id: any) {
   return response.data[0].Average;
 }
 
+// Function that adds a product to the cart
+async function addCartEntry(productID: any, quantity: any) {
+  const client = JSON.parse(localStorage.getItem("client") || "{}");
+  const clientID = client.IDClient;
+  const currentCart = await axios.get(
+    `${backendURL}cart/${clientID}/${productID}`
+  );
+
+  if (currentCart.data.length === 0) {
+    await axios.post(`${backendURL}cart`, {
+      IDClient: clientID,
+      IDProduct: productID,
+      Quantity: 1,
+    });
+  } else {
+    const newQuantity = currentCart.data[0].Quantity + quantity;
+    console.log("New Quantity: ", newQuantity);
+    if (newQuantity > 0)
+      await axios.put(`${backendURL}cart/${clientID}/${productID}`, {
+        Quantity: currentCart.data[0].Quantity + quantity,
+      });
+    else await axios.delete(`${backendURL}cart/${clientID}/${productID}`);
+  }
+}
+
+// Function that retrieves the data from the backend at "/cart/:idClient"
+// and returns the data as an array of objects with the required format
+async function getCartEntries(clientID: any) {
+  const response = await axios.get(`${backendURL}cart/${clientID}`);
+  return response.data.map(
+    (entry: {
+      IDProduct: any;
+      ProductType: any;
+      ProductName: any;
+      ProductDescription: any;
+      ProductPrice: any;
+      CartQuantity: any;
+    }) => ({
+      id: entry.IDProduct,
+      type: entry.ProductType,
+      name: entry.ProductName,
+      description: entry.ProductDescription,
+      price: entry.ProductPrice,
+      quantity: entry.CartQuantity,
+    })
+  );
+}
+
+// Clear cart by client ID
+async function clearCart(clientID: any) {
+  await axios.delete(`${backendURL}cart/${clientID}`);
+}
+
 export { getProductsClient, getProductByID };
 export { getReviewsByID, getAverageRatingByID };
+export { addCartEntry, getCartEntries, clearCart };
