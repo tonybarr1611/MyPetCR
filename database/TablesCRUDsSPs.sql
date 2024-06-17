@@ -1000,6 +1000,36 @@ BEGIN
 END;
 GO
 
+-- Read By ID
+CREATE PROCEDURE ReadByIDPet
+    @IDPet INT
+AS
+BEGIN
+    SELECT P.IDPet, P.Name 'PetName', P.Birthdate, P.Weight, P.Notes,
+           P.IDBreed, B.IDPetType, B.Name 'BreedName',
+           P.IDClient, C.IDUser, C.Name 'UserName', C.PhoneNumber 'UserPhoneNumber'
+    FROM Pet P
+    LEFT JOIN Breed B on P.IDBreed = B.IDBreed
+    LEFT JOIN Client C on P.IDClient = C.IDClient
+    WHERE IDPet = @IDPet;
+END;
+GO
+
+-- Read By IDClient
+CREATE PROCEDURE ReadPetByIDClient
+    @IDClient INT
+AS
+BEGIN
+    SELECT P.IDPet, P.Name 'PetName', P.Birthdate, P.Weight, P.Notes,
+           P.IDBreed, B.IDPetType, B.Name 'BreedName',
+           P.IDClient, C.IDUser, C.Name 'UserName', C.PhoneNumber 'UserPhoneNumber'
+    FROM Pet P
+    LEFT JOIN Breed B on P.IDBreed = B.IDBreed
+    LEFT JOIN Client C on P.IDClient = C.IDClient
+    WHERE P.IDClient = @IDClient;
+END;
+GO
+
 -- Update By ID
 CREATE PROCEDURE UpdatePet
     @IDPet INT,

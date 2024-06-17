@@ -154,6 +154,7 @@ route.delete('/petType/:id', petType.DeletePetType);
 route.post('/pet', pet.CreatePet);
 route.get('/pet', pet.ReadAllPets);
 route.get('/pet/:id', pet.ReadPetById);
+route.get('/petByClient/:id', pet.ReadPetByClientId);
 route.put('/pet/:id', pet.UpdatePet);
 route.delete('/pet/:id', pet.DeletePet);
 
