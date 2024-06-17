@@ -25,7 +25,10 @@ import address from '../controllers/address';
 import shipping from '../controllers/shipping';
 import cart from '../controllers/cart';
 
-const route = express.Router();
+import { Router } from 'express';
+import { sendEmail } from '../controllers/email';
+
+const route = Router();
 
 // user 
 route.get('/user/mail/:mail', user.UserByMail); // alternative to id this one gives the hashedpassword
@@ -191,5 +194,8 @@ route.get('/cart/:IDClient/:IDProduct', cart.ReadCartByIDClientAndIDProduct);
 route.get('/cart/:IDClient/', cart.ReadCartByIDClient);
 route.put('/cart/:IDClient/:IDProduct', cart.UpdateCart);
 route.delete('/cart/:IDClient/:IDProduct', cart.DeleteCart);
+
+// Email
+route.post('/send-email', sendEmail);
 
 export default route;
