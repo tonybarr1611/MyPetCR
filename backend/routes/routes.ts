@@ -145,7 +145,7 @@ route.get('/invoiceDetail', invoiceDetail.ReadAllInvoiceDetails);
 route.get('/invoiceDetail/:id', invoiceDetail.ReadInvoiceDetailById);
 route.put('/invoiceDetail/:id', invoiceDetail.UpdateInvoiceDetail);
 route.delete('/invoiceDetail/:id', invoiceDetail.DeleteInvoiceDetail);
-route.get('/invoiceDetail/invoice/:id', invoiceDetail.ReadInvoiceDetailsByIDInvoice); //Id invoice
+route.get('/invoiceDetail/appointment/:id', invoiceDetail.ReadInvoiceDetailsByAppointmentID); //Id invoice
 
 // Pet Type
 route.post('/petType', petType.CreatePetType);

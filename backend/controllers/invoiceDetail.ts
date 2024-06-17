@@ -106,11 +106,11 @@ async function DeleteInvoiceDetail(req: Request, res: Response) {
         "Invoice detail not deleted");
 }
 
-async function ReadInvoiceDetailsByIDInvoice(req: Request, res: Response) {
+async function ReadInvoiceDetailsByAppointmentID(req: Request, res: Response) {
     const IDInvoice = req.params.id;
     await executeProcedure(res,
-        'ReadInvoiceDetailsByInvoiceID',
-        [{ name: 'IDInvoice', type: sql.Int, value: IDInvoice }],
+        'ReadInvoiceDetailsByAppointmentID',
+        [{ name: 'IDAppointment', type: sql.Int, value: IDInvoice }],
         200,
         "Invoice details retrieved successfully",
         "Invoice details not retrieved");
@@ -122,5 +122,5 @@ export default {
     ReadInvoiceDetailById,
     UpdateInvoiceDetail,
     DeleteInvoiceDetail,
-    ReadInvoiceDetailsByIDInvoice
+    ReadInvoiceDetailsByAppointmentID
 }
