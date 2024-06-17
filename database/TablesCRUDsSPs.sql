@@ -719,6 +719,39 @@ BEGIN
 END;
 GO
 
+CREATE PROCEDURE ReadInvoiceDetailsByInvoiceID
+    @IDInvoice INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Verifica si la factura existe
+    IF NOT EXISTS (SELECT 1 FROM Invoice WHERE IDInvoice = @IDInvoice)
+    BEGIN
+        PRINT 'Invoice not found';
+        RETURN;
+    END
+
+    -- Recupera los detalles de la factura junto con la información de la factura
+    SELECT 
+        inv.IDInvoice,
+        invd.IDInvoiceDetail,
+        invd.IDProduct,
+		p.Name,
+        invd.Description,
+        invd.Quantity,
+        invd.Price
+    FROM 
+        Invoice inv
+    INNER JOIN 
+        InvoiceDetail invd ON inv.IDInvoice = invd.IDInvoice
+	INNER JOIN
+		Product p ON invd.IDProduct = p.IDProduct
+		
+    WHERE 
+        inv.IDInvoice = @IDInvoice;
+END
+
 -------------------------------Log-------------------------------
 
 -- Create
@@ -1165,6 +1198,7 @@ BEGIN
 END;
 GO
 
+
 -- Delete
 CREATE PROCEDURE DeleteProduct
     @IDProduct INT
@@ -1174,6 +1208,25 @@ BEGIN
     WHERE IDProduct = @IDProduct;
 END;
 GO
+
+CREATE PROCEDURE ReadMedicineOrServiceProducts
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        p.IDProduct,
+        p.Name,
+        p.Description,
+        p.Price,
+        pt.Name AS ProductTypeName
+    FROM 
+        Product p
+    INNER JOIN 
+        ProductType pt ON p.IDProductType = pt.IDProductType
+    WHERE 
+        pt.Name IN ('Medicine', 'Services');
+END;
 
 -------------------------------ProductType-------------------------------
 
@@ -1767,3 +1820,7 @@ BEGIN
     WHERE IDClient = @IDClient AND IDProduct = @IDProduct;
 END;
 GO
+
+
+
+
