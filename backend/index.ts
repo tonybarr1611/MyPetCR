@@ -4,8 +4,6 @@ import cors from "cors";
 import routes from "./routes/routes";
 import auth from "./auth";
 
-const cors = require('cors')
-
 dotenv.config();
 
 const app = express();

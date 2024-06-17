@@ -1,4 +1,4 @@
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useState, useEffect } from "react";
 import {
   Container,
   Row,
@@ -12,6 +12,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { PlusLg } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
 import AppointmentsDetail from "./AppointmentsData";
+import axios from "axios";
 
 const Appointments = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -27,89 +28,33 @@ const Appointments = () => {
       store: "Pet Store 1",
       status: "Pending",
       dateTime: "2024-06-15 10:00 AM",
-    },
-    {
-      id: 2,
-      owner: "<Tony",
-      pet: "Buddy",
-      veterinary: 123,
-      store: "Pet Store 1",
-      status: "Pending",
-      dateTime: "2024-06-15 10:00 AM",
-    },
-    {
-      id: 3,
-      owner: "<Tony",
-      pet: "Buddy",
-      veterinary: 123,
-      store: "Pet Store 1",
-      status: "Pending",
-      dateTime: "2024-06-15 10:00 AM",
-    },
-    {
-      id: 4,
-      owner: "<Tony",
-      pet: "Buddy",
-      veterinary: 123,
-      store: "Pet Store 1",
-      status: "Pending",
-      dateTime: "2024-06-15 10:00 AM",
-    },
-    {
-      id: 5,
-      owner: "<Tony",
-      pet: "Buddy",
-      veterinary: 123,
-      store: "Pet Store 1",
-      status: "Pending",
-      dateTime: "2024-06-15 10:00 AM",
-    },
-    {
-      id: 6,
-      owner: "<Tony",
-      pet: "Buddy",
-      veterinary: 123,
-      store: "Pet Store 1",
-      status: "Pending",
-      dateTime: "2024-06-15 10:00 AM",
-    },
-    {
-      id: 7,
-      owner: "<Tony",
-      pet: "Buddy",
-      veterinary: 123,
-      store: "Pet Store 1",
-      status: "Pending",
-      dateTime: "2024-06-15 10:00 AM",
-    },
-    {
-      id: 8,
-      owner: "<Tony",
-      pet: "Buddy",
-      veterinary: 123,
-      store: "Pet Store 1",
-      status: "Pending",
-      dateTime: "2024-06-15 10:00 AM",
-    },
-    {
-      id: 9,
-      owner: "<Tony",
-      pet: "Buddy",
-      veterinary: 123,
-      store: "Pet Store 1",
-      status: "Pending",
-      dateTime: "2024-06-15 10:00 AM",
-    },
-    {
-      id: 10,
-      owner: "<Tony",
-      pet: "Buddy",
-      veterinary: 123,
-      store: "Pet Store 1",
-      status: "Pending",
-      dateTime: "2024-06-15 10:00 AM",
-    },
+    }
   ]);
+
+  useEffect(() => {
+    const fetchClients = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/v1/appointment/`);
+        const newList = response.data.map((obj: any) => ({
+          id: obj.IDAppointment,
+          owner: obj.ClientName,
+          pet: obj.PetName,
+          veterinary: obj.EmployeeName,
+          store: obj.StoreLocation,
+          status: obj.StatusName,
+          dateTime: obj.DateTime,
+        }));
+        setAppointments(newList);
+      } catch (error) {
+        console.error("Error fetching appointments:", error);
+        toast.error("Failed to fetch appointments", {
+          autoClose: 1500,
+          theme: "colored",
+        });
+      }
+    };
+    fetchClients();
+  }, []);
 
   const handleSearchChange = (e: {
     target: { value: SetStateAction<string> };
