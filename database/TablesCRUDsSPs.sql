@@ -655,6 +655,7 @@ BEGIN
     FETCH NEXT FROM CURSOR_ITEM INTO @IDProduct, @Quantity;
     WHILE @@FETCH_STATUS = 0
     BEGIN
+        PRINT('IDProduct: ' + CAST(@IDProduct AS NVARCHAR(8)) + ' Quantity: ' + CAST(@Quantity AS NVARCHAR(8)));
         DECLARE @EnoughQuantity NVARCHAR(8);
         EXEC EnoughQuantityByIDProduct @IDProduct, @Quantity, @EnoughQuantity = @EnoughQuantity OUTPUT;
 
@@ -851,6 +852,7 @@ BEGIN
     WHERE 
         inv.IDInvoice = @IDInvoice;
 END
+GO
 
 -------------------------------Log-------------------------------
 
@@ -1327,6 +1329,7 @@ BEGIN
     WHERE 
         pt.Name IN ('Medicine', 'Services');
 END;
+GO
 
 -------------------------------ProductType-------------------------------
 
@@ -1879,6 +1882,50 @@ BEGIN
     BEGIN
         SET @EnoughQuantity = 'False';
     END;
+END;
+GO
+
+-- Read available quantity of a product
+CREATE OR ALTER PROCEDURE EnoughQuantityByCart(
+    @IDClient INT
+)
+AS
+BEGIN
+    DECLARE @IDProduct INT;
+    DECLARE @Quantity INT;
+    DECLARE @EnoughQuantity NVARCHAR(8);
+
+    DECLARE CURSOR_ITEM CURSOR FOR
+    SELECT IDProduct, Quantity
+    FROM Cart
+    WHERE IDClient = @IDClient;
+
+    OPEN CURSOR_ITEM;
+
+    SET @EnoughQuantity = 'True';
+
+    FETCH NEXT FROM CURSOR_ITEM INTO @IDProduct, @Quantity;
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        DECLARE @ActualQuantity INT;
+
+        SELECT @ActualQuantity = SUM(Quantity)
+        FROM Inventory
+        WHERE IDProduct = @IDProduct;
+
+        IF @Quantity > @ActualQuantity
+        BEGIN
+            SET @EnoughQuantity = 'False';
+            BREAK;
+        END
+
+        FETCH NEXT FROM CURSOR_ITEM INTO @IDProduct, @Quantity;
+    END;
+
+    CLOSE CURSOR_ITEM;
+    DEALLOCATE CURSOR_ITEM;
+
+    SELECT @EnoughQuantity 'BoolValue';
 END;
 GO
 

@@ -116,6 +116,22 @@ async function DeleteAllCartByClient(req: Request, res: Response) {
         "Cart not deleted");
 }
 
+async function EnoughQuantityByCart(req: Request, res: Response) {
+    const IDClient = req.params.IDClient;
+
+    const cart = await getItem(res,
+        'EnoughQuantityByCart',
+        [
+            { name: 'IDClient', type: sql.Int, value: IDClient },
+        ]);
+    
+        if (cart) {
+            return res.status(200).send(cart.recordset || []);
+        } else {
+            return res.status(500).send({ error: 'Cart not found' });
+        }
+}
+
 export default {
     CreateCart,
     RealAllCarts,
@@ -123,5 +139,6 @@ export default {
     ReadCartByIDClient,
     UpdateCart,
     DeleteCart,
-    DeleteAllCartByClient
+    DeleteAllCartByClient,
+    EnoughQuantityByCart
 };
