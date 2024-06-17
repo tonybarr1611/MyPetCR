@@ -1,5 +1,6 @@
 import bcript from 'bcrypt';
 import sql from 'mssql'; 
+import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
 import { executeProcedure, getObject } from './executeProcedure';
 
@@ -35,7 +36,20 @@ async function verifyPassword(req: Request, res: Response) {
     const result = await bcript.compare(Password, hashedPassword);
     
     if (!result) return res.status(401).send("Invalid password"); 
-    else return res.status(200).send("Password correct");
+    else{
+        const token = jwt.sign(
+            {
+                IDUser: user?.recordset[0].IDUser,
+                IDUserType: user?.recordset[0].IDUserType,
+            },
+            "RANDOM-TOKEN",
+            { expiresIn: "24h" }
+        );
+        return res.status(200).send({
+          message: "Login Successful",
+          token,
+        });
+    };
 };
 
 async function AllUsers(req: Request, res: Response) {
