@@ -36,6 +36,7 @@ async function sendLogin(
     if (response.ok) {
       const data = await response.json();
       localStorage.setItem("token", data.token);
+      localStorage.setItem("loginTime", new Date().getTime().toString());
       localStorage.setItem("userType", data.userType);
       localStorage.setItem("client", JSON.stringify(data.client));
       return { success: true, message: data.message, userType: data.userType };
@@ -43,7 +44,7 @@ async function sendLogin(
       const errorMessage = await response.text();
       return { success: false, message: errorMessage };
     }
-  } catch (error) {
+  } catch (error: any) {
     return { success: false, message: error.message };
   }
 }
@@ -114,6 +115,14 @@ const UserLogin: React.FC = () => {
     }
   };
 
+  const handleGuest = () => {
+    localStorage.setItem("token", "guest");
+    localStorage.setItem("loginTime", new Date().getTime().toString());
+    localStorage.setItem("userType", "1");
+    localStorage.setItem("client", JSON.stringify({}));
+    navigate("/clientside");
+  };
+
   return (
     <Container
       className="d-flex justify-content-center align-items-center"
@@ -170,7 +179,7 @@ const UserLogin: React.FC = () => {
                     color: "#4D7381",
                     cursor: "pointer",
                   }}
-                  onClick={() => navigate("/dashboard")}
+                  onClick={handleGuest}
                 >
                   Continue as Guest
                 </span>

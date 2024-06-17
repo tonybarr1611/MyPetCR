@@ -93,7 +93,7 @@ const Clients = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {clients.map((client) => (
+                  {clients.map((client: any) => (
                     <ClientsData key={client.id} {...client} />
                   ))}
                 </tbody>
