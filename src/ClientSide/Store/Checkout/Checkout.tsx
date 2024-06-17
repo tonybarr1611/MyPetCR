@@ -13,8 +13,14 @@ import { CartProduct } from "./Cart";
 import { FaCreditCard } from "react-icons/fa";
 import CartData from "./CartData";
 import "../Store.css";
-import { clearCart, getCartEntries } from "../../Functions";
+import {
+  checkStock,
+  clearCart,
+  createInvoice,
+  getCartEntries,
+} from "../../Functions";
 import { Navigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
 interface FormState {
   fullName: string;
@@ -114,14 +120,20 @@ function Checkout() {
     return Object.keys(errors).length === 0;
   };
 
-  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (validate()) {
-      // Submit form
-      // TODO handle invoice creation
-      clearCart();
-      window.location.assign("/clientside");
-      setSubmitted(true);
+      const stockCheck = await checkStock();
+      if (stockCheck) {
+        await createInvoice();
+        clearCart();
+        toast.success("Purchase successful");
+        window.location.assign("/clientside");
+        setSubmitted(true);
+      } else {
+        toast.error("Not enough stock to complete purchase");
+        setSubmitted(false);
+      }
     } else {
       setSubmitted(false);
     }
@@ -141,6 +153,7 @@ function Checkout() {
 
   return (
     <Container>
+      <ToastContainer />
       <h1 style={{ paddingTop: "2%" }}>Checkout</h1>
       <Button onClick={toggleCartVisibility} className="mb-3">
         {showCart ? "Hide Cart" : "Show Cart"}

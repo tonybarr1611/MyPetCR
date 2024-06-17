@@ -192,6 +192,7 @@ route.delete('/shipping/:id', shipping.DeleteShipping);
 
 // Cart, it has a composite key
 route.post('/cart', cart.CreateCart);
+route.get('/cart/stock/:IDClient', cart.EnoughQuantityByCart);
 route.get('/cart', cart.RealAllCarts);
 route.get('/cart/:IDClient/:IDProduct', cart.ReadCartByIDClientAndIDProduct);
 route.get('/cart/:IDClient/', cart.ReadCartByIDClient);
