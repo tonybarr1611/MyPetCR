@@ -57,6 +57,7 @@ const UserLogin: React.FC = () => {
 
   useEffect(() => {
     localStorage.removeItem("token");
+    localStorage.removeItem("loginTime");
     localStorage.removeItem("userType");
     localStorage.removeItem("client");
   });
@@ -118,7 +119,7 @@ const UserLogin: React.FC = () => {
   const handleGuest = () => {
     localStorage.setItem("token", "guest");
     localStorage.setItem("loginTime", new Date().getTime().toString());
-    localStorage.setItem("userType", "1");
+    localStorage.setItem("userType", "4");
     localStorage.setItem("client", JSON.stringify({}));
     navigate("/clientside");
   };

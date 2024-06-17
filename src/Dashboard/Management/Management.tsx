@@ -2,8 +2,10 @@ import { SetStateAction, useState } from "react";
 import { Container, Row, Col, Form, Button, Table } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import ManagementData from "./ManagementData";
+import { guestRedirection } from "../../Commons/AuthCommons";
 
 const Management = () => {
+  guestRedirection();
   const [searchTerm, setSearchTerm] = useState("");
 
   const [users, setUsers] = useState([
