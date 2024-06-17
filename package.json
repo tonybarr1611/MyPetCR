@@ -14,6 +14,7 @@
     "@types/node-jose": "^1.1.13",
     "axios": "^1.7.2",
     "bootstrap": "^5.3.3",
+    "cors": "^2.8.5",
     "install": "^0.13.0",
     "jose": "^5.4.0",
     "jsonwebtoken": "^9.0.2",

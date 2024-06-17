@@ -4,9 +4,12 @@ import cors from "cors";
 import routes from "./routes/routes";
 import auth from "./auth";
 
+const cors = require('cors')
+
 dotenv.config();
 
 const app = express();
+app.use(cors());
 const port = process.env.SERVER_PORT;
 
 app.use((req, res, next) => {
@@ -25,6 +28,7 @@ app.use(cors(options));
 app.use(express.json());
 
 app.use('/api/v1', routes);
+
 
 app.get("/", (req, res) => {
     res.send("Hello World");
