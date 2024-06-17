@@ -12,6 +12,7 @@ import ClientAppointments from "./Pet Management/ClientAppointments/ClientAppoin
 import RegisterPet from "./Pet Management/ClientPets/RegisterPet";
 import RequestAppointment from "./Pet Management/ClientAppointments/RequestAppointment";
 import Profile from "./Profile";
+import { handleExpiration, isGuest } from "../Commons/AuthCommons";
 
 const setBackgroundWhite = () => {
   var html = document.getElementsByTagName("html");
@@ -236,6 +237,7 @@ const products = [
 
 function ClientSide() {
   setBackgroundWhite();
+  handleExpiration();
 
   return (
     <div>
@@ -253,9 +255,15 @@ function ClientSide() {
         <Route path="/accessdeniedsignin" element={<AccessDenied_SignIn />} />
         <Route path="/management" element={<ClientOptions />} />
         <Route path="/management/pets" element={<ClientPets />} />
-        <Route path="/management/appointments" element={<ClientAppointments />} />
+        <Route
+          path="/management/appointments"
+          element={<ClientAppointments />}
+        />
         <Route path="/management/pets/addpet" element={<RegisterPet />} />
-        <Route path="/management/appointments/requestappointment" element={<RequestAppointment />} />
+        <Route
+          path="/management/appointments/requestappointment"
+          element={<RequestAppointment />}
+        />
         <Route path="/profile" element={<Profile />} />
       </Routes>
     </div>

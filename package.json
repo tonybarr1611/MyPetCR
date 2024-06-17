@@ -10,10 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/node-jose": "^1.1.13",
     "axios": "^1.7.2",
     "bootstrap": "^5.3.3",
     "cors": "^2.8.5",
     "install": "^0.13.0",
+    "jose": "^5.4.0",
+    "jsonwebtoken": "^9.0.2",
     "npm": "^10.8.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.2",

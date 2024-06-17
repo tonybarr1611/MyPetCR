@@ -137,13 +137,15 @@ GO
 CREATE PROCEDURE ReadAllAppointments
 AS
 BEGIN
-    SELECT A.IDAppointment, A.IDPet, A.IDEmployee, A.IDStore, A.IDStatus, A.DateTime,
-           P.IDPet, P.IDBreed, P.IDClient, P.Name 'PetName', P.Birthdate 'PetBirthdate', P.Weight 'PetWeight', P.Notes 'PetNotes',
-           E.IDUser, E.Name 'UserName', E.PhoneNumber 'UserPhoneNumber',
-           S.IDStore, S.Location 'StoreLocation',
-           ST.Name 'StatusName'
+    SELECT A.IDAppointment, A.DateTime,
+           A.IDPet, P.IDBreed, P.IDClient, P.Name 'PetName', P.Birthdate 'PetBirthdate', P.Weight 'PetWeight', P.Notes 'PetNotes',
+           C.Name 'ClientName',
+           A.IDEmployee, E.IDUser, E.Name 'EmployeeName', E.PhoneNumber 'EmployeePhoneNumber',
+           A.IDStore, S.Location 'StoreLocation',
+           A.IDStatus,ST.Name 'StatusName'
     FROM Appointment A
     LEFT JOIN Pet P on A.IDPet = P.IDPet
+    LEFT JOIN Client C on P.IDClient = C.IDClient
     LEFT JOIN Employee E on A.IDEmployee = E.IDEmployee
     LEFT JOIN Store S on A.IDStore = S.IDStore
     LEFT JOIN StatusType ST on A.IDStatus = ST.IDStatus
@@ -155,13 +157,15 @@ CREATE PROCEDURE ReadByIDAppointment
     @IDAppointment INT
 AS
 BEGIN
-    SELECT A.IDAppointment, A.IDPet, A.IDEmployee, A.IDStore, A.IDStatus, A.DateTime,
-           P.IDPet, P.IDBreed, P.IDClient, P.Name 'PetName', P.Birthdate 'PetBirthdate', P.Weight 'PetWeight', P.Notes 'PetNotes',
-           E.IDUser, E.Name 'UserName', E.PhoneNumber 'UserPhoneNumber',
-           S.IDStore, S.Location 'StoreLocation',
-           ST.Name 'StatusName'
+    SELECT A.IDAppointment, A.DateTime,
+           A.IDPet, P.IDBreed, P.IDClient, P.Name 'PetName', P.Birthdate 'PetBirthdate', P.Weight 'PetWeight', P.Notes 'PetNotes',
+           C.Name 'ClientName',
+           A.IDEmployee, E.IDUser, E.Name 'EmployeeName', E.PhoneNumber 'EmployeePhoneNumber',
+           A.IDStore, S.Location 'StoreLocation',
+           A.IDStatus,ST.Name 'StatusName'
     FROM Appointment A
     LEFT JOIN Pet P on A.IDPet = P.IDPet
+    LEFT JOIN Client C on P.IDClient = C.IDClient
     LEFT JOIN Employee E on A.IDEmployee = E.IDEmployee
     LEFT JOIN Store S on A.IDStore = S.IDStore
     LEFT JOIN StatusType ST on A.IDStatus = ST.IDStatus
@@ -312,6 +316,26 @@ AS
 BEGIN
     INSERT INTO Client (Name, PhoneNumber, IDUser)
     VALUES (@Name, @PhoneNumber, @IDUser);
+END;
+GO
+
+CREATE PROCEDURE CreateClientAndUser
+    @Name NVARCHAR(255),
+    @PhoneNumber NVARCHAR(20),
+    @Password NVARCHAR(255),
+    @LoginID NVARCHAR(255),
+    @IDUserType INT
+AS
+BEGIN
+    DECLARE @NewUserID INT;
+
+    INSERT INTO [User] (Password, LoginID, IDUserType)
+    VALUES (@Password, @LoginID, @IDUserType);
+
+    SET @NewUserID = SCOPE_IDENTITY();  -- Or @@IDENTITY depending on your SQL Server version
+
+    INSERT INTO Client (Name, PhoneNumber, IDUser)
+    VALUES (@Name, @PhoneNumber, @NewUserID);
 END;
 GO
 
@@ -1492,7 +1516,7 @@ GO
 -- Create
 CREATE PROCEDURE CreateUser
     @LoginID NVARCHAR(255),
-    @Password VARBINARY(255),
+    @Password NVARCHAR(255),
     @IDUserType INT
 AS
 BEGIN
@@ -1530,7 +1554,7 @@ CREATE PROCEDURE ReadUserByMail
     @LoginID NVARCHAR(225)
 AS
 BEGIN
-    SELECT U.IDUser, U.LoginID,
+    SELECT U.IDUser, U.LoginID, U.Password,
            U.IDUserType, UT.Name 'UserTypeName'
     FROM [User] U
     LEFT JOIN UserType UT on U.IDUserType = UT.IDUserType

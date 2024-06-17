@@ -4,6 +4,10 @@ import { FaDog, FaCartShopping, FaCircleUser } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
 function NavBar() {
+  const handleSignOut = () => {
+    window.location.assign("/");
+  };
+
   return (
     <Navbar bg="light" expand="lg" style={{ width: "100%" }}>
       <Container>
@@ -23,17 +27,23 @@ function NavBar() {
             <Link to={"/clientside/shop"} className="nav-link">
               Shop
             </Link>
-            <Link to={"/clientside/management"} className="nav-link">
-              Pet Management
-            </Link>
+            {localStorage.getItem("token") !== "guest" && (
+              <Link to={"/clientside/management"} className="nav-link">
+                Pet Management
+              </Link>
+            )}
           </Nav>
           <Nav className="ml-auto">
             <Link to={"/clientside/cart"} className="nav-link mr-2">
               <FaCartShopping size={24} />
             </Link>
             <NavDropdown title={<FaCircleUser size={24} />}>
-              <NavDropdown.Item><Link to={"/clientside/profile"}>Profile</Link></NavDropdown.Item>
-              <NavDropdown.Item>Sign out</NavDropdown.Item>
+              <NavDropdown.Item>
+                <Link to={"/clientside/profile"}>Profile</Link>
+              </NavDropdown.Item>
+              <NavDropdown.Item onClick={handleSignOut}>
+                Sign out
+              </NavDropdown.Item>
             </NavDropdown>
           </Nav>
         </Navbar.Collapse>

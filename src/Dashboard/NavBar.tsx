@@ -4,6 +4,10 @@ import { FaDog, FaCircleUser } from "react-icons/fa6"; // Importing the UserCirc
 import { Link } from "react-router-dom";
 
 function NavBar() {
+  const handleLogOut = () => {
+    window.location.assign("/");
+  };
+
   return (
     <Navbar bg="light" expand="lg" style={{ width: "100%" }}>
       <Container>
@@ -26,16 +30,20 @@ function NavBar() {
             <Link to={"/dashboard/appointments"} className="nav-link">
               Appointments
             </Link>
-            <Link to={"/dashboard/management"} className="nav-link">
-              Management
-            </Link>
+            {parseInt(localStorage.getItem("userType") || "3") < 3 && (
+              <Link to={"/dashboard/management"} className="nav-link">
+                Management
+              </Link>
+            )}
             <Link to={"/dashboard/medicalfiles"} className="nav-link">
               Medical files
             </Link>
           </Nav>
           <Nav className="ml-auto">
             <NavDropdown title={<FaCircleUser size={24} />}>
-              <NavDropdown.Item>Sign out</NavDropdown.Item>
+              <NavDropdown.Item onClick={handleLogOut}>
+                Sign out
+              </NavDropdown.Item>
             </NavDropdown>
           </Nav>
         </Navbar.Collapse>

@@ -16,6 +16,7 @@ import MedicalFileAppointmentEdit from "./MedicalFiles/MedicalFileAppointmentEdi
 import MedicalFileAppointmentAdd from "./MedicalFiles/MedicalFileAppointmentAdd";
 import AccessDenied from "./AccessDenied";
 import StoreClinicOptions from "./StoreClinicOptions";
+import { guestRedirection, handleExpiration } from "../Commons/AuthCommons";
 
 const setBackgroundWhite = () => {
   var html = document.getElementsByTagName("html");
@@ -27,6 +28,9 @@ const setBackgroundWhite = () => {
 function Dashboard() {
   // Change html, body property
   setBackgroundWhite();
+  guestRedirection();
+  handleExpiration();
+
   return (
     <div>
       <NavBar />

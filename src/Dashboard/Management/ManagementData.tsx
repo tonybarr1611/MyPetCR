@@ -1,13 +1,22 @@
+import React from "react";
 import { Button } from "react-bootstrap";
-import { FaArrowUp, FaGavel } from "react-icons/fa6";
+import { FaArrowUp, FaArrowDown } from "react-icons/fa";
 
-type ManagementProps = {
+type ManagementDataProps = {
   id: number;
   user: string;
   role: string;
+  handleUpgrade: (id: number) => void;
+  handleDowngrade: (id: number) => void;
 };
 
-function ManagementData({ id, user, role }: ManagementProps) {
+const ManagementData: React.FC<ManagementDataProps> = ({
+  id,
+  user,
+  role,
+  handleUpgrade,
+  handleDowngrade,
+}) => {
   return (
     <tr key={id}>
       <td>{id}</td>
@@ -18,25 +27,23 @@ function ManagementData({ id, user, role }: ManagementProps) {
           <Button
             variant="danger"
             size="sm"
-            className=" mr-2"
-            style={{ width: "20%", opacity: 0.85 }}
+            className="mr-2"
+            onClick={() => handleDowngrade(id)}
           >
-            {/* Revoke {"     "} */}
-            <FaGavel />
+            <FaArrowDown />
           </Button>
           <Button
             variant="success"
             size="sm"
-            className=" mr-2"
-            style={{ width: "20%", opacity: 0.85 }}
+            className="mr-2"
+            onClick={() => handleUpgrade(id)}
           >
-            {/* Grant {"     "} */}
             <FaArrowUp />
           </Button>
         </div>
       </td>
     </tr>
   );
-}
+};
 
 export default ManagementData;

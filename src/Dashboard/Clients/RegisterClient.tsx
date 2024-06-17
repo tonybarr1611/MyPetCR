@@ -4,6 +4,7 @@ import { Container, Form, Button, Card } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import { EyeFill, EyeSlashFill } from "react-bootstrap-icons";
 import { FaDog } from "react-icons/fa6";
+import axios from "axios";
 
 const RegisterClient = () => {
   const [credentials, setCredentials] = useState({
@@ -61,8 +62,23 @@ const RegisterClient = () => {
           theme: "colored",
         });
       } else {
-        // Authentication logic to register the client
-        navigate("/clients");
+        try {
+          const url = `http://localhost:8080/api/v1/clientAndUser/`;
+          const param = {
+            "Name": credentials.name,
+            "PhoneNumber": credentials.phoneNumber,
+            "Password": credentials.password,
+            "LoginID": credentials.email,
+            "IDUserType": 2
+          }
+          await axios.post(url, param);
+        } catch (error) {
+          toast.error(`Failed to add client: ${error}`, {
+            autoClose: 1500,
+            theme: "colored",
+          });
+        }
+        navigate("/dashboard/clients");
       }
     } catch (error) {
       toast.error("An error occurred during registration", {
