@@ -1,7 +1,19 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { getReviewsByID } from "../../../Functions";
+import { ReviewProps } from "./Review";
 import Review from "./Review";
 
-function ReviewsDisplay() {
+function ReviewsDisplay({ id }: { id: number }) {
+  const [reviews, setReviews] = useState<ReviewProps[]>([]);
+
+  useEffect(() => {
+    async function fetchReviews() {
+      const reviews = await getReviewsByID(id);
+      setReviews(reviews);
+    }
+    fetchReviews();
+  }, [id]);
+
   const reviewsMockData = [
     {
       user: "User1",
@@ -29,9 +41,10 @@ function ReviewsDisplay() {
     <div className="mt-4">
       <h2>Reviews</h2>
       <div className="ml-3 mr-3">
-        {reviewsMockData.map((review, index) => (
+        {reviews.map((review) => (
           <Review
-            key={index}
+            key={`review-${review.id}`}
+            id={review.id}
             user={review.user}
             rate={review.rate}
             reviewDesc={review.reviewDesc}
