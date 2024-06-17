@@ -78,6 +78,7 @@ route.get('/product', product.AllProducts);
 route.get('/product/:id', product.ProductById);
 route.put('/product/:id', product.UpdateProduct);
 route.delete('/product/:id', product.DeleteProduct);
+route.get('/medicine', product.ReadMedicineOrServiceProducts);
 
 // productType
 route.post('/productType', productType.CreateProductType);
@@ -142,6 +143,7 @@ route.get('/invoiceDetail', invoiceDetail.ReadAllInvoiceDetails);
 route.get('/invoiceDetail/:id', invoiceDetail.ReadInvoiceDetailById);
 route.put('/invoiceDetail/:id', invoiceDetail.UpdateInvoiceDetail);
 route.delete('/invoiceDetail/:id', invoiceDetail.DeleteInvoiceDetail);
+route.get('/invoiceDetail/invoice/:id', invoiceDetail.ReadInvoiceDetailsByIDInvoice); //Id invoice
 
 // Pet Type
 route.post('/petType', petType.CreatePetType);
@@ -170,6 +172,7 @@ route.get('/appointment', appointment.ReadAllAppointments);
 route.get('/appointment/:id', appointment.ReadAppointmentByID);
 route.put('/appointment/:id', appointment.UpdateAppointment);
 route.delete('/appointment/:id', appointment.DeleteAppointment);
+route.get('/appointment/pet/:id', appointment.ReadAllAppointmentsByPet); //Id pet 
 
 // Address
 route.post('/address', address.CreateAddress);
@@ -192,5 +195,6 @@ route.get('/cart/:IDClient/:IDProduct', cart.ReadCartByIDClientAndIDProduct);
 route.get('/cart/:IDClient/', cart.ReadCartByIDClient);
 route.put('/cart/:IDClient/:IDProduct', cart.UpdateCart);
 route.delete('/cart/:IDClient/:IDProduct', cart.DeleteCart);
+route.delete('/cart/:IDClient', cart.DeleteAllCartByClient);
 
 export default route;

@@ -104,10 +104,20 @@ async function DeleteProduct(req: Request, res: Response) {
         "Product not deleted");
 };
 
+async function ReadMedicineOrServiceProducts (req: Request, res: Response) {
+    await executeProcedure(res,
+        'ReadMedicineOrServiceProducts',
+        [],
+        200,
+        "Medicine or service products retrieved successfully",
+        "Medicine or service products not retrieved");
+};
+
 export default {
     AllProducts,
     ProductById,
     UpdateProduct,
     DeleteProduct,
-    CreateProduct
+    CreateProduct,
+    ReadMedicineOrServiceProducts
 };

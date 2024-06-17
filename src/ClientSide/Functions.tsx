@@ -1,6 +1,12 @@
 import axios from "axios";
 import { backendURL } from "../main";
 
+// Get ClientID from localStorage
+function getClientID() {
+  const client = JSON.parse(localStorage.getItem("client") || "{}");
+  return client.IDClient;
+}
+
 // Function that retrieves the data from the backend at "/product"
 // and returns the data as an array of objects with the required format
 async function getProductsClient() {
@@ -65,5 +71,71 @@ async function getAverageRatingByID(id: any) {
   return response.data[0].Average;
 }
 
+// Function that adds a product to the cart
+async function addCartEntry(productID: any, quantity: any) {
+  const clientID = getClientID();
+  const currentCart = await axios.get(
+    `${backendURL}cart/${clientID}/${productID}`
+  );
+
+  if (currentCart.data.length === 0) {
+    await axios.post(`${backendURL}cart`, {
+      IDClient: clientID,
+      IDProduct: productID,
+      Quantity: 1,
+    });
+  } else {
+    const newQuantity = currentCart.data[0].Quantity + quantity;
+    console.log("New Quantity: ", newQuantity);
+    if (newQuantity > 0)
+      await axios.put(`${backendURL}cart/${clientID}/${productID}`, {
+        Quantity: currentCart.data[0].Quantity + quantity,
+      });
+    else await axios.delete(`${backendURL}cart/${clientID}/${productID}`);
+  }
+}
+
+// Function that retrieves the data from the backend at "/cart/:idClient"
+// and returns the data as an array of objects with the required format
+async function getCartEntries() {
+  const clientID = getClientID();
+  const response = await axios.get(`${backendURL}cart/${clientID}`);
+  return response.data.map(
+    (entry: {
+      IDProduct: any;
+      ProductType: any;
+      ProductName: any;
+      ProductDescription: any;
+      ProductPrice: any;
+      CartQuantity: any;
+    }) => ({
+      id: entry.IDProduct,
+      type: entry.ProductType,
+      name: entry.ProductName,
+      description: entry.ProductDescription,
+      price: entry.ProductPrice,
+      quantity: entry.CartQuantity,
+    })
+  );
+}
+
+// Clear cart by client ID
+async function clearCart() {
+  await axios.delete(`${backendURL}cart/${getClientID()}`);
+}
+
+// Get client and user data from the backend
+async function getProfileData() {
+  const client = JSON.parse(localStorage.getItem("client") || "{}");
+  const clientDB = await axios.get(`${backendURL}client/${client.IDClient}`);
+  return {
+    name: client.Name,
+    email: client.LoginID,
+    phone: clientDB.data[0].PhoneNumber,
+  };
+}
+
 export { getProductsClient, getProductByID };
 export { getReviewsByID, getAverageRatingByID };
+export { addCartEntry, getCartEntries, clearCart };
+export { getProfileData };

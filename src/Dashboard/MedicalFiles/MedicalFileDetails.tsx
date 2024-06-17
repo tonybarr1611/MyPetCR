@@ -4,8 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router";
 import { PlusCircleDotted } from "react-bootstrap-icons";
 import { ToastContainer, toast } from "react-toastify";
+import { guestRedirection, handleExpiration } from "../../Commons/AuthCommons";
 
 const MedicalFileDetails = () => {
+  guestRedirection();
+  handleExpiration();
   const navigate = useNavigate();
   const { idParam } = useParams();
 

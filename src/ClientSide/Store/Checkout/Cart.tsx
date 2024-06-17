@@ -1,8 +1,9 @@
 import { Col, Container, Row } from "react-bootstrap";
 import { products } from "../../ClientSide";
 import CartData from "./CartData";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getCartEntries } from "../../Functions";
 
 type CartProduct = {
   id: number;
@@ -19,17 +20,16 @@ type Cart = {
 
 function Cart() {
   // Initialize the cart with products
-  const initialCart: CartProduct[] = products.map((product) => ({
-    id: product.id,
-    name: product.name,
-    type: product.type,
-    description: product.description,
-    price: product.price,
-    quantity: product.id, // This can be set to 1 or any default value
-  }));
+  const [cartProducts, setCartProducts] = useState<CartProduct[]>([]);
   const navigate = useNavigate();
 
-  const [cartProducts, setCartProducts] = useState<CartProduct[]>(initialCart);
+  useEffect(() => {
+    async function fetchCart() {
+      const cart = await getCartEntries();
+      setCartProducts(cart);
+    }
+    fetchCart();
+  }, []);
 
   const updateQuantity = (id: number, quantity: number) => {
     setCartProducts((prevProducts) =>

@@ -12,8 +12,11 @@ import { ToastContainer, toast } from "react-toastify";
 import { PlusLg } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
 import AppointmentsDetail from "./AppointmentsData";
+import { guestRedirection, handleExpiration } from "../../Commons/AuthCommons";
 
 const Appointments = () => {
+  guestRedirection();
+  handleExpiration();
   const [searchTerm, setSearchTerm] = useState("");
 
   const navigate = useNavigate();

@@ -1,5 +1,6 @@
 import { SetStateAction, useState, useEffect } from "react";
 import { Container, Row, Col, Form, Button, Table } from "react-bootstrap";
+import { guestRedirection, handleExpiration } from "../../Commons/AuthCommons";
 import { ToastContainer, toast } from "react-toastify";
 import { PlusLg } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +8,8 @@ import ClientsData from "./ClientsData";
 import axios from "axios";
 
 const Clients = () => {
+  guestRedirection();
+  handleExpiration();
   const [searchTerm, setSearchTerm] = useState("");
   const [clients, setClients] = useState([]);
   const navigate = useNavigate();

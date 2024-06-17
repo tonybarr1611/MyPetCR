@@ -1,13 +1,15 @@
 import { SetStateAction, useEffect, useState } from "react";
 import { Container, Row, Col, Form, Table } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
+import { guestRedirection, handleExpiration } from "../../Commons/AuthCommons";
 import MedicalFilesData from "./MedicalFilesData";
 import axios from "axios";
 
 const MedicalFiles = () => {
+  guestRedirection();
+  handleExpiration();
   const [searchTerm, setSearchTerm] = useState("");
   const [pets, setPets] = useState([]);
-
 
   useEffect(() => {
     const fetchPets = async () => {
@@ -30,7 +32,6 @@ const MedicalFiles = () => {
     };
     fetchPets();
   }, []);
-
 
   const handleSearchChange = (e: {
     target: { value: SetStateAction<string> };

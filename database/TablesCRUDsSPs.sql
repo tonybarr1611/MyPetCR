@@ -237,6 +237,28 @@ BEGIN
     DELETE FROM Appointment WHERE IDAppointment = @IDAppointment;
 END;
 GO
+-- ask by pet
+CREATE PROCEDURE GetAppointmentsByPet
+    @IDPet INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        a.IDAppointment,
+        e.Name AS EmployeeName,
+        s.Location AS Location,
+        st.Name AS StatusName,
+        a.DateTime
+    FROM 
+        Appointment a
+        INNER JOIN Employee e ON a.IDEmployee = e.IDEmployee
+        INNER JOIN Store s ON a.IDStore = s.IDStore
+        INNER JOIN StatusType st ON a.IDStatus = st.IDStatus
+    WHERE 
+        a.IDPet = @IDPet;
+END;
+GO
 
 -------------------------------Breed-------------------------------
 
@@ -797,6 +819,39 @@ BEGIN
 END;
 GO
 
+CREATE PROCEDURE ReadInvoiceDetailsByInvoiceID
+    @IDInvoice INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Verifica si la factura existe
+    IF NOT EXISTS (SELECT 1 FROM Invoice WHERE IDInvoice = @IDInvoice)
+    BEGIN
+        PRINT 'Invoice not found';
+        RETURN;
+    END
+
+    -- Recupera los detalles de la factura junto con la informaci�n de la factura
+    SELECT 
+        inv.IDInvoice,
+        invd.IDInvoiceDetail,
+        invd.IDProduct,
+		p.Name,
+        invd.Description,
+        invd.Quantity,
+        invd.Price
+    FROM 
+        Invoice inv
+    INNER JOIN 
+        InvoiceDetail invd ON inv.IDInvoice = invd.IDInvoice
+	INNER JOIN
+		Product p ON invd.IDProduct = p.IDProduct
+		
+    WHERE 
+        inv.IDInvoice = @IDInvoice;
+END
+
 -------------------------------Log-------------------------------
 
 -- Create
@@ -1243,6 +1298,7 @@ BEGIN
 END;
 GO
 
+
 -- Delete
 CREATE PROCEDURE DeleteProduct
     @IDProduct INT
@@ -1252,6 +1308,25 @@ BEGIN
     WHERE IDProduct = @IDProduct;
 END;
 GO
+
+CREATE PROCEDURE ReadMedicineOrServiceProducts
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        p.IDProduct,
+        p.Name,
+        p.Description,
+        p.Price,
+        pt.Name AS ProductTypeName
+    FROM 
+        Product p
+    INNER JOIN 
+        ProductType pt ON p.IDProductType = pt.IDProductType
+    WHERE 
+        pt.Name IN ('Medicine', 'Services');
+END;
 
 -------------------------------ProductType-------------------------------
 
@@ -1839,8 +1914,14 @@ CREATE PROCEDURE ReadCartByClient
     @IDClient INT
 AS
 BEGIN
-    SELECT IDClient, IDProduct, Quantity
-    FROM Cart
+    SELECT			  C.IDClient
+					, C.IDProduct
+					, P.Name				'ProductName'
+					, P.IDProductType		'ProductType'
+					, P.Description			'ProductDescription'
+					, P.Price				'ProductPrice'
+					, C.Quantity			'CartQuantity'
+    FROM Cart C LEFT JOIN Product P ON C.IDProduct = P.IDProduct
     WHERE IDClient = @IDClient;
 END;
 GO
@@ -1860,7 +1941,7 @@ BEGIN
 END;
 GO
 
--- Delete
+-- Delete specific product from cart
 CREATE PROCEDURE DeleteCart
     @IDClient INT,
     @IDProduct INT
@@ -1870,3 +1951,16 @@ BEGIN
     WHERE IDClient = @IDClient AND IDProduct = @IDProduct;
 END;
 GO
+-- Delete all products from cart
+CREATE PROCEDURE DeleteAllCartByClient
+    @IDClient INT
+AS
+BEGIN
+    DELETE FROM Cart
+    WHERE IDClient = @IDClient;
+END;
+GO
+
+
+
+

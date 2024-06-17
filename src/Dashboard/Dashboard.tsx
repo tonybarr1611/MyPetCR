@@ -35,7 +35,7 @@ function Dashboard() {
     <div>
       <NavBar />
       <Routes>
-        <Route path="/" />
+        <Route path="/" element={<StoreClinicOptions />} />
         <Route path="/appointments" element={<Appointments />} />
         <Route
           path="/appointments/registerappointment"

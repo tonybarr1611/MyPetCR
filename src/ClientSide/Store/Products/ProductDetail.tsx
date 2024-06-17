@@ -1,11 +1,16 @@
 import { Container, Button } from "react-bootstrap";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { FaCartPlus } from "react-icons/fa6";
-import { getProductByID, getAverageRatingByID } from "../../Functions";
+import {
+  getProductByID,
+  getAverageRatingByID,
+  addCartEntry,
+} from "../../Functions";
 import { useState, useEffect } from "react";
 import Ratings from "react-ratings-declarative";
 import RateEntry from "./Reviews/RateEntry";
 import ReviewsDisplay from "./Reviews/ReviewsDisplay";
+import { ToastContainer, toast } from "react-toastify";
 
 type ProductProp = {
   id: number;
@@ -75,8 +80,19 @@ function ProductDetail({ products }: ProductDetailProps) {
     handleShow();
   }
 
+  const handleAddCart = () => {
+    try {
+      addCartEntry(id, 1);
+      toast.success("Product added to cart");
+    } catch (error) {
+      console.log(error);
+      toast.error("Product wasn't added to cart");
+    }
+  };
+
   return (
     <Container>
+      <ToastContainer />
       <Button className="btn btn-secondary mt-4" onClick={() => navigate(-1)}>
         Back to Products
       </Button>
@@ -100,7 +116,7 @@ function ProductDetail({ products }: ProductDetailProps) {
               currency: "CRC",
             })}
           </p>
-          <a href="#" className="btn btn-primary">
+          <a className="btn btn-primary" onClick={handleAddCart}>
             <FaCartPlus /> Add to Cart
           </a>
         </div>

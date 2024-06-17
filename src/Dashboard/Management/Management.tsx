@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { Container, Row, Col, Form, Button, Table } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
+import { guestRedirection, handleExpiration } from "../../Commons/AuthCommons";
 import axios from "axios";
 import ManagementData from "./ManagementData";
-import { guestRedirection } from "../../Commons/AuthCommons";
 
 const Management = () => {
   guestRedirection();
+  handleExpiration();
   const [searchTerm, setSearchTerm] = useState("");
   const [users, setUsers] = useState([]);
 
@@ -60,10 +61,13 @@ const Management = () => {
         newIDUserType = userToUpdate.IDUserType; // Handle other cases gracefully
       }
 
-      const response = await axios.put(`http://localhost:8080/api/v1/user/${id}`, {
-        IDUserType: newIDUserType,
-      });
-      
+      const response = await axios.put(
+        `http://localhost:8080/api/v1/user/${id}`,
+        {
+          IDUserType: newIDUserType,
+        }
+      );
+
       if (response.status === 200) {
         fetchUsers(); // Refresh users list after upgrade
         toast.success("User level upgraded successfully", {
@@ -99,10 +103,13 @@ const Management = () => {
         newIDUserType = userToUpdate.IDUserType; // Handle other cases gracefully
       }
 
-      const response = await axios.put(`http://localhost:8080/api/v1/user/${id}`, {
-        IDUserType: newIDUserType,
-      });
-      
+      const response = await axios.put(
+        `http://localhost:8080/api/v1/user/${id}`,
+        {
+          IDUserType: newIDUserType,
+        }
+      );
+
       if (response.status === 200) {
         fetchUsers(); // Refresh users list after downgrade
         toast.success("User level downgraded successfully", {
