@@ -13,6 +13,9 @@
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "express": "^4.19.2",
+    "mssql": "^10.0.2",
+    "nodemailer": "^6.9.13",
+    "typeorm": "^0.3.20",
     "jsonwebtoken": "^9.0.2",
     "mssql": "^10.0.2"
   },
