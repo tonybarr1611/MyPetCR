@@ -32,6 +32,9 @@ function NavBar() {
                 Pet Management
               </Link>
             )}
+            <Link to={"/clientside/history"} className="nav-link">
+              Sales History
+            </Link>
           </Nav>
           <Nav className="ml-auto">
             <Link to={"/clientside/cart"} className="nav-link mr-2">

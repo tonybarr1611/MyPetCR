@@ -723,6 +723,23 @@ BEGIN
 END;
 GO
 
+-- Read By IDClient
+CREATE PROCEDURE ReadInvoicesByIDClient
+    @IDClient INT
+AS
+BEGIN
+    SELECT * 
+    FROM (  SELECT  I.IDClient, I.IDInvoice, I.DateTime 'InvoiceDateTime',
+                    I.IDStatus, ST.Name 'StatusName',
+                    SUM(ID.Price) 'TotalPrice'
+            FROM Invoice I
+            LEFT JOIN StatusType ST on I.IDStatus = ST.IDStatus
+            LEFT JOIN InvoiceDetail ID on I.IDInvoice = ID.IDInvoice
+            GROUP BY  I.IDClient, I.IDInvoice, I.DateTime, I.IDStatus, ST.Name      ) AS T
+    WHERE T.IDClient = @IDClient;
+END;
+GO
+
 -- Update By ID
 CREATE PROCEDURE UpdateInvoice
     @IDInvoice INT,

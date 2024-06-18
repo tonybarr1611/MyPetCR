@@ -30,22 +30,24 @@ const ClientPets = () => {
       notes: "Shy but friendly",
       disengaged: false,
       idClient: 1001,
-    }
+    },
   ]);
 
   const loggedInUser = "Tony";
   const mockupClientId = 9999;
 
-  const userPets = pets.filter(pet => pet.owner === loggedInUser);
+  const userPets = pets.filter((pet) => pet.owner === loggedInUser);
 
   const handleAddPet = () => {
-    navigate('addpet');
+    navigate("addpet");
   };
 
   const handleDisengagePet = (id: number) => {
     setPets((prevPets) =>
       prevPets.map((pet) =>
-        pet.id === id ? { ...pet, disengaged: true, idClient: mockupClientId } : pet
+        pet.id === id
+          ? { ...pet, disengaged: true, idClient: mockupClientId }
+          : pet
       )
     );
   };
@@ -79,14 +81,14 @@ const ClientPets = () => {
                   <td>{pet.weight}</td>
                   <td>{pet.notes}</td>
                   <td>
-                    <div style={{display: "flex", justifyContent: "center"}}>
-                    <Button
-                      variant="danger"
-                      onClick={() => handleDisengagePet(pet.id)}
-                      disabled={pet.disengaged}
-                    >
-                      {pet.disengaged ? "Disengaged" : "Disengage"}
-                    </Button>
+                    <div style={{ display: "flex", justifyContent: "center" }}>
+                      <Button
+                        variant="danger"
+                        onClick={() => handleDisengagePet(pet.id)}
+                        disabled={pet.disengaged}
+                      >
+                        {pet.disengaged ? "Disengaged" : "Disengage"}
+                      </Button>
                     </div>
                   </td>
                 </tr>

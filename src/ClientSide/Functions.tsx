@@ -187,6 +187,26 @@ async function loginGuest() {
   return response.data;
 }
 
+// get client invoices
+async function getClientInvoices() {
+  const clientID = getClientID();
+  const response = await axios.get(`${backendURL}invoice/client/${clientID}`);
+  // Map the data
+  return response.data.map(
+    (invoice: {
+      IDInvoice: any;
+      InvoiceDateTime: any;
+      TotalPrice: any;
+      StatusName: any;
+    }) => ({
+      id: invoice.IDInvoice,
+      date: new Date(invoice.InvoiceDateTime).toLocaleString(),
+      total: invoice.TotalPrice,
+      status: invoice.StatusName,
+    })
+  );
+}
+
 export { getProductsClient, getProductByID };
 export { getReviewsByID, getAverageRatingByID };
 export { addCartEntry, getCartEntries, clearCart };
@@ -194,3 +214,4 @@ export { getProfileData };
 export { checkStock, createInvoice };
 export { getClientAddresses };
 export { loginGuest };
+export { getClientInvoices };

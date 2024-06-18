@@ -139,6 +139,7 @@ route.post('/invoice', invoice.CreateInvoice);
 route.post('/invoiceByCart', invoice.CreateInvoiceByCart);
 route.get('/invoice', invoice.ReadAllInvoices);
 route.get('/invoice/:id', invoice.ReadInvoicesByID);
+route.get('/invoice/client/:id', invoice.ReadInvoicesByClient);
 route.put('/invoice/:id', invoice.UpdateInvoice);
 route.delete('/invoice/:id', invoice.DeleteInvoice);
 
