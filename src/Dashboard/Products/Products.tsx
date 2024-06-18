@@ -27,7 +27,7 @@ function Products() {
   }, []);
 
   return (
-    <Container>
+    <Container className="mt-4">
       <h2>Products</h2>
       <p>Here you can manage the products of the store.</p>
       <Table striped bordered hover responsive>
@@ -57,10 +57,12 @@ function Products() {
                       Product
                     </Button>
                   </Link>
-                  <Button variant="primary" className="ml-2">
-                    <FaPencil />
-                    Stock
-                  </Button>
+                  <Link to={`stock/${product.id}`}>
+                    <Button variant="primary" className="ml-2">
+                      <FaPencil />
+                      Stock
+                    </Button>
+                  </Link>
                 </div>
               </td>
             </tr>
@@ -71,6 +73,8 @@ function Products() {
         <Link to={`add`}>
           <Button>Add Product</Button>
         </Link>
+        <br />
+        <br />
       </div>
     </Container>
   );
