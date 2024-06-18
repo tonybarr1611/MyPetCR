@@ -194,3 +194,4 @@ export { getProfileData };
 export { checkStock, createInvoice };
 export { getClientAddresses };
 export { loginGuest };
+export { getClientID };
