@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { EyeFill, EyeSlashFill, PersonLock } from "react-bootstrap-icons";
 import "./UserLogin.css";
+import { loginGuest } from "../ClientSide/Functions";
 
 interface Credentials {
   email: string;
@@ -39,6 +40,8 @@ async function sendLogin(
       localStorage.setItem("loginTime", new Date().getTime().toString());
       localStorage.setItem("userType", data.userType);
       localStorage.setItem("client", JSON.stringify(data.client));
+      console.log("localS: ", localStorage.getItem("client"));
+
       return { success: true, message: data.message, userType: data.userType };
     } else {
       const errorMessage = await response.text();
@@ -116,13 +119,16 @@ const UserLogin: React.FC = () => {
     }
   };
 
-  const handleGuest = () => {
+  async function handleGuest() {
     localStorage.setItem("token", "guest");
     localStorage.setItem("loginTime", new Date().getTime().toString());
     localStorage.setItem("userType", "4");
-    localStorage.setItem("client", JSON.stringify({}));
+    const client = await loginGuest();
+    console.log(client);
+    localStorage.setItem("client", JSON.stringify(client[0]));
+    console.log("localS: ", localStorage.getItem("client"));
     navigate("/clientside");
-  };
+  }
 
   return (
     <Container

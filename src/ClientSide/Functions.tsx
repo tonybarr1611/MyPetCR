@@ -148,13 +148,43 @@ async function checkStock() {
 }
 
 // Create invoice from cart
-async function createInvoice() {
+async function createInvoice(shipping: boolean) {
   const clientID = getClientID();
   const paymentID = "4";
   const response = await axios.post(`${backendURL}invoiceByCart`, {
     IDClient: clientID,
     IDPayment: paymentID,
+    Shipping: shipping ? "True" : "False",
   });
+}
+
+async function getClientAddresses() {
+  const clientID = getClientID();
+  const response = await axios.get(`${backendURL}address/${clientID}`);
+  return response.data.map(
+    (address: {
+      IDAddress: any;
+      Province: any;
+      City: any;
+      District: any;
+      ZIPCode: any;
+      Description: any;
+    }) => ({
+      id: address.IDAddress,
+      province: address.Province,
+      city: address.City,
+      district: address.District,
+      zipCode: address.ZIPCode,
+      description: address.Description,
+    })
+  );
+}
+
+// login guest
+async function loginGuest() {
+  const response = await axios.get(`${backendURL}clientMock`);
+  console.log(response.data);
+  return response.data;
 }
 
 export { getProductsClient, getProductByID };
@@ -162,3 +192,5 @@ export { getReviewsByID, getAverageRatingByID };
 export { addCartEntry, getCartEntries, clearCart };
 export { getProfileData };
 export { checkStock, createInvoice };
+export { getClientAddresses };
+export { loginGuest };

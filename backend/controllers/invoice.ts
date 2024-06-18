@@ -50,7 +50,7 @@ async function CreateInvoice(req: Request, res: Response) {
 };
 
 async function CreateInvoiceByCart(req: Request, res: Response) {
-    const { IDClient, IDPayment } = req.body;
+    const { IDClient, IDPayment, Shipping } = req.body;
 
     if (!IDClient || !IDPayment) {
         return res.status(400).send("Missing required fields");
@@ -72,7 +72,8 @@ async function CreateInvoiceByCart(req: Request, res: Response) {
         'CreateInvoiceByCart', 
         [
             { name: 'IDClient', type: sql.Int, value: IDClient },
-            { name: 'IDPayment', type: sql.Int, value: IDPayment }
+            { name: 'IDPayment', type: sql.Int, value: IDPayment },
+            { name: 'Shipping', type: sql.NVarChar(5), value: Shipping  }
         ], 
         201, 
         "Invoice created successfully", 

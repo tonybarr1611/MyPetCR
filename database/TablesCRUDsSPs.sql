@@ -34,14 +34,14 @@ GO
 
 -- Read By ID
 CREATE PROCEDURE ReadByIDAddress
-    @IDAddress INT
+    @IDClient INT
 AS
 BEGIN
     SELECT A.IDAddress, A.IDClient, A.Province, A.City, A.District, A.ZIPCode, A.Description,
            C.IDUser , C.Name 'UserName', C.PhoneNumber 'UserPhoneNumber'
     FROM Address A
     LEFT JOIN Client C on C.IDClient = A.IDClient
-    WHERE A.IDAddress = @IDAddress;
+    WHERE A.IDAddress = @IDClient;
 END;
 GO
 

@@ -33,7 +33,12 @@ function Product({ id, name, type, description, price }: ProductProps) {
       <Container>
         <div className="card borderless" style={{ width: "20rem" }}>
           <Link to={productUrl}>
-            <img src={productImage} className="card-img-top" alt="..." />
+            <img
+              src={productImage}
+              className="card-img-top"
+              style={{ padding: "2%" }}
+              alt="..."
+            />
           </Link>
           <div className="card-body">
             <div>

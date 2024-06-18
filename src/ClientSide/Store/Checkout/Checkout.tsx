@@ -18,6 +18,7 @@ import {
   clearCart,
   createInvoice,
   getCartEntries,
+  getClientAddresses,
 } from "../../Functions";
 import { Navigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -39,10 +40,22 @@ interface FormErrors {
   [key: string]: string;
 }
 
+interface Address {
+  id: number;
+  province: string;
+  city: string;
+  district: string;
+  zipCode: string;
+  description: string;
+}
+
 function Checkout() {
   const [cart, setCart] = useState<CartProduct[]>([]);
   const [showCart, setShowCart] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("card");
+  const [savedAddresses, setSavedAddresses] = useState<Address[]>([]);
+  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
+  const [shipping, setShipping] = useState(false);
 
   const [form, setForm] = useState<FormState>({
     fullName: "",
@@ -65,7 +78,12 @@ function Checkout() {
       const cart = await getCartEntries();
       setCart(cart);
     }
+    async function fetchAddresses() {
+      const addresses = await getClientAddresses();
+      setSavedAddresses(addresses);
+    }
     fetchCart();
+    fetchAddresses();
   }, []);
 
   const toggleCartVisibility = () => {
@@ -125,7 +143,7 @@ function Checkout() {
     if (validate()) {
       const stockCheck = await checkStock();
       if (stockCheck) {
-        await createInvoice();
+        await createInvoice(shipping);
         clearCart();
         toast.success("Purchase successful");
         window.location.assign("/clientside");
@@ -136,6 +154,14 @@ function Checkout() {
       }
     } else {
       setSubmitted(false);
+    }
+  };
+
+  const shippingChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      setShipping(true);
+    } else {
+      setShipping(false);
     }
   };
 
@@ -173,7 +199,7 @@ function Checkout() {
         <Col>
           <Card className="mt-4">
             <Card.Body>
-              <Card.Title>Shipping Information</Card.Title>
+              <Card.Title>Billing and shipping Information</Card.Title>
               <Form>
                 <Form.Group controlId="formFullName" className="mb-3">
                   <Form.Label>Full Name</Form.Label>
@@ -244,6 +270,22 @@ function Checkout() {
                   <Form.Control.Feedback type="invalid">
                     {errors.postalCode}
                   </Form.Control.Feedback>
+                  <Form.Group
+                    controlId="formShippingBool"
+                    className="mt-3 mb-3"
+                  >
+                    <Form.Label> Do you want shipping? </Form.Label>
+                    <Form.Check
+                      className="ml-4"
+                      type="checkbox"
+                      id="shippingBool"
+                      label="Yes"
+                      name="shippingBool"
+                      value="true"
+                      defaultChecked={false}
+                      onChange={shippingChange}
+                    />
+                  </Form.Group>
                 </Form.Group>
               </Form>
             </Card.Body>
@@ -256,15 +298,15 @@ function Checkout() {
               <Card.Text>
                 Your total is {"   "}
                 <strong style={{ fontSize: "120%" }}>
-                  {cart
-                    .reduce(
+                  {(
+                    cart.reduce(
                       (acc, product) => acc + product.price * product.quantity,
                       0
-                    )
-                    .toLocaleString("es-CR", {
-                      style: "currency",
-                      currency: "CRC",
-                    })}
+                    ) + (shipping ? 3000 : 0)
+                  ).toLocaleString("es-CR", {
+                    style: "currency",
+                    currency: "CRC",
+                  })}
                 </strong>
               </Card.Text>
               <Form>
