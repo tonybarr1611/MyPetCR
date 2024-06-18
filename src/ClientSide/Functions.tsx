@@ -207,6 +207,18 @@ async function getClientInvoices() {
   );
 }
 
+// Create review
+async function createReview(productID: any, rating: any, review: any) {
+  const clientID = getClientID();
+  await axios.post(`${backendURL}review`, {
+    IDProduct: productID,
+    IDClient: clientID,
+    Description: review,
+    Rating: rating,
+    DateTime: new Date().toISOString(),
+  });
+}
+
 export { getProductsClient, getProductByID };
 export { getReviewsByID, getAverageRatingByID };
 export { addCartEntry, getCartEntries, clearCart };
@@ -215,3 +227,4 @@ export { checkStock, createInvoice };
 export { getClientAddresses };
 export { loginGuest };
 export { getClientInvoices };
+export { createReview };
