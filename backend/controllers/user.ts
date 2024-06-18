@@ -1,5 +1,6 @@
 import bcript from 'bcrypt';
 import sql from 'mssql'; 
+import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
 import { executeProcedure, getObject } from './executeProcedure';
 
@@ -30,12 +31,37 @@ async function verifyPassword(req: Request, res: Response) {
         "User not retrieved");
     if (!user || user.recordset.length === 0) return res.status(404).send("User not found");
 
+    const clients = await getObject(res,
+        'ReadAllClients',
+        [],
+        200,
+        "Clients retrieved successfully",
+        "Clients not retrieved");
+    if (!clients || clients.recordset.length === 0) return res.status(404).send("Clients not found");
+
+    const client = clients.recordset.find((client: any) => client.IDUser === user.recordset[0].IDUser);
+
     //compare the passwords
     const hashedPassword = user.recordset[0].Password;
     const result = await bcript.compare(Password, hashedPassword);
     
     if (!result) return res.status(401).send("Invalid password"); 
-    else return res.status(200).send("Password correct");
+    else{
+        const token = jwt.sign(
+            {
+                IDUser: user?.recordset[0].IDUser,
+                IDUserType: user?.recordset[0].IDUserType,
+            },
+            "RANDOM-TOKEN",
+            { expiresIn: "30m" }
+        );
+        return res.status(200).send({
+          message: "Login Successful",
+          token,
+          userType: user?.recordset[0].IDUserType,
+          client: client
+        });
+    };
 };
 
 async function AllUsers(req: Request, res: Response) {
@@ -76,8 +102,6 @@ async function CreateUser(req: Request, res: Response) {
     const salt = await bcript.genSalt(10);
     let hashedPassword = await bcript.hash(Password, salt);
 
-    
-    //create the user
     await executeProcedure(res,
         'CreateUser',
         [{ name: 'LoginID', type: sql.NVarChar, value: LoginID },
@@ -108,7 +132,7 @@ async function UpdateUser(req: Request, res: Response) {
     //password
     if (Password) {
         const salt = await bcript.genSalt(10);
-        Password = await bcript.hash(Password, salt);
+        binaryPassword = await bcript.hash(Password, salt);
     } else { binaryPassword = user.recordset[0].Password; }
 
     IDUserType = IDUserType || user.recordset[0].IDUserType;
@@ -127,7 +151,7 @@ async function UpdateUser(req: Request, res: Response) {
         'UpdateUser',
         [{ name: 'IDUser', type: sql.Int, value: IDUser },
         { name: 'LoginID', type: sql.NVarChar, value: LoginID },
-        { name: 'NewPassword', type: sql.NVarChar, value: Password },
+        { name: 'NewPassword', type: sql.NVarChar, value: binaryPassword },
         { name: 'IDUserType', type: sql.Int, value: IDUserType }],
         200,
         "User updated successfully",

@@ -32,7 +32,7 @@ const route = Router();
 
 // user 
 route.get('/user/mail/:mail', user.UserByMail); // alternative to id this one gives the hashedpassword
-route.get('/user/verify', user.verifyPassword); // this is for the login
+route.post('/user/verify', user.verifyPassword); // this is for the login
 route.post('/user', user.CreateUser);
 route.get('/user', user.AllUsers);
 route.get('/user/:id', user.UserById);
@@ -81,6 +81,7 @@ route.get('/product', product.AllProducts);
 route.get('/product/:id', product.ProductById);
 route.put('/product/:id', product.UpdateProduct);
 route.delete('/product/:id', product.DeleteProduct);
+route.get('/medicine', product.ReadMedicineOrServiceProducts);
 
 // productType
 route.post('/productType', productType.CreateProductType);
@@ -105,7 +106,9 @@ route.delete('/employee/:id', employee.DeleteEmployee);
 
 // Client 
 route.post('/client', client.CreateClient);
+route.post('/clientAndUser', client.CreateClientAndUser);
 route.get('/client', client.AllClients);
+route.get('/clientMock', client.CreateMockClient);
 route.get('/client/:id', client.ClientById);
 route.put('/client/:id', client.UpdateClient);
 route.delete('/client/:id', client.DeleteClient);
@@ -133,6 +136,7 @@ route.delete('/status/:id', status.DeleteStatus);
 
 // Invoice
 route.post('/invoice', invoice.CreateInvoice);
+route.post('/invoiceByCart', invoice.CreateInvoiceByCart);
 route.get('/invoice', invoice.ReadAllInvoices);
 route.get('/invoice/:id', invoice.ReadInvoicesByID);
 route.put('/invoice/:id', invoice.UpdateInvoice);
@@ -144,6 +148,7 @@ route.get('/invoiceDetail', invoiceDetail.ReadAllInvoiceDetails);
 route.get('/invoiceDetail/:id', invoiceDetail.ReadInvoiceDetailById);
 route.put('/invoiceDetail/:id', invoiceDetail.UpdateInvoiceDetail);
 route.delete('/invoiceDetail/:id', invoiceDetail.DeleteInvoiceDetail);
+route.get('/invoiceDetail/appointment/:id', invoiceDetail.ReadInvoiceDetailsByAppointmentID); //Id invoice
 
 // Pet Type
 route.post('/petType', petType.CreatePetType);
@@ -172,6 +177,7 @@ route.get('/appointment', appointment.ReadAllAppointments);
 route.get('/appointment/:id', appointment.ReadAppointmentByID);
 route.put('/appointment/:id', appointment.UpdateAppointment);
 route.delete('/appointment/:id', appointment.DeleteAppointment);
+route.get('/appointment/pet/:id', appointment.ReadAllAppointmentsByPet); //Id pet 
 
 // Address
 route.post('/address', address.CreateAddress);
@@ -189,11 +195,13 @@ route.delete('/shipping/:id', shipping.DeleteShipping);
 
 // Cart, it has a composite key
 route.post('/cart', cart.CreateCart);
+route.get('/cart/stock/:IDClient', cart.EnoughQuantityByCart);
 route.get('/cart', cart.RealAllCarts);
 route.get('/cart/:IDClient/:IDProduct', cart.ReadCartByIDClientAndIDProduct);
 route.get('/cart/:IDClient/', cart.ReadCartByIDClient);
 route.put('/cart/:IDClient/:IDProduct', cart.UpdateCart);
 route.delete('/cart/:IDClient/:IDProduct', cart.DeleteCart);
+route.delete('/cart/:IDClient', cart.DeleteAllCartByClient);
 
 // Email
 route.post('/send-email', sendEmail);

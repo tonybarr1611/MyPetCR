@@ -41,11 +41,11 @@ async function ReadAllAddresses(req: Request, res: Response) {
 };
 
 async function ReadAddressByID(req: Request, res: Response) {
-    const IDAddress = req.params.id;
+    const IDClient = req.params.id;
 
     await executeProcedure(res, 
         'ReadByIDAddress', 
-        [{ name: 'IDAddress', type: sql.Int, value: IDAddress }], 
+        [{ name: 'IDClient', type: sql.Int, value: IDClient }], 
         200, 
         "", 
         "Address not retrieved");
