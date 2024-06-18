@@ -17,6 +17,11 @@ import MedicalFileAppointmentAdd from "./MedicalFiles/MedicalFileAppointmentAdd"
 import AccessDenied from "./AccessDenied";
 import StoreClinicOptions from "./StoreClinicOptions";
 import { guestRedirection, handleExpiration } from "../Commons/AuthCommons";
+import Products from "./Products/Products";
+import ProductEdit from "./Products/ProductEdit";
+import ProductAdd from "./Products/ProductAdd";
+import ProductStock from "./Products/ProductStock";
+import ProductStockEdit from "./Products/ProductStockEdit";
 
 const setBackgroundWhite = () => {
   var html = document.getElementsByTagName("html");
@@ -67,6 +72,11 @@ function Dashboard() {
           path="/medicalfiles/info/details/add"
           element={<MedicalFileAppointmentAdd />}
         />
+        <Route path="/products" element={<Products />} />
+        <Route path="/products/edit/:id" element={<ProductEdit />} />
+        <Route path="/products/stock/:id" element={<ProductStock />} />
+        <Route path="/products/stock/:id/edit" element={<ProductStockEdit />} />
+        <Route path="/products/add" element={<ProductAdd />} />
         <Route path="/accessdenied" element={<AccessDenied />} />
         <Route path="/storeclinic" element={<StoreClinicOptions />} />
       </Routes>

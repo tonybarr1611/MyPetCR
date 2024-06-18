@@ -7,29 +7,37 @@ function getClientID() {
   return client.IDClient;
 }
 
+async function getProducts() {
+  const response = await axios.get(`${backendURL}product`);
+  return response.data.map(
+    (product: {
+      IDProduct: any;
+      ProductName: any;
+      IDProductType: any;
+      ProductTypeName: any;
+      Description: any;
+      Price: any;
+      Stock: any;
+    }) => ({
+      id: product.IDProduct,
+      name: product.ProductName,
+      typeID: product.IDProductType,
+      type: product.ProductTypeName,
+      description: product.Description,
+      price: product.Price,
+      stock: product.Stock,
+    })
+  );
+}
 
 // Function that retrieves the data from the backend at "/product"
 // and returns the data as an array of objects with the required format
 async function getProductsClient() {
-  const response = await axios.get(`${backendURL}product`);
+  const response = await getProducts();
   // Assuming response.data is an array of products
-  return response.data
-    .filter((product: { IDProductType: any }) => product.IDProductType !== 4)
-    .map(
-      (product: {
-        IDProduct: any;
-        ProductName: any;
-        ProductTypeName: any;
-        Description: any;
-        Price: any;
-      }) => ({
-        id: product.IDProduct,
-        name: product.ProductName,
-        type: product.ProductTypeName,
-        description: product.Description,
-        price: product.Price,
-      })
-    );
+  return response.filter(
+    (product: { IDProductType: any }) => product.IDProductType !== 4
+  );
 }
 
 // Function that retrieves the data from the backend at "/product/:id"
@@ -188,11 +196,45 @@ async function loginGuest() {
   return response.data;
 }
 
-export { getProductsClient, getProductByID };
+// get client invoices
+async function getClientInvoices() {
+  const clientID = getClientID();
+  const response = await axios.get(`${backendURL}invoice/client/${clientID}`);
+  // Map the data
+  return response.data.map(
+    (invoice: {
+      IDInvoice: any;
+      InvoiceDateTime: any;
+      TotalPrice: any;
+      StatusName: any;
+    }) => ({
+      id: invoice.IDInvoice,
+      date: new Date(invoice.InvoiceDateTime).toLocaleString(),
+      total: invoice.TotalPrice,
+      status: invoice.StatusName,
+    })
+  );
+}
+
+// Create review
+async function createReview(productID: any, rating: any, review: any) {
+  const clientID = getClientID();
+  await axios.post(`${backendURL}review`, {
+    IDProduct: productID,
+    IDClient: clientID,
+    Description: review,
+    Rating: rating,
+    DateTime: new Date().toISOString(),
+  });
+}
+
+export { getProducts, getProductsClient, getProductByID };
 export { getReviewsByID, getAverageRatingByID };
 export { addCartEntry, getCartEntries, clearCart };
 export { getProfileData };
 export { checkStock, createInvoice };
 export { getClientAddresses };
 export { loginGuest };
+export { getClientInvoices };
+export { createReview };
 export { getClientID };

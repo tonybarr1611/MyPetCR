@@ -5,6 +5,7 @@ import axios from "axios";
 import { getClientID } from "../../Functions";
 import "../Pets.css";
 
+
 interface Pet {
   IDPet: number;
   IDPetType: string;
@@ -37,7 +38,7 @@ const ClientPets: React.FC = () => {
   }, []);
 
   const handleAddPet = () => {
-    navigate('addpet');
+    navigate("addpet");
   };
 
   const handleDisengagePet = async (id: number) => {

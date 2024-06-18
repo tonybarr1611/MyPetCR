@@ -100,6 +100,17 @@ async function ReadInvoicesByID(req: Request, res: Response) {
         "Invoice not retrieved");
 };
 
+async function ReadInvoicesByClient(req: Request, res: Response) {
+    const IDClient = req.params.id;
+
+    await executeProcedure(res, 
+        'ReadInvoicesByIDClient', 
+        [{ name: 'IDClient', type: sql.Int, value: IDClient }], 
+        200, 
+        "", 
+        "Invoices not retrieved");
+};
+
 async function UpdateInvoice(req: Request, res: Response) {
     const IDInvoice = req.params.id;
 
@@ -170,6 +181,7 @@ export default {
     CreateInvoiceByCart,
     ReadAllInvoices,
     ReadInvoicesByID,
+    ReadInvoicesByClient,
     UpdateInvoice,
     DeleteInvoice,
 }

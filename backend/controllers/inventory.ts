@@ -23,6 +23,16 @@ async function InventoryById(req: Request, res: Response) {
         "Inventory not retrieved");
 };
 
+async function ReadInventoryByIDProduct(req: Request, res: Response) {
+    const IDProduct = req.params.IDProduct;
+    await executeProcedure(res,
+        'ReadInventoryByIDProduct',
+        [{ name: 'IDProduct', type: sql.Int, value: IDProduct }],
+        200,
+        "Inventory retrieved successfully",
+        "Inventory not retrieved");
+}
+
 async function CreateInventory(req: Request, res: Response) {
     const { IDProduct, IDStore, Quantity } = req.body;
     //validate the json
@@ -99,5 +109,6 @@ export default {
     InventoryById,
     CreateInventory,
     DeleteInventory,
-    UpdateInventory
+    UpdateInventory, 
+    ReadInventoryByIDProduct
 };

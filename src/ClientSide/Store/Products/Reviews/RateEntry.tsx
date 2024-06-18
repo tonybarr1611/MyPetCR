@@ -1,14 +1,21 @@
 import React, { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import { Product } from "../ProductDetail";
+import { ProductProp } from "../ProductDetail";
+import { createReview } from "../../../Functions";
 
 interface RateEntryProps {
   show: boolean;
   handleClose: () => void;
-  productRated: Product; // Replace 'any' with the appropriate type
+  productRated: ProductProp; // Replace 'any' with the appropriate type
+  rating: number;
 }
 
-function RateEntry({ show, handleClose, productRated }: RateEntryProps) {
+function RateEntry({
+  show,
+  handleClose,
+  productRated,
+  rating,
+}: RateEntryProps) {
   const [textInput, setTextInput] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -16,7 +23,11 @@ function RateEntry({ show, handleClose, productRated }: RateEntryProps) {
   };
 
   const handleSubmit = () => {
-    console.log(textInput);
+    const productID = productRated.id;
+    const ratingValue = rating;
+    const text = textInput;
+    createReview(productID, ratingValue, text);
+    window.location.reload();
     handleClose();
   };
 

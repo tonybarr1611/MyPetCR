@@ -518,6 +518,30 @@ BEGIN
 END;
 GO
 
+-- Read by IDProduct
+CREATE PROCEDURE ReadInventoryByIDProduct
+    @IDProduct INT
+AS
+BEGIN
+    SELECT 
+        S.IDStore, 
+        S.Location,
+        ISNULL(I.Quantity, 0) AS Quantity,
+        -- Flag showing if the product has an inventory in the store
+        CASE 
+            WHEN I.IDProduct IS NULL THEN 'false'
+            ELSE 'true'
+        END AS 'HasInventory'
+
+    FROM STORE S 
+    FULL OUTER JOIN Inventory I ON S.IDStore = I.IDStore AND I.IDProduct = @IDProduct
+    LEFT JOIN Product P ON I.IDProduct = P.IDProduct OR P.IDProduct = @IDProduct
+    WHERE (P.IDProduct = @IDProduct OR @IDProduct IS NULL) AND S.IDStore IS NOT NULL
+    ORDER BY S.IDStore, P.IDProduct;
+END;
+GO
+
+
 -- Read By Product And Store
 CREATE PROCEDURE ReadInventoryByProductAndStore
     @IDProduct INT,
@@ -714,6 +738,23 @@ BEGIN
     LEFT JOIN Payment P on I.IDPayment = P.IDPayment
     LEFT JOIN StatusType ST on I.IDStatus = ST.IDStatus
     WHERE IDInvoice = @IDInvoice;
+END;
+GO
+
+-- Read By IDClient
+CREATE PROCEDURE ReadInvoicesByIDClient
+    @IDClient INT
+AS
+BEGIN
+    SELECT * 
+    FROM (  SELECT  I.IDClient, I.IDInvoice, I.DateTime 'InvoiceDateTime',
+                    I.IDStatus, ST.Name 'StatusName',
+                    SUM(ID.Price) 'TotalPrice'
+            FROM Invoice I
+            LEFT JOIN StatusType ST on I.IDStatus = ST.IDStatus
+            LEFT JOIN InvoiceDetail ID on I.IDInvoice = ID.IDInvoice
+            GROUP BY  I.IDClient, I.IDInvoice, I.DateTime, I.IDStatus, ST.Name      ) AS T
+    WHERE T.IDClient = @IDClient;
 END;
 GO
 
@@ -1249,14 +1290,23 @@ BEGIN
 END;
 GO
 
--- Read All
+  -- Read All
 CREATE PROCEDURE ReadAllProducts
 AS
 BEGIN
-    SELECT P.IDProduct, P.Name 'ProductName', P.Description, P.Price,
-           P.IDProductType, PT.Name 'ProductTypeName'
-    FROM Product P
-    LEFT JOIN ProductType PT on P.IDProductType = PT.IDProductType;
+    SELECT  T.IDProduct, T.ProductName, T.Description, T.Price,
+            T.IDProductType, T.ProductTypeName, COALESCE(SUM(T.Quantity), 0) 'Stock'
+
+    FROM (
+            SELECT  P.IDProduct, P.Name 'ProductName', P.Description, P.Price,
+                    P.IDProductType, PT.Name 'ProductTypeName', I.Quantity
+            FROM Product P
+            LEFT JOIN ProductType PT on P.IDProductType = PT.IDProductType
+            LEFT JOIN Inventory I on P.IDProduct = I.IDProduct
+        ) AS T
+    
+    GROUP BY T.IDProduct, T.ProductName, T.Description, T.Price, T.IDProductType, T.ProductTypeName;
+
 END;
 GO
 

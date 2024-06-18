@@ -13,6 +13,7 @@ import RegisterPet from "./Pet Management/ClientPets/RegisterPet";
 import RequestAppointment from "./Pet Management/ClientAppointments/RequestAppointment";
 import Profile from "./Profile";
 import { handleExpiration, isGuest } from "../Commons/AuthCommons";
+import History from "./Store/SaleHistory/History";
 
 const setBackgroundWhite = () => {
   var html = document.getElementsByTagName("html");
@@ -264,6 +265,7 @@ function ClientSide() {
           path="/management/appointments/requestappointment"
           element={<RequestAppointment />}
         />
+        <Route path="/history" element={<History />} />
         <Route path="/profile" element={<Profile />} />
       </Routes>
     </div>

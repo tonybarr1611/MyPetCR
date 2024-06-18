@@ -1,5 +1,5 @@
 import { Container, Button } from "react-bootstrap";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { FaCartPlus } from "react-icons/fa6";
 import {
   getProductByID,
@@ -31,11 +31,11 @@ function ProductDetail({ products }: ProductDetailProps) {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<ProductProp | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const [rating, setRating] = useState(0.0); // [1, 2, 3, 4, 5
+  const [rating, setRating] = useState(0.0); // [1, 2, 3, 4, 5]
+  const [selectedRating, setSelectedRating] = useState<number | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // TODO fetch ratings
     async function fetchProduct() {
       if (id) {
         const product = await getProductByID(id);
@@ -75,8 +75,8 @@ function ProductDetail({ products }: ProductDetailProps) {
 
   const productImage = `/src/ClientSide/Store/productImages/Thumbnail${id}.jpg`;
 
-  function changeRating(rate: any) {
-    console.log(rate);
+  function changeRating(rate: number) {
+    setSelectedRating(rate);
     handleShow();
   }
 
@@ -125,6 +125,7 @@ function ProductDetail({ products }: ProductDetailProps) {
         show={showModal}
         handleClose={handleClose}
         productRated={product}
+        rating={selectedRating || 1}
       />
       <div>
         <ReviewsDisplay id={parseInt(id || "0")} />

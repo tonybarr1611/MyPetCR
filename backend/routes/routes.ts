@@ -94,6 +94,7 @@ route.delete('/productType/:id', productType.DeleteProductType);
 route.post('/inventory', inventory.CreateInventory);
 route.get('/inventory', inventory.AllInventories);
 route.get('/inventory/:IDProduct/:IDStore', inventory.InventoryById);
+route.get('/inventory/:IDProduct', inventory.ReadInventoryByIDProduct);
 route.put('/inventory/:IDProduct/:IDStore', inventory.UpdateInventory);
 route.delete('/inventory/:IDProduct/:IDStore', inventory.DeleteInventory);
 
@@ -139,6 +140,7 @@ route.post('/invoice', invoice.CreateInvoice);
 route.post('/invoiceByCart', invoice.CreateInvoiceByCart);
 route.get('/invoice', invoice.ReadAllInvoices);
 route.get('/invoice/:id', invoice.ReadInvoicesByID);
+route.get('/invoice/client/:id', invoice.ReadInvoicesByClient);
 route.put('/invoice/:id', invoice.UpdateInvoice);
 route.delete('/invoice/:id', invoice.DeleteInvoice);
 

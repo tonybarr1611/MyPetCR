@@ -38,6 +38,9 @@ function NavBar() {
             <Link to={"/dashboard/medicalfiles"} className="nav-link">
               Medical files
             </Link>
+            <Link to={"/dashboard/products"} className="nav-link">
+              Products
+            </Link>
           </Nav>
           <Nav className="ml-auto">
             <NavDropdown title={<FaCircleUser size={24} />}>
