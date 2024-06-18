@@ -105,7 +105,7 @@ const UserLogin: React.FC = () => {
         });
         if (result.userType === 2) {
           navigate("/dashboard");
-        } else if (result.userType === 1) {
+        } else if (result.userType === 4) {
           navigate("/clientside");
         } else {
           navigate("/dashboard");

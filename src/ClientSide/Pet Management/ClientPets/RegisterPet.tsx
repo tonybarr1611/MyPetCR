@@ -6,16 +6,9 @@ import { ToastContainer, toast } from "react-toastify";
 import { getClientID } from "../../Functions";
 import axios from "axios";
 
-const petTypeMapping = {
-  1: "Dog",
-  2: "Cat",
-  3: "Bird"
-};
-
 const RegisterPet = () => {
   const navigate = useNavigate();
   const [petDetails, setPetDetails] = useState({
-    petType: "",
     breed: "",
     name: "",
     birthdate: "",
@@ -62,7 +55,6 @@ const RegisterPet = () => {
 
     try {
       if (
-        !petDetails.petType ||
         !petDetails.breed ||
         !petDetails.name ||
         !petDetails.birthdate ||
@@ -95,7 +87,6 @@ const RegisterPet = () => {
             IDClient: `${clientID}`,
             Name: petDetails.name,
             Birthdate: petDetails.birthdate,
-           // IDPetType: petDetails.petType,
             Weight: petDetails.weight,
             Notes: petDetails.notes,
           };
@@ -138,20 +129,6 @@ const RegisterPet = () => {
             <h1 className="h4">Register Pet</h1>
           </div>
           <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3" controlId="formPetType">
-              <Form.Label>Pet Type</Form.Label>
-              <Form.Control
-                as="select"
-                name="petType"
-                value={petDetails.petType}
-                onChange={handleOnChange}
-              >
-                <option value="">Select Pet Type</option>
-                {Object.entries(petTypeMapping).map(([id, type]) => (
-                  <option key={id} value={id}>{type}</option>
-                ))}
-              </Form.Control>
-            </Form.Group>
             <Form.Group className="mb-3" controlId="formBreed">
               <Form.Label>Breed ID</Form.Label>
               <div className="d-flex">

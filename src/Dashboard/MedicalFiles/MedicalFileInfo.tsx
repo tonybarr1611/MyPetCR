@@ -9,7 +9,7 @@ import { useLocation } from "react-router-dom";
 const MedicalFileInfo = () => {
   guestRedirection();
   handleExpiration();
-  const [petData, setPetData] = useState({id: "", petType: "", breed: "", owner: "", petName: "", birthdate: "", weight: "", notes: ""});
+  const [petData, setPetData] = useState({ id: "", breed: "", owner: "", petName: "", birthdate: "", weight: "", notes: "" });
   const [appointments, setAppointments] = useState([]);
   const location = useLocation();
   const id = location.state;
@@ -25,7 +25,6 @@ const MedicalFileInfo = () => {
         const response = await axios.get(`http://localhost:8080/api/v1/pet/${id}`);
         setPetData({
           id: response.data[0].IDPet,
-          petType: response.data[0].PetTypeName,
           breed: response.data[0].BreedName,
           owner: response.data[0].UserName,
           petName: response.data[0].PetName,
@@ -64,8 +63,7 @@ const MedicalFileInfo = () => {
 
     fetchPetData();
     fetchAppointments();
-  }, []);
-
+  }, [id]); // Added dependency to useEffect to avoid warnings and unnecessary re-fetches
 
   return (
     <Container fluid>
@@ -74,10 +72,6 @@ const MedicalFileInfo = () => {
           <h2>Medical File Info</h2>
           <Table striped bordered hover responsive className="mb-3">
             <tbody>
-              <tr>
-                <td>Pet Type</td>
-                <td>{petData.petType}</td>
-              </tr>
               <tr>
                 <td>Breed</td>
                 <td>{petData.breed}</td>

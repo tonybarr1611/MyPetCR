@@ -5,13 +5,11 @@ import axios from "axios";
 import { getClientID } from "../../Functions";
 import "../Pets.css";
 
-
 interface Pet {
   IDPet: number;
-  IDPetType: string;
   BreedName: string;
   PetName: string;
-  Birthdate: string; 
+  Birthdate: string;
   Weight: number;
   Notes: string;
   disengaged?: boolean;
@@ -20,7 +18,6 @@ interface Pet {
 const ClientPets: React.FC = () => {
   const navigate = useNavigate();
   const [pets, setPets] = useState<Pet[]>([]);
-  
 
   useEffect(() => {
     const fetchPets = async () => {
@@ -28,10 +25,10 @@ const ClientPets: React.FC = () => {
         const clientId = getClientID();
         console.log("Client ID: ", clientId);
         const response = await axios.get<Pet[]>(`http://localhost:8080/api/v1/petByClient/${clientId}`);
-        console.log("Fetched pets: ", response.data); 
-        setPets(response.data); 
+        console.log("Fetched pets: ", response.data);
+        setPets(response.data);
       } catch (error) {
-        console.error('Error fetching pets:', error);
+        console.error("Error fetching pets:", error);
       }
     };
     fetchPets();
@@ -48,11 +45,11 @@ const ClientPets: React.FC = () => {
       );
       console.log("ID: ", id);
       await axios.put(`http://localhost:8080/api/v1/pet/${id}`, {
-        IDClient: 1
+        IDClient: 1,
       });
-      setPets(updatedPets); 
+      setPets(updatedPets);
     } catch (error) {
-      console.error('Error disengaging pet:', error);
+      console.error("Error disengaging pet:", error);
     }
   };
 
@@ -65,7 +62,6 @@ const ClientPets: React.FC = () => {
             <thead>
               <tr>
                 <th>ID Pet</th>
-                <th>Pet Type</th>
                 <th>Breed</th>
                 <th>Pet Name</th>
                 <th>Birthdate</th>
@@ -78,10 +74,9 @@ const ClientPets: React.FC = () => {
               {pets.map((pet) => (
                 <tr key={pet.IDPet} className={pet.disengaged ? "whitened" : ""}>
                   <td>{pet.IDPet}</td>
-                  <td>{pet.IDPetType}</td>
                   <td>{pet.BreedName}</td>
                   <td>{pet.PetName}</td>
-                  <td>{(new Date(pet.Birthdate)).toLocaleDateString()}</td>
+                  <td>{new Date(pet.Birthdate).toLocaleDateString()}</td>
                   <td>{pet.Weight}</td>
                   <td>{pet.Notes}</td>
                   <td>
