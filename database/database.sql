@@ -1,9 +1,15 @@
+CREATE TABLE UserType (
+    IDUserType INT IDENTITY(1,1) PRIMARY KEY,
+    Name NVARCHAR(64) NOT NULL,
+    Clearance INT NOT NULL
+);
+
 CREATE TABLE [User] (
     IDUser INT IDENTITY(1,1) PRIMARY KEY,
-	IDUserType INT,
+    IDUserType INT,
     LoginID NVARCHAR(255) UNIQUE NOT NULL,
     Password NVARCHAR(255) NOT NULL,
-	FOREIGN KEY (IDUserType) REFERENCES UserType(IDUserType),
+    FOREIGN KEY (IDUserType) REFERENCES UserType(IDUserType)
 );
 
 CREATE TABLE LogType (
@@ -37,12 +43,6 @@ CREATE TABLE Employee (
     FOREIGN KEY (IDUser) REFERENCES [User](IDUser)
 );
 
-CREATE TABLE UserType (
-    IDUserType INT IDENTITY(1,1) PRIMARY KEY,
-    Name NVARCHAR(64) NOT NULL,
-    Clearance INT NOT NULL
-);
-
 CREATE TABLE ProductType (
     IDProductType INT IDENTITY(1,1) PRIMARY KEY,
     Name NVARCHAR(255) NOT NULL
@@ -54,6 +54,7 @@ CREATE TABLE Product (
     Name NVARCHAR(255) NOT NULL,
     Description NVARCHAR(512),
     Price MONEY NOT NULL,
+	URL NVARCHAR(1028)
     FOREIGN KEY (IDProductType) REFERENCES ProductType(IDProductType)
 );
 

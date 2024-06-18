@@ -164,6 +164,7 @@ route.post('/pet', pet.CreatePet);
 route.get('/pet', pet.ReadAllPets);
 route.get('/pet/:id', pet.ReadPetById);
 route.get('/petByClient/:id', pet.ReadPetByClientId);
+route.get('/petByClientName', pet.ReadPetByClientName);
 route.put('/pet/:id', pet.UpdatePet);
 route.delete('/pet/:id', pet.DeletePet);
 
@@ -181,6 +182,7 @@ route.get('/appointment/:id', appointment.ReadAppointmentByID);
 route.put('/appointment/:id', appointment.UpdateAppointment);
 route.delete('/appointment/:id', appointment.DeleteAppointment);
 route.get('/appointment/pet/:id', appointment.ReadAllAppointmentsByPet); //Id pet 
+route.get('/appointment/client/:id', appointment.ReadAppointmentsByClientID); //Id employee
 
 // Address
 route.post('/address', address.CreateAddress);

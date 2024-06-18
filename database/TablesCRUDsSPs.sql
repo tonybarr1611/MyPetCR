@@ -264,23 +264,20 @@ GO
 
 -- Create
 CREATE PROCEDURE CreateBreed
-    @IDPetType INT,
     @Name NVARCHAR(128)
 AS
 BEGIN
-    INSERT INTO Breed (IDPetType, Name)
-    VALUES (@IDPetType, @Name);
+    INSERT INTO Breed (Name)
+    VALUES (@Name);
 END;
 GO
 
 -- Read All
-CREATE PROCEDURE ReadAllBreeds
+CREATE  PROCEDURE ReadAllBreeds
 AS
 BEGIN
-    SELECT B.IDBreed, B.IDPetType, B.Name,
-           PT.Name 'PetTypeName'
+    SELECT B.IDBreed, B.Name
     FROM Breed B
-    LEFT JOIN PetType PT on PT.IDPetType = B.IDPetType;
 END;
 GO
 
@@ -289,10 +286,8 @@ CREATE PROCEDURE ReadByIDBreed
     @IDBreed INT
 AS
 BEGIN
-    SELECT B.IDBreed, B.IDPetType, B.Name,
-           PT.Name 'PetTypeName'
+    SELECT B.IDBreed, B.Name
     FROM Breed B
-    LEFT JOIN PetType PT on PT.IDPetType = B.IDPetType
     WHERE IDBreed = @IDBreed;
 END;
 GO
@@ -311,8 +306,7 @@ BEGIN
     END
 
     UPDATE Breed
-    SET IDPetType = @IDPetType,
-        Name = @Name
+    SET Name = @Name
     WHERE IDBreed = @IDBreed;
 END;
 GO
@@ -1181,7 +1175,7 @@ CREATE PROCEDURE ReadAllPets
 AS
 BEGIN
     SELECT P.IDPet, P.Name 'PetName', P.Birthdate, P.Weight, P.Notes,
-           P.IDBreed, B.IDPetType, B.Name 'BreedName',
+           P.IDBreed, B.Name 'BreedName',
            P.IDClient, C.IDUser, C.Name 'UserName', C.PhoneNumber 'UserPhoneNumber'
     FROM Pet P
     LEFT JOIN Breed B on P.IDBreed = B.IDBreed
@@ -1195,11 +1189,10 @@ CREATE PROCEDURE ReadByIDPet
 AS
 BEGIN
     SELECT P.IDPet, P.Name 'PetName', P.Birthdate, P.Weight, P.Notes,
-           P.IDBreed, B.IDPetType, B.Name 'BreedName', PT.Name 'PetTypeName',
+           P.IDBreed, B.Name 'BreedName',
            P.IDClient, C.IDUser, C.Name 'UserName', C.PhoneNumber 'UserPhoneNumber'
     FROM Pet P
     LEFT JOIN Breed B on P.IDBreed = B.IDBreed
-    LEFT JOIN PetType PT on B.IDPetType = PT.IDPetType
     LEFT JOIN Client C on P.IDClient = C.IDClient
     WHERE IDPet = @IDPet;
 END;
@@ -1211,7 +1204,7 @@ CREATE PROCEDURE ReadByIDPet
 AS
 BEGIN
     SELECT P.IDPet, P.Name 'PetName', P.Birthdate, P.Weight, P.Notes,
-           P.IDBreed, B.IDPetType, B.Name 'BreedName',
+           P.IDBreed, B.Name 'BreedName',
            P.IDClient, C.IDUser, C.Name 'UserName', C.PhoneNumber 'UserPhoneNumber'
     FROM Pet P
     LEFT JOIN Breed B on P.IDBreed = B.IDBreed
@@ -1226,12 +1219,27 @@ CREATE PROCEDURE ReadPetByIDClient
 AS
 BEGIN
     SELECT P.IDPet, P.Name 'PetName', P.Birthdate, P.Weight, P.Notes,
-           P.IDBreed, B.IDPetType, B.Name 'BreedName',
+           P.IDBreed, B.Name 'BreedName',
            P.IDClient, C.IDUser, C.Name 'UserName', C.PhoneNumber 'UserPhoneNumber'
     FROM Pet P
     LEFT JOIN Breed B on P.IDBreed = B.IDBreed
     LEFT JOIN Client C on P.IDClient = C.IDClient
     WHERE P.IDClient = @IDClient;
+END;
+GO
+
+-- Read By IDClient
+CREATE PROCEDURE ReadPetByNameClient
+    @Name NVARCHAR(64)
+AS
+BEGIN
+    SELECT TOP 1 P.IDPet, P.Name 'PetName', P.Birthdate, P.Weight, P.Notes,
+           P.IDBreed, B.Name 'BreedName',
+           P.IDClient, C.IDUser, C.Name 'UserName', C.PhoneNumber 'UserPhoneNumber'
+    FROM Pet P
+    LEFT JOIN Breed B on P.IDBreed = B.IDBreed
+    LEFT JOIN Client C on P.IDClient = C.IDClient
+    WHERE C.Name = @Name;
 END;
 GO
 
@@ -1264,60 +1272,6 @@ AS
 BEGIN
     DELETE FROM Pet
     WHERE IDPet = @IDPet;
-END;
-GO
-
--------------------------------PetType-------------------------------
-
--- Create
-CREATE PROCEDURE CreatePetType
-    @Name NVARCHAR(64)
-AS
-BEGIN
-    INSERT INTO PetType (Name)
-    VALUES (@Name);
-END;
-GO
-
--- Read All
-CREATE PROCEDURE ReadAllPetTypes
-AS
-BEGIN
-    SELECT IDPetType, Name
-    FROM PetType;
-END;
-GO
-
--- Read By ID
-CREATE PROCEDURE ReadByIDPetType
-    @IDPetType INT
-AS
-BEGIN
-    SELECT IDPetType, Name
-    FROM PetType
-    WHERE IDPetType = @IDPetType;
-END;
-GO
-
--- Update By ID
-CREATE PROCEDURE UpdatePetType
-    @IDPetType INT,
-    @NewName NVARCHAR(64)
-AS
-BEGIN
-    UPDATE PetType
-    SET Name = @NewName
-    WHERE IDPetType = @IDPetType;
-END;
-GO
-
--- Delete By ID
-CREATE PROCEDURE DeletePetType
-    @IDPetType INT
-AS
-BEGIN
-    DELETE FROM PetType
-    WHERE IDPetType = @IDPetType;
 END;
 GO
 
@@ -1880,12 +1834,11 @@ GO
 
 -- Create
 CREATE PROCEDURE CreateUserType
-    @Name NVARCHAR(64),
-    @Clearance INT
+    @Name NVARCHAR(64)
 AS
 BEGIN
-    INSERT INTO UserType (Name, Clearance)
-    VALUES (@Name, @Clearance);
+    INSERT INTO UserType (Name)
+    VALUES (@Name);
 END;
 GO
 
@@ -1893,7 +1846,7 @@ GO
 CREATE PROCEDURE ReadAllUserTypes
 AS
 BEGIN
-    SELECT IDUserType, Name, Clearance
+    SELECT IDUserType, Name
     FROM UserType;
 END;
 GO
@@ -1903,7 +1856,7 @@ CREATE PROCEDURE ReadByIDUserType
     @IDUserType INT
 AS
 BEGIN
-    SELECT IDUserType, Name, Clearance
+    SELECT IDUserType, Name
     FROM UserType
     WHERE IDUserType = @IDUserType;
 END;
@@ -1912,13 +1865,11 @@ GO
 -- Update
 CREATE PROCEDURE UpdateUserType
     @IDUserType INT,
-    @Name NVARCHAR(64),
-    @Clearance INT
+    @Name NVARCHAR(64)
 AS
 BEGIN
     UPDATE UserType
-    SET Name = @Name,
-        Clearance = @Clearance
+    SET Name = @Name
     WHERE IDUserType = @IDUserType;
 END;
 GO

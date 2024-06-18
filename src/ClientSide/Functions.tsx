@@ -237,3 +237,4 @@ export { getClientAddresses };
 export { loginGuest };
 export { getClientInvoices };
 export { createReview };
+export { getClientID };

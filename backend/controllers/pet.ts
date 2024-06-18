@@ -4,7 +4,7 @@ import { executeProcedure, getItem } from './executeProcedure';
 
 async function CreatePet(req: Request, res: Response) {
     const { IDBreed, IDClient, Name, Birthdate, Weight, Notes } = req.body;
-    if (!IDBreed || !IDClient || !Name|| !Birthdate || !Weight || !Notes) {
+    if (!IDBreed || !IDClient || !Name|| !Birthdate || !Weight ) {
         return res.status(400).send("Missing required fields");
     }
 
@@ -64,6 +64,22 @@ async function ReadPetByClientId(req: Request, res: Response) {
         "Pets not retrieved");
 }
 
+async function ReadPetByClientName(req: Request, res: Response) {
+    const Name = req.query.Name;
+    console.log(req.query);
+    
+    if (!Name) {
+        return res.status(400).send("Missing required fields");
+    }
+
+    await executeProcedure(res,
+        'ReadPetByNameClient',
+        [{ name: 'Name', type: sql.NVarChar(64), value: Name }],
+        200,
+        "Pet retrieved successfully",
+        "Pet not retrieved");
+}
+
 async function UpdatePet(req: Request, res: Response) {
     const IDPet = req.params.id;
 
@@ -75,7 +91,7 @@ async function UpdatePet(req: Request, res: Response) {
 
     const IDBreed = req.body.IDBreed || pet?.recordset[0].IDBreed;
     const IDClient = req.body.IDClient || pet?.recordset[0].IDClient;
-    const Name = req.body.Name || pet?.recordset[0].Name;
+    const Name = req.body.Name || pet?.recordset[0].PetName;
     const Birthdate = req.body.Birthdate || pet?.recordset[0].Birthdate;
     const Weight = req.body.Weight || pet?.recordset[0].Weight;   
     const Notes = req.body.Notes || pet?.recordset[0].Notes;    
@@ -91,7 +107,7 @@ async function UpdatePet(req: Request, res: Response) {
         [{ name: 'IDClient', type: sql.Int, value: IDClient }]
     );
     if (client?.recordset.length == 0) { return res.status(404).send("Pet not updated: Client not found"); }
-
+    
     await executeProcedure(res,
         'UpdatePet',
         [
@@ -99,7 +115,7 @@ async function UpdatePet(req: Request, res: Response) {
             { name: 'IDBreed', type: sql.Int, value: IDBreed },
             { name: 'IDClient', type: sql.Int, value: IDClient },
             { name: 'Name', type: sql.NVarChar(255), value: Name },
-            { name: 'Birthdate', type: sql.NVarChar(255), value: Birthdate },
+            { name: 'Birthdate', type: sql.DateTime , value: Birthdate },
             { name: 'Weight', type: sql.Int, value: Weight },
             { name: 'Notes', type: sql.NVarChar(512), value: Notes }
         ],
@@ -124,6 +140,7 @@ export default {
     ReadAllPets,
     ReadPetById,
     ReadPetByClientId,
+    ReadPetByClientName,
     UpdatePet,
     DeletePet
 }

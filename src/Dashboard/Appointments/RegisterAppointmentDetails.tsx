@@ -4,6 +4,7 @@ import { Container, Form, Button, Card, Table } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import { SiDatadog } from "react-icons/si";
 import { guestRedirection, handleExpiration } from "../../Commons/AuthCommons";
+import axios from "axios";
 
 interface Personnel {
   id: number;
@@ -12,10 +13,17 @@ interface Personnel {
 }
 
 interface Pet {
+  id: number;  // Added id field
   name: string;
 }
 
 interface Store {
+  id: number;
+  name: string;
+}
+
+interface Status {
+  id: number; 
   name: string;
 }
 
@@ -34,20 +42,60 @@ const RegisterAppointmentDetails: React.FC = () => {
   const [pets, setPets] = useState<Pet[]>([]);
   const [personnel, setPersonnel] = useState<Personnel[]>([]);
   const [stores, setStores] = useState<Store[]>([]);
+  const [status, setStatus] = useState<Status[]>([]);
   const [showPersonnelTable, setShowPersonnelTable] = useState(false);
 
+  const clientName = location.state;
+
   useEffect(() => {
-    // Fetch pets, personnel, and stores data from backend
-    setPets([{ name: "Buddy" }, { name: "Bella" }]);
-    setPersonnel([
-      { id: 1, name: "Dr. Smith", phoneNumber: 1234567890 },
-      { id: 2, name: "Dr. Doe", phoneNumber: 9876543210 },
-    ]); // Example data
-    setStores([{ name: "Store A" }, { name: "Store B" }]);
-  }, []);
+    const fetchClient = async () => {
+      try { 
+        const personnelResponse = await axios.get(`http://localhost:8080/api/v1/employee/`);
+        const personnelList = personnelResponse.data.map((obj: any) => ({
+          id: obj.IDEmployee,
+          name: obj.Name,
+          phoneNumber: obj.PhoneNumber
+        }));
+        setPersonnel(personnelList);         
+
+        const petResponse = await axios.get(`http://localhost:8080/api/v1/petByClientName/`, {
+          params: {
+            "Name": clientName
+          }
+        });
+        const petList = petResponse.data.map((obj: any) => ({
+          id: obj.IDPet,
+          name: obj.PetName
+        }));
+        setPets(petList); 
+
+        const storeResponse = await axios.get(`http://localhost:8080/api/v1/store/`);
+        const storeList = storeResponse.data.map((obj: any) => ({
+          id: obj.IDStore,
+          name: obj.Location
+        }));
+        setStores(storeList);
+      } catch (error) {
+        console.error("Error fetching clients:", error);
+        toast.error("Failed to fetch clients", {
+          autoClose: 1500,
+          theme: "colored",
+        });
+      }
+    };
+    fetchClient();
+  }, []);  // Added clientName as a dependency
 
   const handleOnChange = (e: { target: { name: any; value: any } }) => {
-    setAppointment({ ...appointment, [e.target.name]: e.target.value });
+    if (e.target.name === "petName") {
+      const selectedPetId = e.target.selectedOptions[0].getAttribute("data-id");
+      setAppointment({ ...appointment, idPet: selectedPetId, petName: e.target.value });  
+    } else if (e.target.name === "store") {
+      const selectedStoreId = e.target.selectedOptions[0].getAttribute("data-id");
+      setAppointment({ ...appointment, store: e.target.value, idStore: selectedStoreId });
+    } else {
+      setAppointment({ ...appointment, [e.target.name]: e.target.value });
+    }
   };
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
@@ -65,7 +113,22 @@ const RegisterAppointmentDetails: React.FC = () => {
           theme: "colored",
         });
       } else {
-        // Backend request logic to add the appointment using appointment data
+        try {
+          const url = `http://localhost:8080/api/v1/appointment/`;
+          const param = {
+            "IDPet": appointment.idPet,
+            "IDEmployee": appointment.personnelId,
+            "IDStore": appointment.idStore,
+            "IDStatus": 2, // TODO
+            "DateTime": appointment.dateTime
+          }
+          await axios.post(url, param);
+        } catch (error) {
+          toast.error("Failed to update client", {
+            autoClose: 1500,
+            theme: "colored",
+          });
+        }
         toast.success("Appointment created successfully", {
           autoClose: 1500,
           theme: "colored",
@@ -114,8 +177,8 @@ const RegisterAppointmentDetails: React.FC = () => {
                 onChange={handleOnChange}
               >
                 <option value="">Select Pet</option>
-                {pets.map((pet, index) => (
-                  <option key={index} value={pet.name}>
+                {pets.map((pet) => (
+                  <option value={pet.name} data-id={pet.id}>
                     {pet.name}
                   </option>
                 ))}
@@ -150,8 +213,8 @@ const RegisterAppointmentDetails: React.FC = () => {
                 onChange={handleOnChange}
               >
                 <option value="">Select Store</option>
-                {stores.map((store, index) => (
-                  <option key={index} value={store.name}>
+                {stores.map((store) => (
+                  <option key={store.id} value={store.name} data-id={store.id}>
                     {store.name}
                   </option>
                 ))}
