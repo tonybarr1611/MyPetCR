@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, SetStateAction } from "react";
 import {
   Container,
   Row,
@@ -19,8 +19,10 @@ const Appointments = () => {
   guestRedirection();
   handleExpiration();
   const [searchTerm, setSearchTerm] = useState("");
-  const [appointments, setAppointments] = useState([]);
-
+  const [appointments, setAppointments] = useState<{ id: number, owner: string, pet: string, veterinary: string, store: string, status: string, dateTime: string }[]>([]);
+  const formatDate = (date:any) => {  
+    return `${date.slice(0, 10)} ${date.slice(11, 16)}`;
+  }
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,7 +36,7 @@ const Appointments = () => {
           veterinary: obj.EmployeeName,
           store: obj.StoreLocation,
           status: obj.StatusName,
-          dateTime: obj.DateTime
+          dateTime: formatDate(obj.DateTime)
         }));
         setAppointments(newList);
       } catch (error) {
