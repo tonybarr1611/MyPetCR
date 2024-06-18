@@ -7,6 +7,7 @@ function getClientID() {
   return client.IDClient;
 }
 
+
 // Function that retrieves the data from the backend at "/product"
 // and returns the data as an array of objects with the required format
 async function getProductsClient() {
@@ -194,3 +195,4 @@ export { getProfileData };
 export { checkStock, createInvoice };
 export { getClientAddresses };
 export { loginGuest };
+export { getClientID };

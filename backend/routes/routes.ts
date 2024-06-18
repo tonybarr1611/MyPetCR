@@ -179,6 +179,7 @@ route.get('/appointment/:id', appointment.ReadAppointmentByID);
 route.put('/appointment/:id', appointment.UpdateAppointment);
 route.delete('/appointment/:id', appointment.DeleteAppointment);
 route.get('/appointment/pet/:id', appointment.ReadAllAppointmentsByPet); //Id pet 
+route.get('/appointment/client/:id', appointment.ReadAppointmentsByClientID); //Id employee
 
 // Address
 route.post('/address', address.CreateAddress);

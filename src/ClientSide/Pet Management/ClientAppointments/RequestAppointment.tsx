@@ -3,39 +3,59 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Container, Form, Button, Card } from 'react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify';
 import { SiDatadog } from "react-icons/si";
+import axios from 'axios';
+import { getClientID } from '../../Functions';
 import 'react-toastify/dist/ReactToastify.css';
 
 interface Pet {
-  name: string;
+  IDPet: number;
+  PetName: string;
 }
 
 interface Store {
-  name: string;
+  IDStore: number;
+  Location: string;
 }
 
 const RequestAppointment: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  
-  // Log location state to troubleshoot
-  console.log(location.state);
 
   const [appointment, setAppointment] = useState({
     clientName: location.state?.clientName || '',
-    petName: "",
-    store: "",
-    dateTime: ""
+    IDPet: "",
+    IDStore: "",
+    DateTime: "",
+    IDStatus: 1,    // hardcoded status ID
+    IDEmployee: 1 // hardcoded employee ID
   });
   const [pets, setPets] = useState<Pet[]>([]);
   const [stores, setStores] = useState<Store[]>([]);
 
   useEffect(() => {
-    // Fetch pets and stores data from backend or mock data for testing
-    setPets([{ name: 'Buddy' }, { name: 'Bella' }]);
-    setStores([{ name: 'Store A' }, { name: 'Store B' }]);
-  }, []);
+    const fetchPetsAndStores = async () => {
+      try {
+        const clientId = getClientID();
+        if (!clientId) {
+          toast.error("Client ID is missing", { autoClose: 1500, theme: 'colored' });
+          return;
+        }
 
-  const handleOnChange = (e: { target: { name: any; value: any; }; }) => {
+        const petResponse = await axios.get(`http://localhost:8080/api/v1/petByClient/${clientId}`);
+        setPets(petResponse.data);
+
+        const storeResponse = await axios.get('http://localhost:8080/api/v1/store');
+        setStores(storeResponse.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("An error occurred while fetching data", { autoClose: 1500, theme: 'colored' });
+      }
+    };
+
+    fetchPetsAndStores();
+  }, [location.state]);
+
+  const handleOnChange = (e: { target: { name: string; value: string; }; }) => {
     const { name, value } = e.target;
     setAppointment({ ...appointment, [name]: value });
   };
@@ -44,9 +64,17 @@ const RequestAppointment: React.FC = () => {
     e.preventDefault();
 
     try {
-      if (!appointment.petName || !appointment.store || !appointment.dateTime) {
+      if (!appointment.IDPet || !appointment.IDStore || !appointment.DateTime) {
         toast.error("All fields are required", { autoClose: 1500, theme: 'colored' });
       } else {
+        const appointmentData = {
+          ...appointment,
+          IDStatus: 2,     // Ensure IDStatus is set
+          IDEmployee: 1    // Ensure IDEmployee is set
+        };
+
+        console.log(appointmentData);
+        await axios.post('http://localhost:8080/api/v1/appointment', appointmentData);
 
         toast.success("Appointment created successfully", { autoClose: 1500, theme: 'colored' });
         navigate('/clientside/management/appointments');
@@ -73,28 +101,28 @@ const RequestAppointment: React.FC = () => {
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3" controlId="formPetName">
               <Form.Label>Pet Name</Form.Label>
-              <Form.Control as="select" name="petName" value={appointment.petName} onChange={handleOnChange}>
+              <Form.Control as="select" name="IDPet" value={appointment.IDPet} onChange={handleOnChange}>
                 <option value="">Select Pet</option>
-                {pets.map((pet, index) => (
-                  <option key={index} value={pet.name}>{pet.name}</option>
+                {pets.map((pet) => (
+                  <option key={pet.IDPet} value={pet.IDPet}>{pet.PetName}</option>
                 ))}
               </Form.Control>
             </Form.Group>
             <Form.Group className="mb-3" controlId="formStore">
               <Form.Label>Store</Form.Label>
-              <Form.Control as="select" name="store" value={appointment.store} onChange={handleOnChange}>
+              <Form.Control as="select" name="IDStore" value={appointment.IDStore} onChange={handleOnChange}>
                 <option value="">Select Store</option>
-                {stores.map((store, index) => (
-                  <option key={index} value={store.name}>{store.name}</option>
+                {stores.map((store) => (
+                  <option key={store.IDStore} value={store.IDStore}>{store.Location}</option>
                 ))}
               </Form.Control>
             </Form.Group>
             <Form.Group className="mb-3" controlId="formDateTime">
               <Form.Label>Date/Time</Form.Label>
               <Form.Control
-                type="datetime-local"
-                name="dateTime"
-                value={appointment.dateTime}
+                type="DateTime-local"
+                name="DateTime"
+                value={appointment.DateTime}
                 onChange={handleOnChange}
               />
             </Form.Group>

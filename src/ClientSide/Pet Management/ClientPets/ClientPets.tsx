@@ -1,53 +1,58 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Table, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { getClientID } from "../../Functions";
 import "../Pets.css";
 
-const ClientPets = () => {
+interface Pet {
+  IDPet: number;
+  IDPetType: string;
+  BreedName: string;
+  PetName: string;
+  Birthdate: string; 
+  Weight: number;
+  Notes: string;
+  disengaged?: boolean;
+}
+
+const ClientPets: React.FC = () => {
   const navigate = useNavigate();
+  const [pets, setPets] = useState<Pet[]>([]);
+  
 
-  const [pets, setPets] = useState([
-    {
-      id: 1,
-      petType: "Dog",
-      breed: "Golden Retriever",
-      owner: "Tony",
-      petName: "Buddy",
-      birthdate: "2020-01-01",
-      weight: "30kg",
-      notes: "Healthy and active",
-      disengaged: false,
-      idClient: 1001,
-    },
-    {
-      id: 2,
-      petType: "Cat",
-      breed: "Siamese",
-      owner: "Tony",
-      petName: "Whiskers",
-      birthdate: "2019-05-15",
-      weight: "5kg",
-      notes: "Shy but friendly",
-      disengaged: false,
-      idClient: 1001,
-    }
-  ]);
-
-  const loggedInUser = "Tony";
-  const mockupClientId = 9999;
-
-  const userPets = pets.filter(pet => pet.owner === loggedInUser);
+  useEffect(() => {
+    const fetchPets = async () => {
+      try {
+        const clientId = getClientID();
+        console.log("Client ID: ", clientId);
+        const response = await axios.get<Pet[]>(`http://localhost:8080/api/v1/petByClient/${clientId}`);
+        console.log("Fetched pets: ", response.data); 
+        setPets(response.data); 
+      } catch (error) {
+        console.error('Error fetching pets:', error);
+      }
+    };
+    fetchPets();
+  }, []);
 
   const handleAddPet = () => {
     navigate('addpet');
   };
 
-  const handleDisengagePet = (id: number) => {
-    setPets((prevPets) =>
-      prevPets.map((pet) =>
-        pet.id === id ? { ...pet, disengaged: true, idClient: mockupClientId } : pet
-      )
-    );
+  const handleDisengagePet = async (id: number) => {
+    try {
+      const updatedPets = pets.map((pet) =>
+        pet.IDPet === id ? { ...pet, disengaged: true, idClient: getClientID() } : pet
+      );
+      console.log("ID: ", id);
+      await axios.put(`http://localhost:8080/api/v1/pet/${id}`, {
+        IDClient: 1
+      });
+      setPets(updatedPets); 
+    } catch (error) {
+      console.error('Error disengaging pet:', error);
+    }
   };
 
   return (
@@ -69,24 +74,24 @@ const ClientPets = () => {
               </tr>
             </thead>
             <tbody>
-              {userPets.map((pet) => (
-                <tr key={pet.id} className={pet.disengaged ? "whitened" : ""}>
-                  <td>{pet.id}</td>
-                  <td>{pet.petType}</td>
-                  <td>{pet.breed}</td>
-                  <td>{pet.petName}</td>
-                  <td>{pet.birthdate}</td>
-                  <td>{pet.weight}</td>
-                  <td>{pet.notes}</td>
+              {pets.map((pet) => (
+                <tr key={pet.IDPet} className={pet.disengaged ? "whitened" : ""}>
+                  <td>{pet.IDPet}</td>
+                  <td>{pet.IDPetType}</td>
+                  <td>{pet.BreedName}</td>
+                  <td>{pet.PetName}</td>
+                  <td>{(new Date(pet.Birthdate)).toLocaleDateString()}</td>
+                  <td>{pet.Weight}</td>
+                  <td>{pet.Notes}</td>
                   <td>
-                    <div style={{display: "flex", justifyContent: "center"}}>
-                    <Button
-                      variant="danger"
-                      onClick={() => handleDisengagePet(pet.id)}
-                      disabled={pet.disengaged}
-                    >
-                      {pet.disengaged ? "Disengaged" : "Disengage"}
-                    </Button>
+                    <div style={{ display: "flex", justifyContent: "center" }}>
+                      <Button
+                        variant="danger"
+                        onClick={() => handleDisengagePet(pet.IDPet)}
+                        disabled={pet.disengaged}
+                      >
+                        {pet.disengaged ? "Disengaged" : "Disengage"}
+                      </Button>
                     </div>
                   </td>
                 </tr>
