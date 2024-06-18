@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Container, Form, Button, Card, Table } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import { SiDatadog } from "react-icons/si";
@@ -18,6 +18,12 @@ interface Pet {
 }
 
 interface Store {
+  id: number; 
+  name: string;
+}
+
+interface Status {
+  id: number; 
   name: string;
 }
 
@@ -28,12 +34,16 @@ const EditAppointment: React.FC = () => {
     store: "",
     dateTime: "",
     status: "Pending",
+    idPet:0,
+    idStore:0,
+    idStatus:0
   });
   guestRedirection();
   handleExpiration();
   const [pets, setPets] = useState<Pet[]>([]);
   const [personnel, setPersonnel] = useState<Personnel[]>([]);
   const [stores, setStores] = useState<Store[]>([]);
+  const [status, setStatus] = useState<Status[]>([]);
   const [showPersonnelTable, setShowPersonnelTable] = useState(false);
 
   const navigate = useNavigate();
@@ -43,10 +53,10 @@ const EditAppointment: React.FC = () => {
   const formatDate = (date:any) => {  
     return `${date.slice(0, 10)}T${date.slice(11, 16)}`;
   }
-
+  
   useEffect(() => {
     const fetchClient = async () => {
-      try {
+      try { 
         const appoointmentResponse = await axios.get(`http://localhost:8080/api/v1/appointment/${id}`);
         setAppointment({
           petName: appoointmentResponse.data[0].PetName, 
@@ -54,6 +64,8 @@ const EditAppointment: React.FC = () => {
           store: appoointmentResponse.data[0].StoreLocation,
           dateTime: formatDate(appoointmentResponse.data[0].DateTime),
           status: appoointmentResponse.data[0].StatusName,
+          idPet: appoointmentResponse.data[0].IDPet,
+          idStore: appoointmentResponse.data[0].IDStore,
           idStatus: appoointmentResponse.data[0].IDStatus
         });
 
@@ -78,6 +90,13 @@ const EditAppointment: React.FC = () => {
           name: obj.Location
         }));
         setStores(storelList); 
+
+        const statusResponse = await axios.get(`http://localhost:8080/api/v1/status/`);
+        const statuslList = statusResponse.data.map((obj: any) => ({
+          id: obj.IDStatus,
+          name: obj.Name
+        }));
+        setStatus(statuslList); 
       } catch (error) {
         console.error("Error fetching clients:", error);
         toast.error("Failed to fetch clients", {
@@ -90,7 +109,21 @@ const EditAppointment: React.FC = () => {
   }, []);
 
   const handleOnChange = (e: { target: { name: any; value: any } }) => {
-    setAppointment({ ...appointment, [e.target.name]: e.target.value });
+    if (e.target.name === "petName") {
+      const selectedPetId = e.target.selectedOptions[0].getAttribute("data-id");
+      setAppointment({ ...appointment, idPet: selectedPetId, petName: e.target.value });      
+    }     
+    else if (e.target.name === "store") {
+      const selectedStoreId = e.target.selectedOptions[0].getAttribute("data-id");
+      setAppointment({ ...appointment, idStore: selectedStoreId, store: e.target.value });
+      
+    } else if (e.target.name === "status") {
+      const selectedStatusId = e.target.selectedOptions[0].getAttribute("data-id");
+      setAppointment({ ...appointment, idStatus: selectedStatusId, status: e.target.value });
+      
+    } else {
+      setAppointment({ ...appointment, [e.target.name]: e.target.value });
+    }
   };
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
@@ -109,7 +142,22 @@ const EditAppointment: React.FC = () => {
           theme: "colored",
         });
       } else {
-        // Backend logic
+        try {
+          const url = `http://localhost:8080/api/v1/appointment/${id}`;
+          const param = {
+            "IDPet": appointment.idPet,
+            "IDEmployee": appointment.personnelId,
+            "IDStore": appointment.idStore,
+            "IDStatus": appointment.idStatus,
+            "DateTime": appointment.dateTime
+          }
+          await axios.put(url, param);
+        } catch (error) {
+          toast.error("Failed to update client", {
+            autoClose: 1500,
+            theme: "colored",
+          });
+        }
         toast.success("Appointment updated successfully", {
           autoClose: 1500,
           theme: "colored",
@@ -159,7 +207,7 @@ const EditAppointment: React.FC = () => {
               >
                 <option value="">Select Pet</option>
                 {pets.map((pet) => (
-                  <option key={pet.id} value={pet.name}>
+                  <option value={pet.name} data-id={pet.id}>
                     {pet.name}
                   </option>
                 ))}
@@ -194,8 +242,8 @@ const EditAppointment: React.FC = () => {
                 onChange={handleOnChange}
               >
                 <option value="">Select Store</option>
-                {stores.map((store, index) => (
-                  <option key={index} value={store.name}>
+                {stores.map((store) => (
+                  <option value={store.name} data-id={store.id}>
                     {store.name}
                   </option>
                 ))}
@@ -209,10 +257,11 @@ const EditAppointment: React.FC = () => {
                 value={appointment.status}
                 onChange={handleOnChange}
               >
-                <option value="Pending">Pending</option>
-                <option value="Confirmed">Confirmed</option>
-                <option value="Completed">Completed</option>
-                <option value="Cancelled">Cancelled</option>
+                {status.map((status_item) => (
+                  <option value={status_item.name} data-id={status_item.id}>
+                    {status_item.name}
+                  </option>
+                ))}
               </Form.Control>
             </Form.Group>
             <Form.Group className="mb-3" controlId="formDateTime">

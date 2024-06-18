@@ -1,4 +1,4 @@
-import { SetStateAction, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Container,
   Row,
@@ -11,31 +11,20 @@ import {
 import { ToastContainer, toast } from "react-toastify";
 import { PlusLg } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
-import AppointmentsDetail from "./AppointmentsData";
 import axios from "axios";
 import { guestRedirection, handleExpiration } from "../../Commons/AuthCommons";
+import AppointmentsDetail from "./AppointmentsData";
 
 const Appointments = () => {
   guestRedirection();
   handleExpiration();
   const [searchTerm, setSearchTerm] = useState("");
+  const [appointments, setAppointments] = useState([]);
 
   const navigate = useNavigate();
 
-  const [appointments, setAppointments] = useState([
-    {
-      id: 1,
-      owner: "<Tony",
-      pet: "Buddy",
-      veterinary: 123,
-      store: "Pet Store 1",
-      status: "Pending",
-      dateTime: "2024-06-15 10:00 AM",
-    }
-  ]);
-
   useEffect(() => {
-    const fetchClients = async () => {
+    const fetchAppointments = async () => {
       try {
         const response = await axios.get(`http://localhost:8080/api/v1/appointment/`);
         const newList = response.data.map((obj: any) => ({
@@ -45,7 +34,7 @@ const Appointments = () => {
           veterinary: obj.EmployeeName,
           store: obj.StoreLocation,
           status: obj.StatusName,
-          dateTime: obj.DateTime,
+          dateTime: obj.DateTime
         }));
         setAppointments(newList);
       } catch (error) {
@@ -56,12 +45,10 @@ const Appointments = () => {
         });
       }
     };
-    fetchClients();
+    fetchAppointments();
   }, []);
 
-  const handleSearchChange = (e: {
-    target: { value: SetStateAction<string> };
-  }) => {
+  const handleSearchChange = (e: { target: { value: SetStateAction<string> } }) => {
     setSearchTerm(e.target.value);
   };
 
@@ -160,9 +147,9 @@ const Appointments = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {appointments.map((appointment) =>
-                    AppointmentsDetail(appointment)
-                  )}
+                  {appointments.map((appointment) => (
+                    <AppointmentsDetail key={appointment.id} appointment={appointment} />
+                  ))}
                 </tbody>
               </Table>
             </div>
