@@ -1194,6 +1194,21 @@ BEGIN
 END;
 GO
 
+-- Read By IDClient
+CREATE PROCEDURE ReadPetByNameClient
+    @Name NVARCHAR(64)
+AS
+BEGIN
+    SELECT TOP 1 P.IDPet, P.Name 'PetName', P.Birthdate, P.Weight, P.Notes,
+           P.IDBreed, B.IDPetType, B.Name 'BreedName',
+           P.IDClient, C.IDUser, C.Name 'UserName', C.PhoneNumber 'UserPhoneNumber'
+    FROM Pet P
+    LEFT JOIN Breed B on P.IDBreed = B.IDBreed
+    LEFT JOIN Client C on P.IDClient = C.IDClient
+    WHERE C.Name = @Name;
+END;
+GO
+
 -- Update By ID
 CREATE PROCEDURE UpdatePet
     @IDPet INT,
