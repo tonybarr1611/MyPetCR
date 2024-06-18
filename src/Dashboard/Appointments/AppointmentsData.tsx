@@ -1,5 +1,5 @@
 import { Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 type AppointmentsDetailProps = {
   id: number;
@@ -38,14 +38,16 @@ function AppointmentsDetail({
       <td>{dateTime}</td>
       <td className="text-center">
         <div className="d-flex justify-content-center">
-          <Button
-            variant="primary"
-            size="sm"
-            className=" mr-2"
-            onClick={handleEditAppointment}
-          >
-            Edit
-          </Button>
+          <Link to={"editappointment"} state={id}>
+            <Button
+              variant="primary"
+              size="sm"
+              className=" mr-2"
+              onClick={handleEditAppointment}
+            >
+              Edit
+            </Button>
+          </Link>
         </div>
       </td>
     </tr>

@@ -1154,10 +1154,11 @@ CREATE PROCEDURE ReadByIDPet
 AS
 BEGIN
     SELECT P.IDPet, P.Name 'PetName', P.Birthdate, P.Weight, P.Notes,
-           P.IDBreed, B.IDPetType, B.Name 'BreedName',
+           P.IDBreed, B.IDPetType, B.Name 'BreedName', PT.Name 'PetTypeName',
            P.IDClient, C.IDUser, C.Name 'UserName', C.PhoneNumber 'UserPhoneNumber'
     FROM Pet P
     LEFT JOIN Breed B on P.IDBreed = B.IDBreed
+    LEFT JOIN PetType PT on B.IDPetType = PT.IDPetType
     LEFT JOIN Client C on P.IDClient = C.IDClient
     WHERE IDPet = @IDPet;
 END;
@@ -1778,7 +1779,7 @@ CREATE PROCEDURE ReadByIDUser
     @IDUser INT
 AS
 BEGIN
-    SELECT U.IDUser, U.LoginID,
+    SELECT U.IDUser, U.LoginID, U.Password,
            U.IDUserType, UT.Name 'UserTypeName'
     FROM [User] U
     LEFT JOIN UserType UT on U.IDUserType = UT.IDUserType

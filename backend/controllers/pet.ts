@@ -54,6 +54,16 @@ async function ReadPetById(req: Request, res: Response) {
         "Pet not retrieved");
 }
 
+async function ReadPetByClientId(req: Request, res: Response) {
+    const IDClient = req.params.id;
+    await executeProcedure(res,
+        'ReadPetByIDClient',
+        [{ name: 'IDClient', type: sql.Int, value: IDClient }],
+        200,
+        "Pets retrieved successfully",
+        "Pets not retrieved");
+}
+
 async function UpdatePet(req: Request, res: Response) {
     const IDPet = req.params.id;
 
@@ -113,6 +123,7 @@ export default {
     CreatePet,
     ReadAllPets,
     ReadPetById,
+    ReadPetByClientId,
     UpdatePet,
     DeletePet
 }

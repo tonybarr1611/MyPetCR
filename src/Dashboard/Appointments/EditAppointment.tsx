@@ -4,6 +4,7 @@ import { Container, Form, Button, Card, Table } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import { SiDatadog } from "react-icons/si";
 import { guestRedirection, handleExpiration } from "../../Commons/AuthCommons";
+import axios from "axios";
 
 interface Personnel {
   id: number;
@@ -12,6 +13,7 @@ interface Personnel {
 }
 
 interface Pet {
+  id: number; 
   name: string;
 }
 
@@ -35,37 +37,57 @@ const EditAppointment: React.FC = () => {
   const [showPersonnelTable, setShowPersonnelTable] = useState(false);
 
   const navigate = useNavigate();
-  const { id } = useParams();
+  const location = useLocation();
+  const id = location.state;
+
+  const formatDate = (date:any) => {  
+    return `${date.slice(0, 10)}T${date.slice(11, 16)}`;
+  }
 
   useEffect(() => {
-    const fetchAppointment = async () => {
+    const fetchClient = async () => {
       try {
-        const response = {
-          id,
-          petName: "Buddy",
-          personnelId: "1",
-          store: "Pet Store 1",
-          dateTime: "2024-06-15T10:00",
-          status: "Pending",
-        };
-        setAppointment(response);
+        const appoointmentResponse = await axios.get(`http://localhost:8080/api/v1/appointment/${id}`);
+        setAppointment({
+          petName: appoointmentResponse.data[0].PetName, 
+          personnelId: appoointmentResponse.data[0].IDEmployee,
+          store: appoointmentResponse.data[0].StoreLocation,
+          dateTime: formatDate(appoointmentResponse.data[0].DateTime),
+          status: appoointmentResponse.data[0].StatusName,
+          idStatus: appoointmentResponse.data[0].IDStatus
+        });
+
+        const petResponse = await axios.get(`http://localhost:8080/api/v1/petByClient/${appoointmentResponse.data[0].IDClient}`);
+        const petList = petResponse.data.map((obj: any) => ({
+          id: obj.IDPet,
+          name: obj.PetName
+        }));
+        setPets(petList); 
+
+        const personnelResponse = await axios.get(`http://localhost:8080/api/v1/employee/`);
+        const personnelList = personnelResponse.data.map((obj: any) => ({
+          id: obj.IDEmployee,
+          name: obj.Name,
+          phoneNumber: obj.PhoneNumber
+        }));
+        setPersonnel(personnelList); 
+
+        const storeResponse = await axios.get(`http://localhost:8080/api/v1/store/`);
+        const storelList = storeResponse.data.map((obj: any) => ({
+          id: obj.IDStore,
+          name: obj.Location
+        }));
+        setStores(storelList); 
       } catch (error) {
-        toast.error("Failed to fetch appointment details", {
+        console.error("Error fetching clients:", error);
+        toast.error("Failed to fetch clients", {
           autoClose: 1500,
           theme: "colored",
         });
       }
     };
-
-    setPets([{ name: "Buddy" }, { name: "Bella" }]);
-    setPersonnel([
-      { id: 1, name: "Dr. Smith", phoneNumber: 1234567890 },
-      { id: 2, name: "Dr. Doe", phoneNumber: 9876543210 },
-    ]); // Example data
-    setStores([{ name: "Store A" }, { name: "Store B" }]);
-
-    fetchAppointment();
-  }, [id]);
+    fetchClient();
+  }, []);
 
   const handleOnChange = (e: { target: { name: any; value: any } }) => {
     setAppointment({ ...appointment, [e.target.name]: e.target.value });
@@ -136,8 +158,8 @@ const EditAppointment: React.FC = () => {
                 onChange={handleOnChange}
               >
                 <option value="">Select Pet</option>
-                {pets.map((pet, index) => (
-                  <option key={index} value={pet.name}>
+                {pets.map((pet) => (
+                  <option key={pet.id} value={pet.name}>
                     {pet.name}
                   </option>
                 ))}
