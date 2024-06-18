@@ -1,4 +1,4 @@
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import {
   Container,
   Row,
@@ -11,44 +11,57 @@ import { ToastContainer, toast } from "react-toastify";
 import { PlusCircleDotted } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
 import "../Pets.css";
+import axios from "axios";
+import {getClientID} from "../../Functions";
 
 const ClientAppointments = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const navigate = useNavigate();
 
-  const [appointments, setAppointments] = useState([
-    {
-      id: 1,
-      pet: "Buddy",
-      veterinary: "Dr. Smith",
-      store: "Pet Store 1",
-      status: "Pending",
-      dateTime: "2024-06-15 10:00 AM",
-    },
-    {
-      id: 2,
-      pet: "Buddy",
-      veterinary: "Dr. Smith",
-      store: "Pet Store 1",
-      status: "Pending",
-      dateTime: "2024-06-15 11:00 AM",
-    },
-    {
-      id: 3,
-      pet: "Buddy",
-      veterinary: "Dr. Smith",
-      store: "Pet Store 1",
-      status: "Pending",
-      dateTime: "2024-06-15 12:00 PM",
-    }
-  ]);
+  interface Appointment {
+    id: number;
+    pet: string;
+    veterinary: string;
+    store: string;
+    status: string;
+    dateTime: string;
+  }
 
-  const handleSearchChange = (e: { target: { value: SetStateAction<string>; }; }) => {
+  
+  const clientid = getClientID();
+  
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/v1/appointment`);
+        const appointmentlist = response.data.map((obj: any) => ({
+          id: obj.IDAppointment,
+          pet: obj.PetName,
+          veterinary: obj.EmployeeName,
+          store: obj.StoreLocation,
+          status: obj.StatusName,
+          dateTime: obj.DateTime,
+        }));
+        setAppointments(appointmentlist);
+      } catch (error) {
+        console.error("Error fetching appointments: ", error);
+        toast.error("Error fetching appointments", {
+          autoClose: 1500,
+          theme: "colored",
+        });
+      }
+    };
+    fetchAppointments();
+  }, []);
+
+  const handleSearchChange = (e: { target: { value: SetStateAction<string> } }) => {
     setSearchTerm(e.target.value);
   };
 
-  const handleSubmit = (e: { preventDefault: () => void; }) => {
+  const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     if (!searchTerm) {
       toast.error("Search field is required", {
@@ -62,12 +75,35 @@ const ClientAppointments = () => {
     navigate("requestappointment");
   };
 
-  const handleCancelAppointment = (id: number) => {
+  const handleCancelAppointment = async (id: number) => {
+
     setAppointments((prevAppointments) =>
       prevAppointments.map((appointment) =>
         appointment.id === id ? { ...appointment, status: "Cancelled" } : appointment
       )
     );
+    try {
+      const url = `http://localhost:8080/api/v1/appointment/${id}`;
+      const params = { IDStatus: "3" }; // Assuming "4" represents the "Cancelled" status
+      await axios.put(url, params); // Use await to handle the promise returned by axios.put
+      toast.success("Appointment cancelled successfully", {
+        autoClose: 1500,
+        theme: "colored",
+      });
+    } catch (error) {
+      console.error("Error cancelling appointment:", error);
+      toast.error("Failed to cancel appointment", {
+        autoClose: 1500,
+        theme: "colored",
+      });
+
+      // Optionally revert the state change if the API call fails
+      setAppointments((prevAppointments) =>
+        prevAppointments.map((appointment) =>
+          appointment.id === id ? { ...appointment, status: "Active" } : appointment
+        )
+      );
+    }
   };
 
   return (
@@ -124,7 +160,7 @@ const ClientAppointments = () => {
                     <td>{appointment.status}</td>
                     <td>{appointment.dateTime}</td>
                     <td>
-                      <div style={{display: "flex", justifyContent: "center"}}>
+                      <div style={{ display: "flex", justifyContent: "center" }}>
                         <Button
                           variant="danger"
                           onClick={() => handleCancelAppointment(appointment.id)}
@@ -142,7 +178,7 @@ const ClientAppointments = () => {
               variant="primary"
               onClick={handleRequestAppointment}
             >
-              <PlusCircleDotted className="mr-2"/> Request Appointment
+              <PlusCircleDotted className="mr-2" /> Request Appointment
             </Button>
           </div>
         </Col>

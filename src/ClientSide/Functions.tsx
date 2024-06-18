@@ -7,6 +7,9 @@ function getClientID() {
   return client.IDClient;
 }
 
+export { getClientID };
+
+
 // Function that retrieves the data from the backend at "/product"
 // and returns the data as an array of objects with the required format
 async function getProductsClient() {
