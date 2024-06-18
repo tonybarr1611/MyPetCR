@@ -1,5 +1,5 @@
 import { SetStateAction, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Container, Form, Button, Card } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import { SiDatadog } from "react-icons/si";
@@ -58,17 +58,19 @@ const RegisterAppointment: React.FC = () => {
               />
             </Form.Group>
             <div className="d-flex justify-content-between">
-              <Button variant="primary" type="submit" className="mb-3">
-                Next
-              </Button>
-              <Button
-                variant="secondary"
-                type="button"
-                className="mb-3"
-                onClick={handleCancel}
-              >
-                Cancel
-              </Button>
+              <Link to={"registerappointmentdetails"}  state={clientName}>
+                <Button variant="primary" type="submit" className="mb-3">
+                  Next
+                </Button>
+                <Button
+                  variant="secondary"
+                  type="button"
+                  className="mb-3"
+                  onClick={handleCancel}
+                >
+                  Cancel
+                </Button>
+              </Link>
             </div>
           </Form>
         </Card.Body>

@@ -162,6 +162,7 @@ route.post('/pet', pet.CreatePet);
 route.get('/pet', pet.ReadAllPets);
 route.get('/pet/:id', pet.ReadPetById);
 route.get('/petByClient/:id', pet.ReadPetByClientId);
+route.get('/petByClientName', pet.ReadPetByClientName);
 route.put('/pet/:id', pet.UpdatePet);
 route.delete('/pet/:id', pet.DeletePet);
 

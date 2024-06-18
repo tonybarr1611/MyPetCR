@@ -64,6 +64,22 @@ async function ReadPetByClientId(req: Request, res: Response) {
         "Pets not retrieved");
 }
 
+async function ReadPetByClientName(req: Request, res: Response) {
+    const Name = req.query.Name;
+    console.log(req.query);
+    
+    if (!Name) {
+        return res.status(400).send("Missing required fields");
+    }
+
+    await executeProcedure(res,
+        'ReadPetByNameClient',
+        [{ name: 'Name', type: sql.NVarChar(64), value: Name }],
+        200,
+        "Pet retrieved successfully",
+        "Pet not retrieved");
+}
+
 async function UpdatePet(req: Request, res: Response) {
     const IDPet = req.params.id;
 
@@ -124,6 +140,7 @@ export default {
     ReadAllPets,
     ReadPetById,
     ReadPetByClientId,
+    ReadPetByClientName,
     UpdatePet,
     DeletePet
 }
