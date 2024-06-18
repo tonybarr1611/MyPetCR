@@ -1312,14 +1312,23 @@ BEGIN
 END;
 GO
 
--- Read All
+  -- Read All
 CREATE PROCEDURE ReadAllProducts
 AS
 BEGIN
-    SELECT P.IDProduct, P.Name 'ProductName', P.Description, P.Price,
-           P.IDProductType, PT.Name 'ProductTypeName'
-    FROM Product P
-    LEFT JOIN ProductType PT on P.IDProductType = PT.IDProductType;
+    SELECT  T.IDProduct, T.ProductName, T.Description, T.Price,
+            T.IDProductType, T.ProductTypeName, COALESCE(SUM(T.Quantity), 0) 'Stock'
+
+    FROM (
+            SELECT  P.IDProduct, P.Name 'ProductName', P.Description, P.Price,
+                    P.IDProductType, PT.Name 'ProductTypeName', I.Quantity
+            FROM Product P
+            LEFT JOIN ProductType PT on P.IDProductType = PT.IDProductType
+            LEFT JOIN Inventory I on P.IDProduct = I.IDProduct
+        ) AS T
+    
+    GROUP BY T.IDProduct, T.ProductName, T.Description, T.Price, T.IDProductType, T.ProductTypeName;
+
 END;
 GO
 

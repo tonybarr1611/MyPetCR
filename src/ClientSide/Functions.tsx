@@ -18,15 +18,19 @@ async function getProductsClient() {
       (product: {
         IDProduct: any;
         ProductName: any;
+        IDProductType: any;
         ProductTypeName: any;
         Description: any;
         Price: any;
+        Stock: any;
       }) => ({
         id: product.IDProduct,
         name: product.ProductName,
+        typeID: product.IDProductType,
         type: product.ProductTypeName,
         description: product.Description,
         price: product.Price,
+        stock: product.Stock,
       })
     );
 }

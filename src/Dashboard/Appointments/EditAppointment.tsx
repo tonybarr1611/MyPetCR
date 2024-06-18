@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Container, Form, Button, Card, Table } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import { SiDatadog } from "react-icons/si";
@@ -13,7 +13,7 @@ interface Personnel {
 }
 
 interface Pet {
-  id: number; 
+  id: number;
   name: string;
 }
 
@@ -40,44 +40,52 @@ const EditAppointment: React.FC = () => {
   const location = useLocation();
   const id = location.state;
 
-  const formatDate = (date:any) => {  
+  const formatDate = (date: any) => {
     return `${date.slice(0, 10)}T${date.slice(11, 16)}`;
-  }
+  };
 
   useEffect(() => {
     const fetchClient = async () => {
       try {
-        const appoointmentResponse = await axios.get(`http://localhost:8080/api/v1/appointment/${id}`);
+        const appoointmentResponse = await axios.get(
+          `http://localhost:8080/api/v1/appointment/${id}`
+        );
         setAppointment({
-          petName: appoointmentResponse.data[0].PetName, 
+          petName: appoointmentResponse.data[0].PetName,
           personnelId: appoointmentResponse.data[0].IDEmployee,
           store: appoointmentResponse.data[0].StoreLocation,
           dateTime: formatDate(appoointmentResponse.data[0].DateTime),
           status: appoointmentResponse.data[0].StatusName,
-          idStatus: appoointmentResponse.data[0].IDStatus
+          idStatus: appoointmentResponse.data[0].IDStatus,
         });
 
-        const petResponse = await axios.get(`http://localhost:8080/api/v1/petByClient/${appoointmentResponse.data[0].IDClient}`);
+        const petResponse = await axios.get(
+          `http://localhost:8080/api/v1/petByClient/${appoointmentResponse.data[0].IDClient}`
+        );
         const petList = petResponse.data.map((obj: any) => ({
           id: obj.IDPet,
-          name: obj.PetName
+          name: obj.PetName,
         }));
-        setPets(petList); 
+        setPets(petList);
 
-        const personnelResponse = await axios.get(`http://localhost:8080/api/v1/employee/`);
+        const personnelResponse = await axios.get(
+          `http://localhost:8080/api/v1/employee/`
+        );
         const personnelList = personnelResponse.data.map((obj: any) => ({
           id: obj.IDEmployee,
           name: obj.Name,
-          phoneNumber: obj.PhoneNumber
+          phoneNumber: obj.PhoneNumber,
         }));
-        setPersonnel(personnelList); 
+        setPersonnel(personnelList);
 
-        const storeResponse = await axios.get(`http://localhost:8080/api/v1/store/`);
+        const storeResponse = await axios.get(
+          `http://localhost:8080/api/v1/store/`
+        );
         const storelList = storeResponse.data.map((obj: any) => ({
           id: obj.IDStore,
-          name: obj.Location
+          name: obj.Location,
         }));
-        setStores(storelList); 
+        setStores(storelList);
       } catch (error) {
         console.error("Error fetching clients:", error);
         toast.error("Failed to fetch clients", {
