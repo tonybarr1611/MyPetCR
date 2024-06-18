@@ -524,6 +524,30 @@ BEGIN
 END;
 GO
 
+-- Read by IDProduct
+CREATE PROCEDURE ReadInventoryByIDProduct
+    @IDProduct INT
+AS
+BEGIN
+    SELECT 
+        S.IDStore, 
+        S.Location,
+        ISNULL(I.Quantity, 0) AS Quantity,
+        -- Flag showing if the product has an inventory in the store
+        CASE 
+            WHEN I.IDProduct IS NULL THEN 'false'
+            ELSE 'true'
+        END AS 'HasInventory'
+
+    FROM STORE S 
+    FULL OUTER JOIN Inventory I ON S.IDStore = I.IDStore AND I.IDProduct = @IDProduct
+    LEFT JOIN Product P ON I.IDProduct = P.IDProduct OR P.IDProduct = @IDProduct
+    WHERE (P.IDProduct = @IDProduct OR @IDProduct IS NULL) AND S.IDStore IS NOT NULL
+    ORDER BY S.IDStore, P.IDProduct;
+END;
+GO
+
+
 -- Read By Product And Store
 CREATE PROCEDURE ReadInventoryByProductAndStore
     @IDProduct INT,
