@@ -7,32 +7,37 @@ function getClientID() {
   return client.IDClient;
 }
 
+async function getProducts() {
+  const response = await axios.get(`${backendURL}product`);
+  return response.data.map(
+    (product: {
+      IDProduct: any;
+      ProductName: any;
+      IDProductType: any;
+      ProductTypeName: any;
+      Description: any;
+      Price: any;
+      Stock: any;
+    }) => ({
+      id: product.IDProduct,
+      name: product.ProductName,
+      typeID: product.IDProductType,
+      type: product.ProductTypeName,
+      description: product.Description,
+      price: product.Price,
+      stock: product.Stock,
+    })
+  );
+}
+
 // Function that retrieves the data from the backend at "/product"
 // and returns the data as an array of objects with the required format
 async function getProductsClient() {
-  const response = await axios.get(`${backendURL}product`);
+  const response = await getProducts();
   // Assuming response.data is an array of products
-  return response.data
-    .filter((product: { IDProductType: any }) => product.IDProductType !== 4)
-    .map(
-      (product: {
-        IDProduct: any;
-        ProductName: any;
-        IDProductType: any;
-        ProductTypeName: any;
-        Description: any;
-        Price: any;
-        Stock: any;
-      }) => ({
-        id: product.IDProduct,
-        name: product.ProductName,
-        typeID: product.IDProductType,
-        type: product.ProductTypeName,
-        description: product.Description,
-        price: product.Price,
-        stock: product.Stock,
-      })
-    );
+  return response.filter(
+    (product: { IDProductType: any }) => product.IDProductType !== 4
+  );
 }
 
 // Function that retrieves the data from the backend at "/product/:id"
@@ -223,7 +228,7 @@ async function createReview(productID: any, rating: any, review: any) {
   });
 }
 
-export { getProductsClient, getProductByID };
+export { getProducts, getProductsClient, getProductByID };
 export { getReviewsByID, getAverageRatingByID };
 export { addCartEntry, getCartEntries, clearCart };
 export { getProfileData };

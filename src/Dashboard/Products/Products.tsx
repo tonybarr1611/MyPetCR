@@ -1,5 +1,5 @@
 import { Button, Container, Table } from "react-bootstrap";
-import { getProductsClient } from "../../ClientSide/Functions";
+import { getProducts, getProductsClient } from "../../ClientSide/Functions";
 import { useEffect, useState } from "react";
 import { FaPencil } from "react-icons/fa6";
 import { Link } from "react-router-dom";
@@ -19,7 +19,7 @@ function Products() {
 
   useEffect(() => {
     async function fetchProducts() {
-      const products = await getProductsClient();
+      const products = await getProducts();
       console.log(products);
       setProducts(products);
     }
