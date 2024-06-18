@@ -25,8 +25,9 @@ function MedicalFileInfoData({
       <td>{status}</td>
       <td>{dateTime}</td>
       <td className="text-center">
-      <Link to={"details"}>
-        <Button variant="primary"             size="sm"
+      <Link to={"details"} state={id}>
+        <Button variant="primary"
+            size="sm"
             className="mr-2"
             style={{ width: "50%" }}>
           Investigate

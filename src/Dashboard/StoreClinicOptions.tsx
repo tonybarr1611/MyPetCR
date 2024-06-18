@@ -36,18 +36,11 @@ const ClientOptions = () => {
         <Col md={4}>
           <Card className="mb-3" style={{ height: "100%" }}>
             <Card.Body className="d-flex flex-column align-items-center">
-              <Hospital size={70} className="mb-3 text-success" />
-              <Card.Title>Clinic Dashboard</Card.Title>
-              <Card.Text className="text-center">
-                Access and manage clinic operations.
+              <Hospital size={70} className="mb-3 text-success mt-1" />
+              <Card.Title className="mt-3">Welcome to Clinic Dashboard</Card.Title>
+              <Card.Text className="text-center mt-4">
+                Here you can access and manage several clinic operations.
               </Card.Text>
-              <Button
-                variant="success"
-                className="mt-4"
-                onClick={() => navigate("/dashboard")}
-              >
-                Go to Clinic Dashboard
-              </Button>
             </Card.Body>
           </Card>
         </Col>
