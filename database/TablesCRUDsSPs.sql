@@ -442,6 +442,34 @@ BEGIN
 END;
 GO
 
+-- Downgrade Employee to Client
+CREATE OR ALTER PROCEDURE DowngradeEmployeeToClient
+    @IDUser INT
+AS
+BEGIN
+    UPDATE Employee
+    SET IDUser = 1
+    WHERE IDUser = @IDUser
+END;
+GO
+
+-- Upgrade client to employee
+CREATE OR ALTER PROCEDURE UpgradeClientToEmployee
+    @IDUser INT
+AS
+BEGIN
+    DECLARE @Name NVARCHAR(64);
+    DECLARE @PhoneNumber NVARCHAR(16);
+
+    SELECT @Name = Name, @PhoneNumber = PhoneNumber
+    FROM Client
+    WHERE IDUser = @IDUser;
+
+    INSERT INTO Employee (IDUser, Name, PhoneNumber)
+    VALUES (@IDUser, @Name, @PhoneNumber);
+END;
+GO
+
 -- Read All
 CREATE PROCEDURE ReadAllEmployees
 AS
