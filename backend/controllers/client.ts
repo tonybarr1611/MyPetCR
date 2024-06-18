@@ -82,7 +82,7 @@ async function CreateClientAndUser(req: Request, res: Response) {
         return res.status(400).send("Mail already in use");
     }    
 
-    const salt = process.env.DB_KEY || '';    
+    const salt = await bcript.genSalt(10);   
     let hashedPassword = await bcript.hash(Password, salt);
     
     await executeProcedure(res,

@@ -86,7 +86,7 @@ const ClientAppointments = () => {
       const url = `http://localhost:8080/api/v1/appointment/${id}`;
       const params = { IDStatus: "7" }; // Assuming "4" represents the "Cancelled" status
       await axios.put(url, params); // Use await to handle the promise returned by axios.put
-      toast.success("Appointment cancelled successfully", {
+      toast.error("Appointment cancelled successfully", {
         autoClose: 1500,
         theme: "colored",
       });
