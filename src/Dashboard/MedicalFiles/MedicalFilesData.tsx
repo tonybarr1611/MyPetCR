@@ -24,7 +24,7 @@ function MedicalFilesData({
       <td>{breed}</td>
       <td className="text-center">
         <div className="d-flex justify-content-center">
-          <Link to={"info"}>
+          <Link to={"info"} state={id}>
             <Button                 variant="primary"
                 size="sm"
                 className="mr-2"
