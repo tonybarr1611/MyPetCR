@@ -3,9 +3,11 @@ import { Container, Form, Button, Card } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { MdPets } from "react-icons/md";
+import { getClientID } from "../../Functions";
+import axios from "axios";
 
 const RegisterPet = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [petDetails, setPetDetails] = useState({
     petType: "",
     breed: "",
@@ -15,24 +17,24 @@ const RegisterPet = () => {
     notes: "",
   });
 
-  const handleOnChange = (e: { target: { name: any; value: any } }) => {
+  const handleOnChange = (e) => {
     setPetDetails({ ...petDetails, [e.target.name]: e.target.value });
   };
 
   const handleCancel = () => {
-    navigate('/clientside/management/pets');
-  }
-  
-  const handleSubmit = async (e: { preventDefault: () => void }) => {
+    navigate("/clientside/management/pets");
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let weightRegex = /^[0-9]+$/;
 
     try {
       if (
-        !petDetails.petType &&
-        !petDetails.breed &&
-        !petDetails.name &&
-        !petDetails.birthdate &&
+        !petDetails.petType ||
+        !petDetails.breed ||
+        !petDetails.name ||
+        !petDetails.birthdate ||
         !petDetails.weight
       ) {
         toast.error("All fields are required", {
@@ -46,25 +48,40 @@ const RegisterPet = () => {
         });
       } else if (weightRegex.test(petDetails.weight) === false) {
         toast.error("Please enter a valid weight (number)", {
-          autoClose: 500,
+          autoClose: 1500,
           theme: "colored",
         });
-      } else if (
-        petDetails.petType &&
-        petDetails.breed &&
-        petDetails.name &&
-        petDetails.birthdate &&
-        petDetails.weight
-      ) {
+      }else if (petDetails.notes.length > 512) {
+        toast.error("Notes should be less than 512 characters", {
+          autoClose: 1500,
+          theme: "colored",
+        });
+      } else {
+        const postData = {
+          IDBreed: parseInt(petDetails.breed),
+          IDClient: getClientID(), // Replace with actual IDClient logic
+          Name: petDetails.name,
+          Birthdate: petDetails.birthdate,
+          Weight: parseInt(petDetails.weight),
+          Notes: petDetails.notes,
+        };
+        console.log("Post data: ", postData);
+        const response = await axios.post(
+          "http://localhost:8080/api/v1/pet",
+          postData
+        );
+
         toast.success("Pet registered successfully!", {
           autoClose: 1500,
           theme: "colored",
         });
-        navigate('/clientside/management/pets');
+
+        navigate("/clientside/management/pets");
       }
-    } catch (error: any) {
+    } catch (error) {
+      console.error("Error registering pet:", error);
       toast.error("An error occurred. Please try again.", {
-        autoClose: 500,
+        autoClose: 1500,
         theme: "colored",
       });
     }
@@ -73,7 +90,7 @@ const RegisterPet = () => {
   return (
     <Container
       className="d-flex justify-content-center align-items-center"
-      style={{ height: "100vh" }}
+      style={{ minHeight: "100vh" }}
     >
       <ToastContainer position="top-center" />
       <Card style={{ width: "24rem", background: "#C9E5F0" }}>
@@ -148,12 +165,12 @@ const RegisterPet = () => {
               />
             </Form.Group>
             <div className="d-flex justify-content-between">
-            <Button variant="primary" type="submit" className="w-100 mb-3 mr-5">
-              Register Pet
-            </Button>
-            <Button variant="secondary" type="button" className="w-100 mb-3" onClick={handleCancel}>
-              Cancel
-            </Button>
+              <Button variant="primary" type="submit" className="w-100 mb-3 mr-5">
+                Register Pet
+              </Button>
+              <Button variant="secondary" type="button" className="w-100 mb-3" onClick={handleCancel}>
+                Cancel
+              </Button>
             </div>
           </Form>
         </Card.Body>
