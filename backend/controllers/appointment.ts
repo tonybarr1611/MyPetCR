@@ -153,6 +153,58 @@ async function ReadAppointmentsByClientID (req: Request, res: Response) {
         "Appointments not retrieved");
 }
 
+async function AddAppointmentAndInvoice (req: Request, res: Response) {
+    const { IDPet, IDEmployee, IDStore, IDStatus, DateTime, IDProduct, Quantity } = req.body;
+
+    if (!IDPet || !IDEmployee || !IDStore || !IDStatus || !DateTime || !IDProduct || !Quantity) {
+        return res.status(400).send("Missing required fields");
+    }
+
+    const pet = await getItem(res,
+        'ReadByIDPet',
+        [{ name: 'IDPet', type: sql.Int, value: IDPet }]
+    );
+    if (pet?.recordset.length == 0) { return res.status(404).send("Appointment not created: pet not found"); }
+
+    const employee = await getItem(res,
+        'ReadByIDEmployee',
+        [{ name: 'IDEmployee', type: sql.Int, value: IDEmployee }]
+    );
+    if (employee?.recordset.length == 0) { return res.status(404).send("Appointment not created: employee not found"); }
+
+    const store = await getItem(res,
+        'ReadByIDStore',
+        [{ name: 'IDStore', type: sql.Int, value: IDStore }]
+    );
+    if (store?.recordset.length == 0) { return res.status(404).send("Appointment not created: store not found"); }
+
+    const status = await getItem(res,
+        'ReadByIDStatus',
+        [{ name: 'IDStatus', type: sql.Int, value: IDStatus }]
+    );
+    if (status?.recordset.length == 0) { return res.status(404).send("Appointment not created: status not found"); }
+
+    const product = await getItem(res,
+        'ReadByIDProduct',
+        [{ name: 'IDProduct', type: sql.Int, value: IDProduct }]
+    );
+    if (product?.recordset.length == 0) { return res.status(404).send("Appointment not created: product not found"); }
+
+    await executeProcedure(res, 
+        'AddAppointmentAndInvoice', 
+        [
+            { name: 'IDPet', type: sql.Int, value: IDPet },
+            { name: 'IDEmployee', type: sql.Int, value: IDEmployee },
+            { name: 'IDStore', type: sql.Int, value: IDStore },
+            { name: 'IDStatus', type: sql.Int, value: IDStatus },
+            { name: 'DateTime', type: sql.DateTime, value: DateTime },
+            { name: 'IDProduct', type: sql.Int, value: IDProduct },
+            { name: 'Quantity', type: sql.Int, value: Quantity }
+        ],
+        201,
+        "Appointment and invoice created successfully",
+        "Appointment and invoice not created");
+}
 export default {
     CreateAppointment,
     ReadAllAppointments,
@@ -160,5 +212,6 @@ export default {
     UpdateAppointment,
     DeleteAppointment,
     ReadAllAppointmentsByPet,
-    ReadAppointmentsByClientID
+    ReadAppointmentsByClientID,
+    AddAppointmentAndInvoice
 }

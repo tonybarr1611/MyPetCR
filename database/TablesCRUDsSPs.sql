@@ -260,6 +260,44 @@ BEGIN
 END;
 GO
 
+CREATE PROCEDURE AddAppointmentAndInvoice
+    @IDPet INT,
+    @IDEmployee INT,
+    @IDStore INT,
+    @IDStatus INT,
+    @AppointmentDateTime DATETIME,
+    @IDClient INT,
+    @IDPayment INT
+AS
+BEGIN
+    -- Inicia una transacción
+    BEGIN TRANSACTION;
+
+    BEGIN TRY
+        -- Inserta un nuevo appointment
+        INSERT INTO Appointment (IDPet, IDEmployee, IDStore, IDStatus, DateTime)
+        VALUES (@IDPet, @IDEmployee, @IDStore, @IDStatus, @AppointmentDateTime);
+
+        -- Obtiene el ID del appointment recién insertado
+        DECLARE @IDAppointment INT;
+        SET @IDAppointment = SCOPE_IDENTITY();
+
+        -- Inserta un nuevo invoice basado en el appointment
+        INSERT INTO Invoice (IDAppointment, IDClient, IDPayment, IDStatus, DateTime)
+        VALUES (@IDAppointment, @IDClient, @IDPayment, @IDStatus, GETDATE());
+
+        -- Si todo va bien, realiza el commit de la transacción
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        -- Si ocurre un error, realiza el rollback de la transacción
+        ROLLBACK TRANSACTION;
+
+        -- Opcional: puedes lanzar el error para que el llamador lo gestione
+        THROW;
+    END CATCH
+END;
+
 -------------------------------Breed-------------------------------
 
 -- Create
@@ -437,34 +475,6 @@ CREATE PROCEDURE CreateEmployee
     @PhoneNumber NVARCHAR(20)
 AS
 BEGIN
-    INSERT INTO Employee (IDUser, Name, PhoneNumber)
-    VALUES (@IDUser, @Name, @PhoneNumber);
-END;
-GO
-
--- Downgrade Employee to Client
-CREATE OR ALTER PROCEDURE DowngradeEmployeeToClient
-    @IDUser INT
-AS
-BEGIN
-    UPDATE Employee
-    SET IDUser = 1
-    WHERE IDUser = @IDUser
-END;
-GO
-
--- Upgrade client to employee
-CREATE OR ALTER PROCEDURE UpgradeClientToEmployee
-    @IDUser INT
-AS
-BEGIN
-    DECLARE @Name NVARCHAR(64);
-    DECLARE @PhoneNumber NVARCHAR(16);
-
-    SELECT @Name = Name, @PhoneNumber = PhoneNumber
-    FROM Client
-    WHERE IDUser = @IDUser;
-
     INSERT INTO Employee (IDUser, Name, PhoneNumber)
     VALUES (@IDUser, @Name, @PhoneNumber);
 END;
@@ -2076,7 +2086,5 @@ BEGIN
     WHERE IDClient = @IDClient;
 END;
 GO
-
-
 
 
