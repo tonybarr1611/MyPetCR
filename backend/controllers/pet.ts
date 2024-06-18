@@ -4,7 +4,7 @@ import { executeProcedure, getItem } from './executeProcedure';
 
 async function CreatePet(req: Request, res: Response) {
     const { IDBreed, IDClient, Name, Birthdate, Weight, Notes } = req.body;
-    if (!IDBreed || !IDClient || !Name|| !Birthdate || !Weight || !Notes) {
+    if (!IDBreed || !IDClient || !Name|| !Birthdate || !Weight ) {
         return res.status(400).send("Missing required fields");
     }
 
