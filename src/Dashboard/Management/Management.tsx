@@ -1,14 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { Container, Row, Col, Form, Button, Table } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import ManagementData from "./ManagementData";
 import { guestRedirection } from "../../Commons/AuthCommons";
 
+interface User {
+  IDUser: number;
+  LoginID: string;
+  IDUserType: number;
+  UserTypeName: string;
+}
+
 const Management = () => {
   guestRedirection();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [users, setUsers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
     fetchUsers();
@@ -16,14 +23,14 @@ const Management = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/v1/user");
+      const response = await axios.get<User[]>("http://localhost:8080/api/v1/user");
       if (Array.isArray(response.data)) {
         setUsers(response.data);
       } else {
         throw new Error("Response data is not an array");
       }
     } catch (error) {
-      console.error("Error fetching users:", error.message);
+      console.error("Error fetching users:", (error as Error).message);
       toast.error("Error fetching users", {
         autoClose: 1500,
         theme: "colored",
@@ -31,11 +38,11 @@ const Management = () => {
     }
   };
 
-  const handleSearchChange = (e) => {
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const filteredUsers = users.filter((user) =>
       user.LoginID.toLowerCase().includes(searchTerm.toLowerCase())
@@ -43,22 +50,23 @@ const Management = () => {
     setUsers(filteredUsers);
   };
 
-  const handleUpgrade = async (id) => {
+  const handleUpgrade = async (id: number) => {
     try {
       const userToUpdate = users.find((user) => user.IDUser === id);
       if (!userToUpdate) {
         throw new Error(`User with ID ${id} not found`);
       }
 
-      let newIDUserType;
-      // Example logic: Increment IDUserType
-      if (userToUpdate.IDUserType === 1) {
-        newIDUserType = 2; // Upgrade from level 1 to level 2
-      } else if (userToUpdate.IDUserType === 2) {
-        newIDUserType = 3; // Upgrade from level 2 to level 3
-      } else {
-        newIDUserType = userToUpdate.IDUserType; // Handle other cases gracefully
+      let newIDUserType = userToUpdate.IDUserType + 1;
+      if (newIDUserType === 5) {
+        // Handle case where user is already at the highest level
+        toast.error("User is already at the highest level", {
+          autoClose: 1500,
+          theme: "colored",
+        });
+        return;
       }
+      
 
       const response = await axios.put(`http://localhost:8080/api/v1/user/${id}`, {
         IDUserType: newIDUserType,
@@ -82,21 +90,21 @@ const Management = () => {
     }
   };
 
-  const handleDowngrade = async (id) => {
+  const handleDowngrade = async (id: number) => {
     try {
       const userToUpdate = users.find((user) => user.IDUser === id);
       if (!userToUpdate) {
         throw new Error(`User with ID ${id} not found`);
       }
 
-      let newIDUserType;
-      // Example logic: Decrement IDUserType
-      if (userToUpdate.IDUserType === 3) {
-        newIDUserType = 2; // Downgrade from level 3 to level 2
-      } else if (userToUpdate.IDUserType === 2) {
-        newIDUserType = 1; // Downgrade from level 2 to level 1
-      } else {
-        newIDUserType = userToUpdate.IDUserType; // Handle other cases gracefully
+      let newIDUserType = userToUpdate.IDUserType - 1;
+      if (newIDUserType === 0) {
+        // Handle case where user is already at the highest level
+        toast.error("User is already at the lowest level", {
+          autoClose: 1500,
+          theme: "colored",
+        });
+        return;
       }
 
       const response = await axios.put(`http://localhost:8080/api/v1/user/${id}`, {

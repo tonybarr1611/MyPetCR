@@ -52,6 +52,15 @@ async function CreateClient(req: Request, res: Response) {
         "Client not created");
 }
 
+async function CreateMockClient(req: Request, res: Response) {
+    await executeProcedure(res,
+        'CreateMockClient',
+        [],
+        201,
+        "Client mock created successfully",
+        "Client mock not created");
+}
+
 async function CreateClientAndUser(req: Request, res: Response) {
     const {Name, PhoneNumber, Password, LoginID, IDUserType} = req.body
     
@@ -150,6 +159,7 @@ export default {
     ClientById,
     CreateClient,
     CreateClientAndUser,
+    CreateMockClient,
     UpdateClient,
     DeleteClient
 }

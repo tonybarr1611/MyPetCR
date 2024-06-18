@@ -48,6 +48,16 @@ async function CreateAppointment(req: Request, res: Response) {
         "Appointment not created");
 };
 
+async function ReadAllAppointmentsByPet(req: Request, res: Response) {
+    const IDPet = req.params.id;
+    await executeProcedure(res,
+        'GetAppointmentsByPet',
+        [{ name: 'IDPet', type: sql.Int, value: IDPet }],
+        200,
+        "",
+        "Appointments not retrieved");
+};
+
 async function ReadAllAppointments(req: Request, res: Response) {
     await executeProcedure(res, 
         'ReadAllAppointments', 
@@ -139,4 +149,5 @@ export default {
     ReadAppointmentByID,
     UpdateAppointment,
     DeleteAppointment,
+    ReadAllAppointmentsByPet
 }

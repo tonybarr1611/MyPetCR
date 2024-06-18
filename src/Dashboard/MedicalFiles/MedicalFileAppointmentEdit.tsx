@@ -3,8 +3,11 @@ import { Container, Card, Form, Button } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
 import { MdVaccines } from "react-icons/md";
 import { ToastContainer, toast } from "react-toastify";
+import { guestRedirection, handleExpiration } from "../../Commons/AuthCommons";
 
 const MedicalFileAppointmentEdit = () => {
+  guestRedirection();
+  handleExpiration();
   const { detailId } = useParams();
   const navigate = useNavigate();
 

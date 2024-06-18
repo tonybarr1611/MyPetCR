@@ -7,12 +7,21 @@ import {
   Col,
   Alert,
 } from "react-bootstrap";
-import { useState, ChangeEvent, FormEvent } from "react";
+import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { products } from "../../ClientSide";
 import { CartProduct } from "./Cart";
 import { FaCreditCard } from "react-icons/fa";
 import CartData from "./CartData";
 import "../Store.css";
+import {
+  checkStock,
+  clearCart,
+  createInvoice,
+  getCartEntries,
+  getClientAddresses,
+} from "../../Functions";
+import { Navigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
 interface FormState {
   fullName: string;
@@ -31,18 +40,22 @@ interface FormErrors {
   [key: string]: string;
 }
 
-function Checkout() {
-  const initialCart: CartProduct[] = products.map((product) => ({
-    id: product.id,
-    name: product.name,
-    type: product.type,
-    description: product.description,
-    price: product.price,
-    quantity: product.id, // This can be set to 1 or any default value
-  }));
+interface Address {
+  id: number;
+  province: string;
+  city: string;
+  district: string;
+  zipCode: string;
+  description: string;
+}
 
+function Checkout() {
+  const [cart, setCart] = useState<CartProduct[]>([]);
   const [showCart, setShowCart] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("card");
+  const [savedAddresses, setSavedAddresses] = useState<Address[]>([]);
+  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
+  const [shipping, setShipping] = useState(false);
 
   const [form, setForm] = useState<FormState>({
     fullName: "",
@@ -59,6 +72,19 @@ function Checkout() {
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    async function fetchCart() {
+      const cart = await getCartEntries();
+      setCart(cart);
+    }
+    async function fetchAddresses() {
+      const addresses = await getClientAddresses();
+      setSavedAddresses(addresses);
+    }
+    fetchCart();
+    fetchAddresses();
+  }, []);
 
   const toggleCartVisibility = () => {
     setShowCart(!showCart);
@@ -112,28 +138,58 @@ function Checkout() {
     return Object.keys(errors).length === 0;
   };
 
-  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (validate()) {
-      // Submit form
-      setSubmitted(true);
+      const stockCheck = await checkStock();
+      if (stockCheck) {
+        await createInvoice(shipping);
+        clearCart();
+        toast.success("Purchase successful");
+        window.location.assign("/clientside");
+        setSubmitted(true);
+      } else {
+        toast.error("Not enough stock to complete purchase");
+        setSubmitted(false);
+      }
     } else {
       setSubmitted(false);
     }
   };
 
+  const shippingChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      setShipping(true);
+    } else {
+      setShipping(false);
+    }
+  };
+
+  if (cart.length === 0) {
+    return (
+      <Container>
+        <h1 style={{ paddingTop: "2%" }}>Checkout</h1>
+        <h3>Your cart is empty</h3>
+        <Button onClick={() => window.location.assign("/clientside")}>
+          Back to store
+        </Button>
+      </Container>
+    );
+  }
+
   return (
     <Container>
+      <ToastContainer />
       <h1 style={{ paddingTop: "2%" }}>Checkout</h1>
       <Button onClick={toggleCartVisibility} className="mb-3">
         {showCart ? "Hide Cart" : "Show Cart"}
       </Button>
       {showCart && (
         <>
-          {initialCart.length === 0 ? (
+          {cart.length === 0 ? (
             <h3>Your cart is empty</h3>
           ) : (
-            initialCart.map((product) => (
+            cart.map((product) => (
               <CartData key={product.id} product={product} modifiable={false} />
             ))
           )}
@@ -143,7 +199,7 @@ function Checkout() {
         <Col>
           <Card className="mt-4">
             <Card.Body>
-              <Card.Title>Shipping Information</Card.Title>
+              <Card.Title>Billing and shipping Information</Card.Title>
               <Form>
                 <Form.Group controlId="formFullName" className="mb-3">
                   <Form.Label>Full Name</Form.Label>
@@ -214,6 +270,22 @@ function Checkout() {
                   <Form.Control.Feedback type="invalid">
                     {errors.postalCode}
                   </Form.Control.Feedback>
+                  <Form.Group
+                    controlId="formShippingBool"
+                    className="mt-3 mb-3"
+                  >
+                    <Form.Label> Do you want shipping? </Form.Label>
+                    <Form.Check
+                      className="ml-4"
+                      type="checkbox"
+                      id="shippingBool"
+                      label="Yes"
+                      name="shippingBool"
+                      value="true"
+                      defaultChecked={false}
+                      onChange={shippingChange}
+                    />
+                  </Form.Group>
                 </Form.Group>
               </Form>
             </Card.Body>
@@ -226,15 +298,15 @@ function Checkout() {
               <Card.Text>
                 Your total is {"   "}
                 <strong style={{ fontSize: "120%" }}>
-                  {initialCart
-                    .reduce(
+                  {(
+                    cart.reduce(
                       (acc, product) => acc + product.price * product.quantity,
                       0
-                    )
-                    .toLocaleString("es-CR", {
-                      style: "currency",
-                      currency: "CRC",
-                    })}
+                    ) + (shipping ? 3000 : 0)
+                  ).toLocaleString("es-CR", {
+                    style: "currency",
+                    currency: "CRC",
+                  })}
                 </strong>
               </Card.Text>
               <Form>

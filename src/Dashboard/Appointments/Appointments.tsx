@@ -13,8 +13,11 @@ import { PlusLg } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
 import AppointmentsDetail from "./AppointmentsData";
 import axios from "axios";
+import { guestRedirection, handleExpiration } from "../../Commons/AuthCommons";
 
 const Appointments = () => {
+  guestRedirection();
+  handleExpiration();
   const [searchTerm, setSearchTerm] = useState("");
 
   const navigate = useNavigate();
