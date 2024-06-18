@@ -1892,7 +1892,7 @@ END;
 GO
 
 -- Read available quantity of a product
-CREATE OR ALTER PROCEDURE EnoughQuantityByCart(
+CREATE PROCEDURE EnoughQuantityByCart(
     @IDClient INT
 )
 AS
@@ -1914,11 +1914,14 @@ BEGIN
     WHILE @@FETCH_STATUS = 0
     BEGIN
         DECLARE @ActualQuantity INT;
+		PRINT(CONCAT('ID: ', @IDProduct))
+		PRINT(CONCAT('Quantity: ', @Quantity))
 
-        SELECT @ActualQuantity = SUM(Quantity)
-        FROM Inventory
-        WHERE IDProduct = @IDProduct;
-
+        SELECT @ActualQuantity = COALESCE(SUM(Quantity), 0)
+        FROM Product P LEFT JOIN Inventory I 
+                on P.IDProduct = I.IDProduct
+        WHERE P.IDProduct = @IDProduct;
+        PRINT(@ActualQuantity)
         IF @Quantity > @ActualQuantity
         BEGIN
             SET @EnoughQuantity = 'False';
