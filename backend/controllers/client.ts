@@ -1,6 +1,6 @@
 import bcript from 'bcrypt';
-import {Response, Request} from 'express';
 import sql from 'mssql';
+import {Response, Request} from 'express';
 import { executeProcedure, getObject, getItem } from './executeProcedure';
 
 async function AllClients(req: Request, res: Response) {
@@ -82,7 +82,7 @@ async function CreateClientAndUser(req: Request, res: Response) {
         return res.status(400).send("Mail already in use");
     }    
 
-    const salt = await bcript.genSalt(10);
+    const salt = process.env.DB_KEY || '';    
     let hashedPassword = await bcript.hash(Password, salt);
     
     await executeProcedure(res,
