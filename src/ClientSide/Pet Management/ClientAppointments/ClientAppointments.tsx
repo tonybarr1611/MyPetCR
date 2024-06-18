@@ -36,7 +36,7 @@ const ClientAppointments = () => {
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/v1/appointment`);
+        const response = await axios.get(`http://localhost:8080/api/v1/appointment/client/${clientid}`);
         const appointmentlist = response.data.map((obj: any) => ({
           id: obj.IDAppointment,
           pet: obj.PetName,
@@ -84,7 +84,7 @@ const ClientAppointments = () => {
     );
     try {
       const url = `http://localhost:8080/api/v1/appointment/${id}`;
-      const params = { IDStatus: "3" }; // Assuming "4" represents the "Cancelled" status
+      const params = { IDStatus: "7" }; // Assuming "4" represents the "Cancelled" status
       await axios.put(url, params); // Use await to handle the promise returned by axios.put
       toast.success("Appointment cancelled successfully", {
         autoClose: 1500,
