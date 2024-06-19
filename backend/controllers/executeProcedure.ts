@@ -8,16 +8,18 @@ export async function executeProcedure(
     successStatus: number, 
     successMessage: string,
     errorMessage: string
-) {
+): Promise<boolean> {
     try {
         const connection = await pool;
         const request = connection.request();
         inputs.forEach(input => request.input(input.name, input.type, input.value));
         const result = await request.execute(procedure);
         res.status(successStatus).send(result.recordset || successMessage);
+        return true;
     } catch (err) {
         console.error('Database operation failed:', err);
         res.status(500).send(`Database failed: ${errorMessage}`);
+        return false;
     }
 }
 
@@ -35,7 +37,7 @@ export async function getObject(
         const request = connection.request();
         inputs.forEach(input => request.input(input.name, input.type, input.value));
         const result = await request.execute(procedure);
-        return result
+        return result;
     } catch (err) {
         console.error('Database operation failed:', err);
         res.status(500).send(`Database failed: ${errorMessage}`);
@@ -53,7 +55,7 @@ export async function getItem(
         const request = connection.request();
         inputs.forEach(input => request.input(input.name, input.type, input.value));
         const result = await request.execute(procedure);
-        return result
+        return result;
     } catch (err) {
         console.error('Database operation failed:', err);
         res.status(500).send(`Query failed`);

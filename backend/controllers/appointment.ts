@@ -2,11 +2,12 @@ import { Request, Response } from 'express';
 import sql from 'mssql';
 
 import { executeProcedure, getItem } from './executeProcedure';
+import { sendAppointmentConfirmation, sendAppointmentCancellation } from '../notifications';
 
 async function CreateAppointment(req: Request, res: Response) {
     const { IDPet, IDEmployee, IDStore, IDStatus, DateTime } = req.body;
 
-    if (!IDPet || !IDEmployee || !IDStore|| !IDStatus || !DateTime) {
+    if (!IDPet || !IDEmployee || !IDStore || !IDStatus || !DateTime) {
         return res.status(400).send("Missing required fields");
     }
 
@@ -34,7 +35,7 @@ async function CreateAppointment(req: Request, res: Response) {
     );
     if (status?.recordset.length == 0) { return res.status(404).send("Appointment not created: status not found"); }
 
-    await executeProcedure(res, 
+    const result = await executeProcedure(res, 
         'CreateAppointment', 
         [
             { name: 'IDPet', type: sql.Int, value: IDPet },
@@ -46,7 +47,11 @@ async function CreateAppointment(req: Request, res: Response) {
         201, 
         "Appointment created successfully", 
         "Appointment not created");
-};
+
+    if (result) {
+        await sendAppointmentConfirmation(IDPet, IDEmployee, `Store: ${IDStore}, DateTime: ${DateTime}`);
+    }
+}
 
 async function ReadAllAppointmentsByPet(req: Request, res: Response) {
     const IDPet = req.params.id;
@@ -56,7 +61,7 @@ async function ReadAllAppointmentsByPet(req: Request, res: Response) {
         200,
         "",
         "Appointments not retrieved");
-};
+}
 
 async function ReadAllAppointments(req: Request, res: Response) {
     await executeProcedure(res, 
@@ -65,7 +70,7 @@ async function ReadAllAppointments(req: Request, res: Response) {
         200, 
         "", 
         "Appointments not retrieved");
-};
+}
 
 async function ReadAppointmentByID(req: Request, res: Response) {
     const IDAppointment = req.params.id;
@@ -76,7 +81,7 @@ async function ReadAppointmentByID(req: Request, res: Response) {
         200, 
         "", 
         "Appointment not retrieved");
-};
+}
 
 async function UpdateAppointment(req: Request, res: Response) {
     const IDAppointment = req.params.id;
@@ -117,7 +122,7 @@ async function UpdateAppointment(req: Request, res: Response) {
     );
     if (status?.recordset.length == 0) { return res.status(404).send("Appointment not updated: status not found"); }
 
-    await executeProcedure(res, 
+    const result = await executeProcedure(res, 
         'UpdateAppointment', 
         [
             { name: 'IDAppointment', type: sql.Int, value: IDAppointment },
@@ -130,18 +135,32 @@ async function UpdateAppointment(req: Request, res: Response) {
         201,
         "Appointment updated successfully", 
         "Appointment not updated");
-};
+
+    if (result) {
+        await sendAppointmentConfirmation(IDPet, IDEmployee, `Store: ${IDStore}, DateTime: ${DateTime}`);
+    }
+}
 
 async function DeleteAppointment(req: Request, res: Response) {
     const IDAppointment = req.params.id;
 
-    await executeProcedure(res, 
+    const appointment = await getItem(res,
+        'ReadByIDAppointment',
+        [{ name: 'IDAppointment', type: sql.Int, value: IDAppointment }]
+    );
+    if (appointment?.recordset.length == 0) { return res.status(404).send("Appointment not found"); }
+
+    const result = await executeProcedure(res, 
         'DeleteAppointment', 
         [{ name: 'IDAppointment', type: sql.Int, value: IDAppointment }], 
         201, 
         "Appointment removed successfully", 
         "Appointment not removed");
-};
+
+    if (result) {
+        await sendAppointmentCancellation(appointment?.recordset[0].IDPet, appointment?.recordset[0].IDEmployee, `Store: ${appointment?.recordset[0].IDStore}, DateTime: ${appointment?.recordset[0].DateTime}`);
+    }
+}
 
 async function ReadAppointmentsByClientID (req: Request, res: Response) {
     const IDClient = req.params.id;
@@ -172,6 +191,7 @@ async function AddAppointmentAndInvoice (req: Request, res: Response) {
         "Appointment and invoice created successfully", 
         "Appointment and invoice not created");
 }
+
 export default {
     CreateAppointment,
     ReadAllAppointments,

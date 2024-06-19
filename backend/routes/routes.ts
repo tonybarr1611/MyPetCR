@@ -25,8 +25,6 @@ import address from '../controllers/address';
 import shipping from '../controllers/shipping';
 import cart from '../controllers/cart';
 
-// import { sendEmail } from '../controllers/email';
-
 const route = express.Router();
 
 // user 
@@ -207,8 +205,5 @@ route.get('/cart/:IDClient/', cart.ReadCartByIDClient);
 route.put('/cart/:IDClient/:IDProduct', cart.UpdateCart);
 route.delete('/cart/:IDClient/:IDProduct', cart.DeleteCart);
 route.delete('/cart/:IDClient', cart.DeleteAllCartByClient);
-
-// Email
-// route.post('/send-email', sendEmail);
 
 export default route;
