@@ -157,19 +157,20 @@ CREATE OR ALTER PROCEDURE ReadByIDAppointment
     @IDAppointment INT
 AS
 BEGIN
-    SELECT A.IDAppointment, A.DateTime,
+	SELECT A.IDAppointment, A.DateTime, 
            A.IDPet, P.IDBreed, P.IDClient, P.Name 'PetName', P.Birthdate 'PetBirthdate', P.Weight 'PetWeight', P.Notes 'PetNotes',
-           C.Name 'ClientName', C.IDUser 'ClientUserID',
+           C.Name 'ClientName', C.IDUser 'ClientUserID', I.IDInvoice
            A.IDEmployee, E.IDUser, E.Name 'EmployeeName', E.PhoneNumber 'EmployeePhoneNumber',
            A.IDStore, S.Location 'StoreLocation',
            A.IDStatus,ST.Name 'StatusName'
     FROM Appointment A
+	LEFT JOIN Invoice I on A.IDAppointment = I.IDAppointment
     LEFT JOIN Pet P on A.IDPet = P.IDPet
     LEFT JOIN Client C on P.IDClient = C.IDClient
     LEFT JOIN Employee E on A.IDEmployee = E.IDEmployee
     LEFT JOIN Store S on A.IDStore = S.IDStore
     LEFT JOIN StatusType ST on A.IDStatus = ST.IDStatus
-    WHERE IDAppointment = @IDAppointment;
+    WHERE A.IDAppointment = @IDAppointment;
 END;
 GO
 

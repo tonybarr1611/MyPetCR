@@ -161,7 +161,7 @@ async function AddAppointmentAndInvoice (req: Request, res: Response) {
     }
     //sin validaciones 
     await executeProcedure(res, 
-        'CreateAppointmentAndInvoice', 
+        'AddAppointmentAndInvoice', 
         [
             { name: 'IDPet', type: sql.Int, value: IDPet },
             { name: 'IDEmployee', type: sql.Int, value: IDEmployee },
