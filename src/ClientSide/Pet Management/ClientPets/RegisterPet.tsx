@@ -5,6 +5,7 @@ import { MdPets } from "react-icons/md";
 import { ToastContainer, toast } from "react-toastify";
 import { getClientID } from "../../Functions";
 import axios from "axios";
+import logger from "../../../log"
 
 const RegisterPet = () => {
   const navigate = useNavigate();
@@ -92,6 +93,7 @@ const RegisterPet = () => {
           };
           console.log(params);
           await axios.post(url, params);
+          logger.update("Pet has been registered with an IDBreed of " + petDetails.breed + " and a name of " + petDetails.name + ", born on " + petDetails.birthdate + " and currently has a weight of" + petDetails.weight + "kg");
           toast.success("Pet registered successfully!", {
             autoClose: 1500,
             theme: "colored",
