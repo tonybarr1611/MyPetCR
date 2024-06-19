@@ -6,6 +6,7 @@ import axios from "axios";
 import { SiDatadog } from "react-icons/si";
 import { getProducts } from "../../ClientSide/Functions";
 import { backendURL } from "../../main";
+import logger from "../../log";
 
 interface Product {
   id: number; // non editable
@@ -69,6 +70,7 @@ const ProductEdit: React.FC = () => {
           Price: product?.price,
           URL: product?.url,
         });
+        logger.update('Product with ID ' + product?.id + ' has been updated, with name ' + product?.name + ', description saying' + product?.description + ' and a price of' + product?.price);
         toast.success("Product updated successfully", {
           autoClose: 1500,
           theme: "colored",
