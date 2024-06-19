@@ -294,6 +294,7 @@ BEGIN
         THROW;
     END CATCH
 END;
+GO
 
 -------------------------------Breed-------------------------------
 
@@ -1317,11 +1318,12 @@ CREATE PROCEDURE CreateProduct
     @IDProductType INT,
     @Name NVARCHAR(255),
     @Description NVARCHAR(512),
-    @Price MONEY
+    @Price MONEY,
+    @URL NVARCHAR(1028)
 AS
 BEGIN
-    INSERT INTO Product (IDProductType, Name, Description, Price)
-    VALUES (@IDProductType, @Name, @Description, @Price);
+    INSERT INTO Product (IDProductType, Name, Description, Price, URL)
+    VALUES (@IDProductType, @Name, @Description, @Price, @URL);
 END;
 GO
 
@@ -1334,7 +1336,7 @@ BEGIN
 
     FROM (
             SELECT  P.IDProduct, P.Name 'ProductName', P.Description, P.Price,
-                    P.IDProductType, PT.Name 'ProductTypeName', I.Quantity
+                    P.IDProductType, P.URL, PT.Name 'ProductTypeName', I.Quantity
             FROM Product P
             LEFT JOIN ProductType PT on P.IDProductType = PT.IDProductType
             LEFT JOIN Inventory I on P.IDProduct = I.IDProduct
@@ -1351,7 +1353,7 @@ CREATE PROCEDURE ReadByIDProduct
 AS
 BEGIN
     SELECT P.IDProduct, P.Name 'ProductName', P.Description, P.Price,
-           P.IDProductType, PT.Name 'ProductTypeName'
+           P.IDProductType, P.URL, PT.Name 'ProductTypeName'
     FROM Product P
     LEFT JOIN ProductType PT on P.IDProductType = PT.IDProductType
     WHERE IDProduct = @IDProduct;
@@ -1364,14 +1366,16 @@ CREATE PROCEDURE UpdateProduct
     @IDProductType INT,
     @Name NVARCHAR(255),
     @Description NVARCHAR(512),
-    @Price MONEY
+    @Price MONEY,
+    @URL NVARCHAR(1028)
 AS
 BEGIN
     UPDATE Product
     SET IDProductType = @IDProductType,
         Name = @Name,
         Description = @Description,
-        Price = @Price
+        Price = @Price,
+        URL = @URL
     WHERE IDProduct = @IDProduct;
 END;
 GO
