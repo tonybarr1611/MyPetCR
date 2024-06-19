@@ -457,7 +457,7 @@ END;
 GO
 
 -- Upgrade Client to Employee
-CREATE OR ALTER PROCEDURE UpgradeClientToEmployee
+CREATE PROCEDURE UpgradeClientToEmployee
     @IDUser INT
 AS
 BEGIN
@@ -470,6 +470,10 @@ BEGIN
 
     INSERT INTO Employee (IDUser, Name, PhoneNumber)
     VALUES (@IDUser, @Name, @PhoneNumber);
+
+    UPDATE [User]
+    SET IDUserType = 3
+    WHERE IDUser = @IDUser
 END;
 GO
 
@@ -538,12 +542,16 @@ END;
 GO
 
 -- Downgrade Employee to Client
-CREATE OR ALTER PROCEDURE DowngradeEmployeeToClient
+CREATE PROCEDURE DowngradeEmployeeToClient
     @IDUser INT
 AS
 BEGIN
     UPDATE Employee
     SET IDUser = 1
+    WHERE IDUser = @IDUser
+
+    UPDATE [User]
+    SET IDUserType = 4
     WHERE IDUser = @IDUser
 END;
 GO

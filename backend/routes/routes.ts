@@ -99,20 +99,20 @@ route.delete('/inventory/:IDProduct/:IDStore', inventory.DeleteInventory);
 
 // Employee
 route.post('/employee', employee.CreateEmployee);
-route.post('/downgradeEmployee', employee.DowngradeEmployee);
 route.get('/employee', employee.AllEmployees);
 route.get('/employee/:id', employee.EmployeeById);
 route.put('/employee/:id', employee.UpdateEmployee);
+route.put('/downgradeEmployee/:id', employee.DowngradeEmployee);
 route.delete('/employee/:id', employee.DeleteEmployee);
 
 // Client 
 route.post('/client', client.CreateClient);
 route.post('/clientAndUser', client.CreateClientAndUser);
-route.post('/upgradeClient/:id', client.UpgradeClient);
 route.get('/client', client.AllClients);
 route.get('/clientMock', client.CreateMockClient);
 route.get('/client/:id', client.ClientById);
 route.put('/client/:id', client.UpdateClient);
+route.put('/upgradeClient/:id', client.UpgradeClient);
 route.delete('/client/:id', client.DeleteClient);
 
 // Payment Types

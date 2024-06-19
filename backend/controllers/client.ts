@@ -146,7 +146,6 @@ async function UpdateClient(req: Request, res: Response) {
 async function UpgradeClient(req: Request, res: Response) {
     const IDUser = req.params.id;
     
-    // Search for the client
     const client = await getItem(res,
         'ReadByIDUser',
         [{ name: 'IDUser', type : sql.Int , value: IDUser}]

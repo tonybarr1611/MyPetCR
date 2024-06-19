@@ -1,5 +1,5 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
-import { Container, Row, Col, Form, Button, Table } from "react-bootstrap";
+import { Container, Row, Col, Form, Table } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import ManagementData from "./ManagementData";
@@ -63,31 +63,41 @@ const Management = () => {
         throw new Error(`User with ID ${id} not found`);
       }
 
-      let newIDUserType = userToUpdate.IDUserType + 1;
-      if (newIDUserType === 5) {
-        // Handle case where user is already at the highest level
+      const newIDUserType = userToUpdate.IDUserType - 1;
+      
+      if (newIDUserType === 0) {
         toast.error("User is already at the highest level", {
           autoClose: 1500,
           theme: "colored",
         });
         return;
-      }
-
-      const response = await axios.put(
-        `http://localhost:8080/api/v1/user/${id}`,
-        {
-          IDUserType: newIDUserType,
+      } else if (newIDUserType === 3) {
+        console.log('Upgrading client', newIDUserType);
+        
+        const response = await axios.put(`http://localhost:8080/api/v1/upgradeClient/${id}`);
+        if (response.status === 200) {
+          fetchUsers();
+          toast.success("User level upgraded successfully", {
+            autoClose: 1500,
+            theme: "colored",
+          });
+        } else {
+          throw new Error("Failed to update user");
         }
-      );
-
-      if (response.status === 200) {
-        fetchUsers(); // Refresh users list after upgrade
-        toast.success("User level upgraded successfully", {
-          autoClose: 1500,
-          theme: "colored",
-        });
+        return;
       } else {
-        throw new Error("Failed to update user");
+        const response = await axios.put(`http://localhost:8080/api/v1/user/${id}`, {
+          IDUserType: newIDUserType,
+        });
+        if (response.status === 200) {
+          fetchUsers();
+          toast.success("User level upgraded successfully", {
+            autoClose: 1500,
+            theme: "colored",
+          });
+        } else {
+          throw new Error("Failed to update user");
+        }
       }
     } catch (error) {
       console.error("Error upgrading user level:", error);
@@ -105,31 +115,40 @@ const Management = () => {
         throw new Error(`User with ID ${id} not found`);
       }
 
-      let newIDUserType = userToUpdate.IDUserType - 1;
-      if (newIDUserType === 0) {
-        // Handle case where user is already at the highest level
-        toast.error("User is already at the lowest level", {
+      const newIDUserType = userToUpdate.IDUserType + 1;
+      if (newIDUserType === 5) {
+        toast.error("User is already at the highest level", {
           autoClose: 1500,
           theme: "colored",
         });
         return;
-      }
-
-      const response = await axios.put(
-        `http://localhost:8080/api/v1/user/${id}`,
-        {
-          IDUserType: newIDUserType,
+      } else if (newIDUserType === 4) {
+        console.log('Here motherfucker');
+        
+        const response = await axios.put(`http://localhost:8080/api/v1/downgradeEmployee/${id}`);
+        if (response.status === 200) {
+          fetchUsers();
+          toast.success("User level downgraded successfully", {
+            autoClose: 1500,
+            theme: "colored",
+          });
+        } else {
+          throw new Error("Failed to downgrade user");
         }
-      );
-
-      if (response.status === 200) {
-        fetchUsers(); // Refresh users list after downgrade
-        toast.success("User level downgraded successfully", {
-          autoClose: 1500,
-          theme: "colored",
-        });
+        return;
       } else {
-        throw new Error("Failed to update user");
+        const response = await axios.put(`http://localhost:8080/api/v1/user/${id}`, {
+          IDUserType: newIDUserType,
+        });
+        if (response.status === 200) {
+          fetchUsers();
+          toast.success("User level upgraded successfully", {
+            autoClose: 1500,
+            theme: "colored",
+          });
+        } else {
+          throw new Error("Failed to update user");
+        }
       }
     } catch (error) {
       console.error("Error downgrading user level:", error);
