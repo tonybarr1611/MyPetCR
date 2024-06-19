@@ -8,23 +8,23 @@ import { guestRedirection, handleExpiration } from "../../Commons/AuthCommons";
 const RegisterAppointment: React.FC = () => {
   guestRedirection();
   handleExpiration();
-  const [clientName, setClientName] = useState<string>("");
+  const [clientId, setClientId] = useState<number>(0);
   const navigate = useNavigate();
 
-  const handleOnChange = (e: { target: { value: SetStateAction<string> } }) => {
-    setClientName(e.target.value);
+  const handleOnChange = (e: { target: { value: SetStateAction<number> } }) => {
+    setClientId(e.target.value);
   };
 
   const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
-    if (!clientName) {
-      toast.error("Client name is required", {
+    if (!clientId) {
+      toast.error("Client ID is required", {
         autoClose: 1500,
         theme: "colored",
       });
     } else {
-      navigate("registerappointmentdetails", { state: { clientName } });
+      navigate("registerappointmentdetails", { state: { clientId } });
     }
   };
 
@@ -46,19 +46,20 @@ const RegisterAppointment: React.FC = () => {
               className="mb-3"
               style={{ color: "var(--darkblue)" }}
             />
-            <h1 className="h4">Enter Client Name</h1>
+            <h1 className="h4">Enter Client ID</h1>
           </div>
           <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3" controlId="formClientName">
-              <Form.Label>Client Name</Form.Label>
+            <Form.Group className="mb-3" controlId="formclientId">
+              <Form.Label>Client ID</Form.Label>
               <Form.Control
-                type="text"
-                value={clientName}
+                type="number"
+                value={clientId}
+                min={2}
                 onChange={handleOnChange}
               />
             </Form.Group>
             <div className="d-flex justify-content-between">
-              <Link to={"registerappointmentdetails"}  state={clientName}>
+              <Link to={"registerappointmentdetails"}  state={clientId}>
                 <Button variant="primary" type="submit" className="mb-3">
                   Next
                 </Button>

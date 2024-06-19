@@ -260,11 +260,13 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE AddAppointmentAndInvoice
+-- Create appointment and invoice
+CREATE PROCEDURE CreateAppointmentAndInvoice
     @IDPet INT,
     @IDStore INT,
-    @AppointmentDateTime DATETIME,
-    @IDClient INT
+    @DateTime DATETIME,
+    @IDClient INT,
+    @IDEmployee INT
 AS
 BEGIN
     -- Inicia una transacción
@@ -273,7 +275,7 @@ BEGIN
     BEGIN TRY
         -- Inserta un nuevo appointment
         INSERT INTO Appointment (IDPet, IDEmployee, IDStore, IDStatus, DateTime)
-        VALUES (@IDPet, 1, @IDStore, 1, @AppointmentDateTime);
+        VALUES (@IDPet, @IDEmployee, @IDStore, 1, @DateTime);
 
         -- Obtiene el ID del appointment recién insertado
         DECLARE @IDAppointment INT;
@@ -294,6 +296,7 @@ BEGIN
         THROW;
     END CATCH
 END;
+GO
 
 -------------------------------Breed-------------------------------
 
