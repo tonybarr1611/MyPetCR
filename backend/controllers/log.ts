@@ -22,10 +22,10 @@ async function LogById(req: Request, res: Response) {
 }
 
 async function CreateLog(req: Request, res: Response) {
-    const { IDLogType, IDUser, DateTime, Description } = req.body; 
+    const { IDLogType, IDUser, Description } = req.body; 
 
     //validate the json
-    if (!IDLogType || !IDUser || !DateTime || !Description) {
+    if (!IDLogType || !IDUser || !Description) {
         return res.status(400).send("Missing required fields");}
     
     //validate idLogType
@@ -51,7 +51,6 @@ async function CreateLog(req: Request, res: Response) {
         'CreateLog',
         [{ name: 'IDLogType', type: sql.Int, value: IDLogType },
         { name: 'IDUser', type: sql.Int, value: IDUser },
-        { name: 'DateTime', type: sql.DateTime, value: DateTime },
         { name: 'Description', type: sql.NVarChar, value: Description }],
         201,
         "Log created successfully",

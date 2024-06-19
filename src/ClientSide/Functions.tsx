@@ -7,6 +7,11 @@ function getClientID() {
   return client.IDClient;
 }
 
+function getUserID() {
+  const client = JSON.parse(localStorage.getItem("client") || "{}");
+  return client.IDUser;
+}
+
 async function getProducts() {
   const response = await axios.get(`${backendURL}product`);
   return response.data.map(
@@ -245,3 +250,4 @@ export { loginGuest };
 export { getClientInvoices };
 export { createReview };
 export { getClientID };
+export { getUserID }
