@@ -26,6 +26,7 @@ const ClientAppointments = () => {
     store: string;
     status: string;
     dateTime: string;
+    IDUser: number;
   }
 
   
@@ -41,6 +42,7 @@ const ClientAppointments = () => {
           id: obj.IDAppointment,
           pet: obj.PetName,
           veterinary: obj.EmployeeName,
+          IDUser: obj.IDUser,
           store: obj.StoreLocation,
           status: obj.StatusName,
           dateTime: obj.DateTime,
@@ -86,10 +88,13 @@ const ClientAppointments = () => {
       const url = `http://localhost:8080/api/v1/appointment/${id}`;
       const params = { IDStatus: "3" }; 
       await axios.put(url, params);
+      const appointment = appointments.find((appointment) => appointment.id === id);
+      await axios.post(`http://localhost:8080/api/v1/send-email/${appointment?.IDUser}/4`);
       toast.error("Appointment cancelled successfully", {
         autoClose: 1500,
-        theme: "colored",
+        theme: "colored",  
       });
+    
     } catch (error) {
       console.error("Error cancelling appointment:", error);
       toast.error("Failed to cancel appointment", {
