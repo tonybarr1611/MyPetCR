@@ -45,7 +45,7 @@ const ClientPets: React.FC = () => {
       );
       console.log("ID: ", id);
       await axios.put(`http://localhost:8080/api/v1/pet/${id}`, {
-        IDClient: 1,
+        IDClient: 2,
       });
       setPets(updatedPets);
     } catch (error) {
