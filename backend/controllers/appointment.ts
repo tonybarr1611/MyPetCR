@@ -154,9 +154,9 @@ async function ReadAppointmentsByClientID (req: Request, res: Response) {
 }
 
 async function AddAppointmentAndInvoice (req: Request, res: Response) {
-    const { IDPet, IDClient, IDStore, DateTime } = req.body;
+    const { IDPet, IDEmployee, IDClient, IDStore, DateTime } = req.body;
 
-    if (!IDPet || !IDClient || !IDStore || !DateTime) {
+    if (!IDPet || !IDEmployee || !IDStore || !DateTime) {
         return res.status(400).send("Missing required fields");
     }
     //sin validaciones 
@@ -164,7 +164,8 @@ async function AddAppointmentAndInvoice (req: Request, res: Response) {
         'CreateAppointmentAndInvoice', 
         [
             { name: 'IDPet', type: sql.Int, value: IDPet },
-            { name: 'IDEmployee', type: sql.Int, value: IDClient },
+            { name: 'IDEmployee', type: sql.Int, value: IDEmployee },
+            { name: 'IDClient', type: sql.Int, value: IDClient },
             { name: 'IDStore', type: sql.Int, value: IDStore },
             { name: 'DateTime', type: sql.DateTime, value: DateTime }
         ], 
