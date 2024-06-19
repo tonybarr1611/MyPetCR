@@ -262,12 +262,9 @@ GO
 
 CREATE PROCEDURE AddAppointmentAndInvoice
     @IDPet INT,
-    @IDEmployee INT,
     @IDStore INT,
-    @IDStatus INT,
     @AppointmentDateTime DATETIME,
-    @IDClient INT,
-    @IDPayment INT
+    @IDClient INT
 AS
 BEGIN
     -- Inicia una transacción
@@ -276,7 +273,7 @@ BEGIN
     BEGIN TRY
         -- Inserta un nuevo appointment
         INSERT INTO Appointment (IDPet, IDEmployee, IDStore, IDStatus, DateTime)
-        VALUES (@IDPet, @IDEmployee, @IDStore, @IDStatus, @AppointmentDateTime);
+        VALUES (@IDPet, 1, @IDStore, 1, @AppointmentDateTime);
 
         -- Obtiene el ID del appointment recién insertado
         DECLARE @IDAppointment INT;
@@ -284,7 +281,7 @@ BEGIN
 
         -- Inserta un nuevo invoice basado en el appointment
         INSERT INTO Invoice (IDAppointment, IDClient, IDPayment, IDStatus, DateTime)
-        VALUES (@IDAppointment, @IDClient, @IDPayment, @IDStatus, GETDATE());
+        VALUES (@IDAppointment, @IDClient, 1, 1, GETDATE());
 
         -- Si todo va bien, realiza el commit de la transacción
         COMMIT TRANSACTION;
