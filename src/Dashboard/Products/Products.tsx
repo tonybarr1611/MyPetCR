@@ -50,7 +50,7 @@ function Products() {
               <td>{product.type}</td>
               <td>
                 {product.type.toLowerCase() === "service"
-                  ? "No aplica"
+                  ? "N/A"
                   : product.stock}
               </td>
               <td>

@@ -44,23 +44,23 @@ const MedicalFileInfo = () => {
           notes: response.data[0].Notes,
         });
         // if id is 1, set the tuple with id=1 to
-        // breed="No aplica"
-        // owner="No aplica"
+        // breed="N/A"
+        // owner="N/A"
         // petName="Ventas de e-commerce"
-        // birthdate="No aplica"
-        // weight="No aplica"
-        // notes="Se presentan las ventas del e-commerce, cada registro representa una venta realizada a un cliente."
+        // birthdate="N/A"
+        // weight="N/A"
+        // notes="Each record represents a sale made to a customer."
         if (id === 1) {
           setCommerceFlag(true);
           setPetData({
             id: response.data[0].IDPet,
-            breed: "No aplica",
-            owner: "No aplica",
-            petName: "Ventas de e-commerce",
-            birthdate: "No aplica",
-            weight: "No aplica",
+            breed: "N/A",
+            owner: "N/A",
+            petName: "E-commerce sales",
+            birthdate: "N/A",
+            weight: "N/A",
             notes:
-              "Se presentan las ventas del e-commerce, cada registro representa una venta realizada a un cliente.",
+              "Each record represents a sale made to a customer. The data includes the customer's name, the product name, the quantity, the price, and the total amount of the sale.",
           });
         }
       } catch (error) {

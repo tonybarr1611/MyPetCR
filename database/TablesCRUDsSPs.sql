@@ -705,7 +705,7 @@ BEGIN
     IF LOWER(@Shipping) = 'true'
     BEGIN
         INSERT INTO InvoiceDetail (IDInvoice, IDProduct, Description, Quantity, Price)
-        VALUES (@NewIDInvoice, 2, 'Shipping', 1, 3000) -- TODO change mockup shipping
+        VALUES (@NewIDInvoice, 1, 'Country-wide shipping', 1, 4500) -- TODO change mockup shipping
     END
     -- Initialize cursor
     DECLARE @IDProduct INT;
