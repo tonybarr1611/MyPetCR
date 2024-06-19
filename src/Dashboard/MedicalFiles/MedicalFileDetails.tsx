@@ -11,17 +11,17 @@ const MedicalFileDetails = () => {
   handleExpiration();
   const location = useLocation();
   const id = location.state;
-  
+
   const statusOptions = [
     { value: "1", label: "Pending" },
     { value: "2", label: "Confirmed" },
     { value: "3", label: "Cancelled" },
-    { value: "4", label: "Completed" }
+    { value: "4", label: "Completed" },
   ];
 
-  const formatDate = (date: string | any[]) => {  
+  const formatDate = (date: string | any[]) => {
     return `${date.slice(0, 10)} ${date.slice(11, 16)}`;
-  }
+  };
 
   const [appointmentData, setAppointmentData] = useState({
     id: "",
@@ -29,24 +29,35 @@ const MedicalFileDetails = () => {
     petName: "",
     owner: "",
     dateTime: "",
-    invoiceId: ""
+    invoiceId: "",
   });
   const [status, setStatus] = useState("");
-  const [invoiceDetails, setInvoiceDetails] = useState<{ id: string; product: string; description: string; quantity: number; price: number ; productID: string }[]>([]);
+  const [invoiceDetails, setInvoiceDetails] = useState<
+    {
+      id: string;
+      product: string;
+      description: string;
+      quantity: number;
+      price: number;
+      productID: string;
+    }[]
+  >([]);
 
   useEffect(() => {
     const fetchAppointmentData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/v1/appointment/${id}`);
+        const response = await axios.get(
+          `http://localhost:8080/api/v1/appointment/${id}`
+        );
         setAppointmentData({
           id: response.data[0].IDAppointment,
           status: response.data[0].StatusName,
           petName: response.data[0].PetName,
           owner: response.data[0].ClientName,
           dateTime: formatDate(response.data[0].DateTime),
-          invoiceId: response.data[0].IDInvoice
+          invoiceId: response.data[0].IDInvoice,
         });
-        setStatus(response.data[0].IDStatus.toString()); 
+        setStatus(response.data[0].IDStatus.toString());
       } catch (error) {
         console.error("Error fetching appointment data:", error);
         toast.error("Failed to fetch appointment data", {
@@ -62,14 +73,16 @@ const MedicalFileDetails = () => {
   useEffect(() => {
     const fetchInvoiceDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/v1/invoiceDetail/appointment/${id}`);
-        const invoicesdetaillist = response.data.map((obj : any) => ({
+        const response = await axios.get(
+          `http://localhost:8080/api/v1/invoiceDetail/appointment/${id}`
+        );
+        const invoicesdetaillist = response.data.map((obj: any) => ({
           id: obj.IDInvoiceDetail,
           product: obj.Name,
           description: obj.Description,
           quantity: obj.Quantity,
           price: obj.Price,
-          productID: obj.IDProduct
+          productID: obj.IDProduct,
         }));
         setInvoiceDetails(invoicesdetaillist);
       } catch (error) {
@@ -84,7 +97,7 @@ const MedicalFileDetails = () => {
     fetchInvoiceDetails();
   }, [id]);
 
-  const handleStatusChange = async (event: { target: { value: any; }; }) => {
+  const handleStatusChange = async (event: { target: { value: any } }) => {
     const newStatus = event.target.value;
     setStatus(newStatus);
 
@@ -104,7 +117,8 @@ const MedicalFileDetails = () => {
       });
     }
 
-    if (newStatus === "4") { // "Completed"
+    if (newStatus === "4") {
+      // "Completed"
       disableCombobox();
     }
   };
@@ -157,7 +171,8 @@ const MedicalFileDetails = () => {
                 <td>Status</td>
                 <td>
                   {status === "4" ? (
-                    statusOptions.find(option => option.value === status)?.label
+                    statusOptions.find((option) => option.value === status)
+                      ?.label
                   ) : (
                     <Form.Control
                       as="select"
@@ -165,8 +180,10 @@ const MedicalFileDetails = () => {
                       id="statusCombobox"
                       onChange={handleStatusChange}
                     >
-                      {statusOptions.map(option => (
-                        <option key={option.value} value={option.value}>{option.label}</option>
+                      {statusOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
                       ))}
                     </Form.Control>
                   )}
@@ -212,11 +229,21 @@ const MedicalFileDetails = () => {
                   <td>{invoiceDetail.quantity}</td>
                   <td>{invoiceDetail.price.toFixed(2)}</td>
                   <td className="text-center">
-                    <Link to={"edit"} state={{ id: invoiceDetail.id, productid: invoiceDetail.productID }}>
+                    <Link
+                      to={"edit"}
+                      state={{
+                        id: invoiceDetail.id,
+                        productid: invoiceDetail.productID,
+                      }}
+                    >
                       <Button
                         variant="primary"
                         size="sm"
-                        disabled={status === "4"}
+                        disabled={
+                          status === "4" ||
+                          parseInt(localStorage.getItem("userType") || "4") !==
+                            3
+                        }
                       >
                         Edit
                       </Button>
@@ -228,20 +255,28 @@ const MedicalFileDetails = () => {
           </Table>
 
           <div className="text-center mt-3">
-            <Link to="add" state={{id: appointmentData.invoiceId}}>
+            <Link to="add" state={{ id: appointmentData.invoiceId }}>
               <Button
                 variant="success"
-                disabled={status === "4"}>
-                <PlusCircleDotted size={24} className="mb-1 mr-1" /> Add Procedure
+                disabled={
+                  status === "4" ||
+                  parseInt(localStorage.getItem("userType") || "4") !== 3
+                }
+              >
+                <PlusCircleDotted size={24} className="mb-1 mr-1" /> Add
+                Procedure
               </Button>
             </Link>
           </div>
           <div className="mt-5 text-center">
             <h4>Total Invoice Amount: {calculateTotal()}</h4>
-            <Button 
-              variant="primary" 
-              onClick={registerPayment} 
-              disabled={status === "4"}
+            <Button
+              variant="primary"
+              onClick={registerPayment}
+              disabled={
+                status === "4" ||
+                parseInt(localStorage.getItem("userType") || "4") !== 3
+              }
             >
               Register Payment
             </Button>
