@@ -5,12 +5,17 @@ import { ToastContainer, toast } from "react-toastify";
 import { SiDatadog } from "react-icons/si";
 import { guestRedirection, handleExpiration } from "../../Commons/AuthCommons";
 import axios from "axios";
+import { getIDUser } from "../../ClientSide/Functions";
+
+let LastIDEmployee = 0;
+let LastIDStatus = 0;
 
 interface Personnel {
   id: number;
   name: string;
   phoneNumber: number;
   usertype: number;
+  IDUser: number;
 }
 
 interface Pet {
@@ -19,12 +24,12 @@ interface Pet {
 }
 
 interface Store {
-  id: number; 
+  id: number;
   name: string;
 }
 
 interface Status {
-  id: number; 
+  id: number;
   name: string;
 }
 
@@ -35,10 +40,14 @@ const EditAppointment: React.FC = () => {
     store: "",
     dateTime: "",
     status: "Pending",
-    idPet:0,
-    idStore:0,
-    idStatus:0
+    idEmployee: 0,
+    clientid: 0,
+    idPet: 0,
+    idStore: 0,
+    idStatus: 0,
+    iduserEmployee: 0,
   });
+  const [originalAppointment, setOriginalAppointment] = useState(appointment);
   guestRedirection();
   handleExpiration();
   const [pets, setPets] = useState<Pet[]>([]);
@@ -54,23 +63,41 @@ const EditAppointment: React.FC = () => {
   const formatDate = (date: any) => {
     return `${date.slice(0, 10)}T${date.slice(11, 16)}`;
   };
-  
+
   useEffect(() => {
     const fetchClient = async () => {
-      try { 
-        const appoointmentResponse = await axios.get(`http://localhost:8080/api/v1/appointment/${id}`);
+      try {
+        const appoointmentResponse = await axios.get(
+          `http://localhost:8080/api/v1/appointment/${id}`
+        );
         setAppointment({
           petName: appoointmentResponse.data[0].PetName,
           personnelId: appoointmentResponse.data[0].IDEmployee,
           store: appoointmentResponse.data[0].StoreLocation,
           dateTime: formatDate(appoointmentResponse.data[0].DateTime),
+          idEmployee: appoointmentResponse.data[0].IDEmployee,
           status: appoointmentResponse.data[0].StatusName,
-
+          clientid: appoointmentResponse.data[0].ClientUserID,
+          iduserEmployee: appoointmentResponse.data[0].IDUser,
           idPet: appoointmentResponse.data[0].IDPet,
           idStore: appoointmentResponse.data[0].IDStore,
-          idStatus: appoointmentResponse.data[0].IDStatus
+          idStatus: appoointmentResponse.data[0].IDStatus,
         });
-
+        setOriginalAppointment({
+          petName: appoointmentResponse.data[0].PetName,
+          personnelId: appoointmentResponse.data[0].IDEmployee,
+          store: appoointmentResponse.data[0].StoreLocation,
+          dateTime: formatDate(appoointmentResponse.data[0].DateTime),
+          status: appoointmentResponse.data[0].StatusName,
+          clientid: appoointmentResponse.data[0].ClientUserID,
+          idEmployee: appoointmentResponse.data[0].IDEmployee,
+          iduserEmployee: appoointmentResponse.data[0].IDUser,
+          idPet: appoointmentResponse.data[0].IDPet,
+          idStore: appoointmentResponse.data[0].IDStore,
+          idStatus: appoointmentResponse.data[0].IDStatus,
+        });
+        LastIDEmployee = appoointmentResponse.data[0].IDEmployee;
+        LastIDStatus = appoointmentResponse.data[0].IDStatus;
         const petResponse = await axios.get(
           `http://localhost:8080/api/v1/petByClient/${appoointmentResponse.data[0].IDClient}`
         );
@@ -88,6 +115,7 @@ const EditAppointment: React.FC = () => {
           name: obj.Name,
           phoneNumber: obj.PhoneNumber,
           usertype: obj.IDUserType,
+          IDUser: obj.IDUser,
         }));
         setPersonnel(personnelList);
 
@@ -98,14 +126,16 @@ const EditAppointment: React.FC = () => {
           id: obj.IDStore,
           name: obj.Location,
         }));
-        setStores(storelList); 
+        setStores(storelList);
 
-        const statusResponse = await axios.get(`http://localhost:8080/api/v1/status/`);
+        const statusResponse = await axios.get(
+          `http://localhost:8080/api/v1/status/`
+        );
         const statuslList = statusResponse.data.map((obj: any) => ({
           id: obj.IDStatus,
-          name: obj.Name
+          name: obj.Name,
         }));
-        setStatus(statuslList); 
+        setStatus(statuslList);
       } catch (error) {
         console.error("Error fetching clients:", error);
         toast.error("Failed to fetch clients", {
@@ -120,16 +150,27 @@ const EditAppointment: React.FC = () => {
   const handleOnChange = (e: { target: { name: any; value: any } }) => {
     if (e.target.name === "petName") {
       const selectedPetId = e.target.selectedOptions[0].getAttribute("data-id");
-      setAppointment({ ...appointment, idPet: selectedPetId, petName: e.target.value });      
-    }     
-    else if (e.target.name === "store") {
-      const selectedStoreId = e.target.selectedOptions[0].getAttribute("data-id");
-      setAppointment({ ...appointment, idStore: selectedStoreId, store: e.target.value });
-      
+      setAppointment({
+        ...appointment,
+        idPet: selectedPetId,
+        petName: e.target.value,
+      });
+    } else if (e.target.name === "store") {
+      const selectedStoreId =
+        e.target.selectedOptions[0].getAttribute("data-id");
+      setAppointment({
+        ...appointment,
+        idStore: selectedStoreId,
+        store: e.target.value,
+      });
     } else if (e.target.name === "status") {
-      const selectedStatusId = e.target.selectedOptions[0].getAttribute("data-id");
-      setAppointment({ ...appointment, idStatus: selectedStatusId, status: e.target.value });
-      
+      const selectedStatusId =
+        e.target.selectedOptions[0].getAttribute("data-id");
+      setAppointment({
+        ...appointment,
+        idStatus: selectedStatusId,
+        status: e.target.value,
+      });
     } else {
       setAppointment({ ...appointment, [e.target.name]: e.target.value });
     }
@@ -154,11 +195,52 @@ const EditAppointment: React.FC = () => {
         try {
           const url = `http://localhost:8080/api/v1/appointment/${id}`;
           const param = {
-            "IDPet": appointment.idPet,
-            "IDEmployee": appointment.personnelId,
-            "IDStore": appointment.idStore,
-            "IDStatus": appointment.idStatus,
-            "DateTime": appointment.dateTime
+            IDPet: appointment.idPet,
+            IDEmployee: appointment.personnelId,
+            IDStore: appointment.idStore,
+            IDStatus: appointment.idStatus,
+            DateTime: appointment.dateTime,
+            IDUser: appointment.iduserEmployee,
+          };
+
+          console.log(param.IDStatus);
+          console.log(LastIDStatus);
+
+          if (param.IDStatus === 3) {
+            console.log(
+              personnel.reduce(
+                (acc, curr) =>
+                  curr.id === originalAppointment.idEmployee
+                    ? curr.IDUser
+                    : acc,
+                0
+              )
+            );
+            await axios.post(
+              `http://localhost:8080/api/v1/send-email/${personnel.reduce(
+                (acc, curr) =>
+                  curr.id === originalAppointment.idEmployee
+                    ? curr.IDUser
+                    : acc,
+                0
+              )}/4`
+            );
+          }
+          if (originalAppointment.idEmployee !== parseInt(param.IDEmployee)) {
+            console.log(
+              personnel.reduce(
+                (acc, curr) =>
+                  curr.id === parseInt(param.IDEmployee) ? curr.IDUser : acc,
+                0
+              )
+            );
+            await axios.post(
+              `http://localhost:8080/api/v1/send-email/${personnel.reduce(
+                (acc, curr) =>
+                  curr.id === parseInt(param.IDEmployee) ? curr.IDUser : acc,
+                0
+              )}/3`
+            );
           }
           await axios.put(url, param);
         } catch (error) {
@@ -310,23 +392,23 @@ const EditAppointment: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-              {personnel.map((person, index) => 
-                          person.usertype === 3 ? (
-                            <tr
-                              key={index}
-                              onClick={() =>
-                                setAppointment({
-                                  ...appointment,
-                                  personnelId: person.id.toString(),
-                                })
-                              }
-                            >
-                              <td>{person.id}</td>
-                              <td>{person.name}</td>
-                              <td>{person.phoneNumber}</td>
-                            </tr>
-                          ) : null
-                        )}
+                {personnel.map((person, index) =>
+                  person.usertype === 3 ? (
+                    <tr
+                      key={index}
+                      onClick={() =>
+                        setAppointment({
+                          ...appointment,
+                          personnelId: person.id.toString(),
+                        })
+                      }
+                    >
+                      <td>{person.id}</td>
+                      <td>{person.name}</td>
+                      <td>{person.phoneNumber}</td>
+                    </tr>
+                  ) : null
+                )}
               </tbody>
             </Table>
           </div>
