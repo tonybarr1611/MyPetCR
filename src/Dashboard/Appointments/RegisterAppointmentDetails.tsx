@@ -5,6 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { SiDatadog } from "react-icons/si";
 import { guestRedirection, handleExpiration } from "../../Commons/AuthCommons";
 import axios from "axios";
+import logger from "../../log";
 
 interface Personnel {
   id: number;
@@ -138,6 +139,7 @@ const RegisterAppointmentDetails: React.FC = () => {
           autoClose: 1500,
           theme: "colored",
         });
+        logger.request(`The user has added an appointment`);
         navigate("/dashboard/appointments");
       }
     } catch (error) {

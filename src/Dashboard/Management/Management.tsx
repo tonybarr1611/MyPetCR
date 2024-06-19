@@ -4,6 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import ManagementData from "./ManagementData";
 import { guestRedirection } from "../../Commons/AuthCommons";
+import logger from "../../log";
 
 interface User {
   IDUser: number;
@@ -71,12 +72,11 @@ const Management = () => {
           theme: "colored",
         });
         return;
-      } else if (newIDUserType === 3) {
-        console.log('Upgrading client', newIDUserType);
-        
+      } else if (newIDUserType === 3) {        
         const response = await axios.put(`http://localhost:8080/api/v1/upgradeClient/${id}`);
         if (response.status === 200) {
           fetchUsers();
+          logger.update(`The user has upgraded The user ID: ${id} to the level ${newIDUserType}`);
           toast.success("User level upgraded successfully", {
             autoClose: 1500,
             theme: "colored",
@@ -91,6 +91,7 @@ const Management = () => {
         });
         if (response.status === 200) {
           fetchUsers();
+          logger.update(`The user has upgraded The user ID: ${id} to the level ${newIDUserType}`);
           toast.success("User level upgraded successfully", {
             autoClose: 1500,
             theme: "colored",
@@ -123,11 +124,10 @@ const Management = () => {
         });
         return;
       } else if (newIDUserType === 4) {
-        console.log('Here motherfucker');
-        
         const response = await axios.put(`http://localhost:8080/api/v1/downgradeEmployee/${id}`);
         if (response.status === 200) {
           fetchUsers();
+          logger.update(`The user has downgraded The user ID: ${id} to the level ${newIDUserType}`);
           toast.success("User level downgraded successfully", {
             autoClose: 1500,
             theme: "colored",
@@ -142,6 +142,7 @@ const Management = () => {
         });
         if (response.status === 200) {
           fetchUsers();
+          logger.update(`The user has downgraded The user ID: ${id} to the level ${newIDUserType}`);
           toast.success("User level upgraded successfully", {
             autoClose: 1500,
             theme: "colored",

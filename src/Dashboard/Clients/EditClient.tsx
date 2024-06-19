@@ -5,6 +5,7 @@ import { guestRedirection, handleExpiration } from "../../Commons/AuthCommons";
 import { ToastContainer, toast } from "react-toastify";
 import { FaUserEdit } from "react-icons/fa";
 import axios from "axios";
+import logger from "../../log";
 
 const EditClient = () => {
   guestRedirection();
@@ -39,6 +40,10 @@ const EditClient = () => {
   const handleOnChange = (e: { target: { name: any; value: any } }) => {
     setClient({ ...client, [e.target.name]: e.target.value });
   };
+
+  const makeLog = () => {
+    logger.update(`The user has edited the client ID: ${id}`)
+  }
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -124,7 +129,7 @@ const EditClient = () => {
               />
             </Form.Group>
             <div className="d-flex justify-content-between">
-              <Button variant="primary" type="submit" className="mb-3">
+              <Button variant="primary" type="submit" className="mb-3" onClick={makeLog}>
                 Update Client
               </Button>
               <Button

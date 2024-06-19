@@ -11,6 +11,7 @@ import {
 import { SiDatadog } from "react-icons/si";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import logger from "../../log";
 
 function ProductStockEdit() {
   const location = useLocation();
@@ -55,6 +56,7 @@ function ProductStockEdit() {
           Quantity: newStock,
         });
       }
+      logger.update(`Stock of product ID: ${productID} in store ${storeID} has been updated to ${newStock} units`); 
       toast.success("Stock updated successfully", {
         autoClose: 1500,
         theme: "colored",

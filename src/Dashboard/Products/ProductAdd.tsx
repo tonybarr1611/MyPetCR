@@ -5,6 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import { SiDatadog } from "react-icons/si";
 import { backendURL } from "../../main";
+import logger from "../../log";
 
 interface Product {
   name: string;
@@ -49,6 +50,7 @@ const ProductAdd: React.FC = () => {
           IDProductType: product.typeID,
           URL: product.URL,
         });
+        logger.update(`Product ${product.name} has been added, with price of ${product.price} and type ID of ${product.typeID}`);
         toast.success("Product added successfully", {
           autoClose: 1500,
           theme: "colored",

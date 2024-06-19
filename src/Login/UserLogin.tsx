@@ -5,6 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { EyeFill, EyeSlashFill, PersonLock } from "react-bootstrap-icons";
 import "./UserLogin.css";
 import { loginGuest } from "../ClientSide/Functions";
+import logger from "../log";
 
 interface Credentials {
   email: string;
@@ -41,7 +42,7 @@ async function sendLogin(
       localStorage.setItem("userType", data.userType);
       localStorage.setItem("client", JSON.stringify(data.client));
       console.log("localS: ", localStorage.getItem("client"));
-
+      logger.access("Authenticated login detected in the application");
       return { success: true, message: data.message, userType: data.userType };
     } else {
       const errorMessage = await response.text();
@@ -127,6 +128,7 @@ const UserLogin: React.FC = () => {
     console.log(client);
     localStorage.setItem("client", JSON.stringify(client[0]));
     console.log("localS: ", localStorage.getItem("client"));
+    logger.access("Unauthenticated login detected in the application");
     navigate("/clientside");
   }
 

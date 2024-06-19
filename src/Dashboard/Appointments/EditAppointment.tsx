@@ -5,6 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { SiDatadog } from "react-icons/si";
 import { guestRedirection, handleExpiration } from "../../Commons/AuthCommons";
 import axios from "axios";
+import logger from "../../log";
 import { getIDUser } from "../../ClientSide/Functions";
 
 let LastIDEmployee = 0;
@@ -253,6 +254,7 @@ const EditAppointment: React.FC = () => {
           autoClose: 1500,
           theme: "colored",
         });
+        logger.request(`the user has edited the appointment ID: ${id}`);
         navigate("/dashboard/appointments");
       }
     } catch (error) {

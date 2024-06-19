@@ -6,6 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { EyeFill, EyeSlashFill } from "react-bootstrap-icons";
 import { FaDog } from "react-icons/fa6";
 import axios from "axios";
+import logger from "../../log";
 
 const RegisterClient = () => {
   const [credentials, setCredentials] = useState({
@@ -26,6 +27,10 @@ const RegisterClient = () => {
   const handleOnChange = (e: { target: { name: any; value: any } }) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
+
+  const makeLog = () => {
+    logger.update(`The user has created a client`);
+  }
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();

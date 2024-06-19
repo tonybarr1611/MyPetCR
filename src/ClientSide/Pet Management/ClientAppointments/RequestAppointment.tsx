@@ -4,6 +4,7 @@ import { Container, Form, Button, Card } from 'react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify';
 import { SiDatadog } from "react-icons/si";
 import axios from 'axios';
+import logger from '../../../log';
 import { getClientID, getIDUser } from '../../Functions';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -75,6 +76,7 @@ const RequestAppointment: React.FC = () => {
 
         console.log(appointmentData);
         await axios.post('http://localhost:8080/api/v1/appointmentandinvoice', appointmentData);
+        logger.request('User has requested an appointment for pet with ID ' + appointmentData.IDPet + ' at store with ID ' + appointmentData.IDStore + ' at date/time ' + appointmentData.DateTime);
 
         const IDUser = getIDUser();
         await axios.post(`http://localhost:8080/api/v1/send-email/${IDUser}/2`);

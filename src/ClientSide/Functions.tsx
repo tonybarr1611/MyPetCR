@@ -1,5 +1,6 @@
 import axios from "axios";
 import { backendURL } from "../main";
+import logger from "../log";
 
 // Get ClientID from localStorage
 function getClientID() {
@@ -7,9 +8,12 @@ function getClientID() {
   return client.IDClient;
 }
 
+function getUserID() {
+    const client = JSON.parse(localStorage.getItem("client") || "{}");
+    return client.IDUser;
 function getIDUser() {
-  const client = JSON.parse(localStorage.getItem("client") || "{}");
-  return client.IDUser;
+    const client = JSON.parse(localStorage.getItem("client") || "{}");
+    return client.IDUser;
 }
 
 async function getProducts() {
@@ -54,6 +58,7 @@ async function getProductsClient() {
 async function getProductByID(id: any) {
   const response = await axios.get(`${backendURL}product/${id}`);
   const product = response.data;
+  logger.info(`A product has been viewed by the user: ID: ${product[0].IDProduct} - ${product[0].ProductName}`);
   return {
     id: product[0].IDProduct,
     name: product[0].ProductName,
@@ -93,6 +98,7 @@ async function getAverageRatingByID(id: any) {
 // Function that adds a product to the cart
 async function addCartEntry(productID: any, quantity: any) {
   const clientID = getClientID();
+  logger.info(`The user has added ${quantity} (Product ID: ${productID}) to the product cart.`)
   const currentCart = await axios.get(
     `${backendURL}cart/${clientID}/${productID}`
   );
@@ -119,6 +125,7 @@ async function addCartEntry(productID: any, quantity: any) {
 async function getCartEntries() {
   const clientID = getClientID();
   const response = await axios.get(`${backendURL}cart/${clientID}`);
+  logger.info(`The user has entered the shopping cart`)
   return response.data.map(
     (entry: {
       IDProduct: any;
@@ -177,6 +184,7 @@ async function createInvoice(shipping: boolean) {
     IDPayment: paymentID,
     Shipping: shipping ? "True" : "False",
   });
+  logger.info(`The user has made a purchase`)
 }
 
 async function getClientAddresses() {
@@ -250,4 +258,5 @@ export { loginGuest };
 export { getClientInvoices };
 export { createReview };
 export { getClientID };
+export { getUserID }
 export { getIDUser };
