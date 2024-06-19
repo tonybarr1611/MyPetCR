@@ -10,6 +10,7 @@ interface Personnel {
   id: number;
   name: string;
   phoneNumber: number;
+  usertype: number;
 }
 
 interface Pet {
@@ -86,6 +87,7 @@ const EditAppointment: React.FC = () => {
           id: obj.IDEmployee,
           name: obj.Name,
           phoneNumber: obj.PhoneNumber,
+          usertype: obj.IDUserType,
         }));
         setPersonnel(personnelList);
 
@@ -308,21 +310,23 @@ const EditAppointment: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {personnel.map((person, index) => (
-                  <tr
-                    key={index}
-                    onClick={() =>
-                      setAppointment({
-                        ...appointment,
-                        personnelId: person.id.toString(),
-                      })
-                    }
-                  >
-                    <td>{person.id}</td>
-                    <td>{person.name}</td>
-                    <td>{person.phoneNumber}</td>
-                  </tr>
-                ))}
+              {personnel.map((person, index) => 
+                          person.usertype === 3 ? (
+                            <tr
+                              key={index}
+                              onClick={() =>
+                                setAppointment({
+                                  ...appointment,
+                                  personnelId: person.id.toString(),
+                                })
+                              }
+                            >
+                              <td>{person.id}</td>
+                              <td>{person.name}</td>
+                              <td>{person.phoneNumber}</td>
+                            </tr>
+                          ) : null
+                        )}
               </tbody>
             </Table>
           </div>

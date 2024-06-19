@@ -80,8 +80,12 @@ const Appointments = () => {
                   <Card.Title>Filter Appointments</Card.Title>
                   <Form>
                     <Form.Group className="mb-3">
-                      <Form.Label>By Date</Form.Label>
-                      <Form.Control type="date" name="date" />
+                      <Form.Label>From Date</Form.Label>
+                      <Form.Control type="date" name="startDate" />
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                      <Form.Label>To Date</Form.Label>
+                      <Form.Control type="date" name="endDate" />
                     </Form.Group>
                     <Form.Group className="mb-3">
                       <Form.Label>By Status</Form.Label>
