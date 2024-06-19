@@ -4,13 +4,13 @@ import { getUserID } from "../ClientSide/Functions";
 async function log(logType: number, Description: string) {
     console.log(logType, Description);
     
-    // const url = `http://localhost:8080/api/v1/log/`;
-    // const param = {
-    //     "IDLogType": logType,
-    //     "IDUser": getUserID(),
-    //     "Description": Description
-    // };
-    // await axios.post(url, param);
+    const url = `http://localhost:8080/api/v1/log/`;
+    const param = {
+        "IDLogType": logType,
+        "IDUser": getUserID(),
+        "Description": Description
+    };
+    await axios.post(url, param);
 }
 
 const logger = {
