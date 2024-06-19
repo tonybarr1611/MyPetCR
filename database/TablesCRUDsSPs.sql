@@ -468,12 +468,28 @@ BEGIN
     FROM Client
     WHERE IDUser = @IDUser;
 
-    INSERT INTO Employee (IDUser, Name, PhoneNumber)
-    VALUES (@IDUser, @Name, @PhoneNumber);
+    IF EXISTS (
+        SELECT 1
+        FROM Employee
+        WHERE IDUser = 1
+          AND Name = @Name
+          AND PhoneNumber = @PhoneNumber
+    )
+    BEGIN
+        UPDATE Employee
+        SET IDUser = @IDUser
+        WHERE Name = @Name
+          AND PhoneNumber = @PhoneNumber;
+    END
+    ELSE
+    BEGIN
+        INSERT INTO Employee (IDUser, Name, PhoneNumber)
+        VALUES (@IDUser, @Name, @PhoneNumber);
+    END
 
     UPDATE [User]
     SET IDUserType = 3
-    WHERE IDUser = @IDUser
+    WHERE IDUser = @IDUser;
 END;
 GO
 
