@@ -22,12 +22,12 @@ const RequestAppointment: React.FC = () => {
   const navigate = useNavigate();
 
   const [appointment, setAppointment] = useState({
-    clientName: location.state?.clientName || '',
+    IDClient: "",
     IDPet: "",
     IDStore: "",
     DateTime: "",
-    IDStatus: 1,    // hardcoded status ID
-    IDEmployee: 1 // hardcoded employee ID
+    IDEmployee: 1,
+
   });
   const [pets, setPets] = useState<Pet[]>([]);
   const [stores, setStores] = useState<Store[]>([]);
@@ -69,12 +69,11 @@ const RequestAppointment: React.FC = () => {
       } else {
         const appointmentData = {
           ...appointment,
-          IDStatus: 2,     // Ensure IDStatus is set
-          IDEmployee: 1    // Ensure IDEmployee is set
         };
+        appointmentData.IDClient = getClientID();
 
         console.log(appointmentData);
-        await axios.post('http://localhost:8080/api/v1/appointment', appointmentData);
+        await axios.post('http://localhost:8080/api/v1/appointmentandinvoice', appointmentData);
 
         toast.success("Appointment created successfully", { autoClose: 1500, theme: 'colored' });
         navigate('/clientside/management/appointments');
