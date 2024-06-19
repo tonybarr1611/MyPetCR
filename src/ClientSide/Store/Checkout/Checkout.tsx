@@ -302,7 +302,7 @@ function Checkout() {
                     cart.reduce(
                       (acc, product) => acc + product.price * product.quantity,
                       0
-                    ) + (shipping ? 3000 : 0)
+                    ) + (shipping ? 4500 : 0)
                   ).toLocaleString("es-CR", {
                     style: "currency",
                     currency: "CRC",

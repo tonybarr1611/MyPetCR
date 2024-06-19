@@ -5,11 +5,18 @@ import { guestRedirection, handleExpiration } from "../../Commons/AuthCommons";
 import MedicalFilesData from "./MedicalFilesData";
 import axios from "axios";
 
+interface Pet {
+  id: number;
+  petName: string;
+  ownerName: string;
+  breed: string;
+}
+
 const MedicalFiles = () => {
   guestRedirection();
   handleExpiration();
   const [searchTerm, setSearchTerm] = useState("");
-  const [pets, setPets] = useState([]);
+  const [pets, setPets] = useState<Pet[]>([]);
 
   useEffect(() => {
     const fetchPets = async () => {
@@ -21,6 +28,13 @@ const MedicalFiles = () => {
           ownerName: obj.UserName,
           breed: obj.BreedName,
         }));
+        // Set the tuple with id=1 to
+        // petName="E-commerce sales"
+        // ownerName="N/A"
+        // breed="N/A"
+        newList[0].petName = "E-commerce sales";
+        newList[0].ownerName = "N/A";
+        newList[0].breed = "N/A";
         setPets(newList);
       } catch (error) {
         console.error("Error fetching pets:", error);
@@ -78,7 +92,22 @@ const MedicalFiles = () => {
                     <th className="text-center">Actions</th>
                   </tr>
                 </thead>
-                <tbody>{pets.map((pet) => MedicalFilesData(pet))}</tbody>
+                <tbody>
+                  {pets
+                    .filter(
+                      (pet: Pet) =>
+                        pet.petName
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase()) ||
+                        pet.ownerName
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase()) ||
+                        pet.breed
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase())
+                    )
+                    .map((pet) => MedicalFilesData(pet))}
+                </tbody>
               </Table>
             </div>
           </Col>

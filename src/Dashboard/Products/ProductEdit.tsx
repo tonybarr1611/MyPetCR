@@ -4,7 +4,7 @@ import { Container, Form, Button, Card } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import { SiDatadog } from "react-icons/si";
-import { getProductsClient } from "../../ClientSide/Functions";
+import { getProducts } from "../../ClientSide/Functions";
 import { backendURL } from "../../main";
 
 interface Product {
@@ -12,6 +12,7 @@ interface Product {
   name: string;
   description: string;
   price: number;
+  url: string;
   typeID: number; // non editable
   type: string; // non editable
   stock: number; // non editable
@@ -26,7 +27,7 @@ const ProductEdit: React.FC = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await getProductsClient();
+        const response = await getProducts();
         const product = response.find(
           (product: Product) => product.id === +(id || 0)
         );
@@ -47,19 +48,12 @@ const ProductEdit: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const formProductName = document.getElementById(
-        "productName"
-      ) as HTMLInputElement;
-      const formProductDescription = document.getElementById(
-        "productDescription"
-      ) as HTMLInputElement;
-      const formProductPrice = document.getElementById(
-        "productPrice"
-      ) as HTMLInputElement;
       if (
-        !formProductName.value ||
-        !formProductDescription.value ||
-        parseInt(formProductPrice.value) <= 0
+        !product?.name ||
+        !product.description ||
+        !product.price ||
+        !product.url ||
+        product.price <= 0
       ) {
         toast.error("All fields are required and price must be positive", {
           autoClose: 1500,
@@ -70,9 +64,10 @@ const ProductEdit: React.FC = () => {
         await axios.put(`${backendURL}product/${id}`, {
           IDProduct: product?.id,
           IDProductType: product?.typeID,
-          Name: formProductName.value,
-          Description: formProductDescription.value,
-          Price: parseInt(formProductPrice.value),
+          Name: product?.name,
+          Description: product?.description,
+          Price: product?.price,
+          URL: product?.url,
         });
         toast.success("Product updated successfully", {
           autoClose: 1500,
@@ -157,6 +152,17 @@ const ProductEdit: React.FC = () => {
                   setProduct({ ...product, price: +e.target.value })
                 }
                 min="0"
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formProductURL">
+              <Form.Label>Image URL</Form.Label>
+              <Form.Control
+                type="text"
+                name="url"
+                value={product.url}
+                onChange={(e) =>
+                  setProduct({ ...product, url: e.target.value })
+                }
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="formProductType">

@@ -23,9 +23,9 @@ async function ProductById(req: Request, res: Response) {
 };
 
 async function CreateProduct(req: Request, res: Response) {
-    const { Name, IDProductType, Description, Price } = req.body;
+    const { Name, IDProductType, Description, Price, URL } = req.body;
     // validate the json
-    if (!Name || !IDProductType || !Description || !Price) {
+    if (!Name || !IDProductType || !Description || !Price || !URL) {
         return res.status(400).send("Missing required fields");
     }
 
@@ -44,7 +44,8 @@ async function CreateProduct(req: Request, res: Response) {
             { name: 'Name', type: sql.NVarChar(255), value: Name },
             { name: 'IDProductType', type: sql.Int, value: IDProductType },
             { name: 'Description', type: sql.NVarChar(512), value: Description },
-            { name: 'Price', type: sql.Money, value: Price }
+            { name: 'Price', type: sql.Money, value: Price },
+            { name: 'URL', type: sql.NVarChar(1028), value: URL }
         ],
         201,
         "Product created successfully",
@@ -53,7 +54,7 @@ async function CreateProduct(req: Request, res: Response) {
 
 async function UpdateProduct(req: Request, res: Response) {
     const IDProduct = req.params.id;
-    let { Name, IDProductType, Description, Price } = req.body;
+    let { Name, IDProductType, Description, Price, URL } = req.body;
 
     // search for the product
     const product = await getObject(res,
@@ -69,6 +70,7 @@ async function UpdateProduct(req: Request, res: Response) {
     IDProductType = IDProductType || product.recordset[0].IDProductType;
     Description = Description || product.recordset[0].Description;
     Price = Price || product.recordset[0].Price;
+    URL = URL || product.recordset[0].URL;
 
     // validate idProductType
     const productType = await getObject(res,
@@ -87,7 +89,8 @@ async function UpdateProduct(req: Request, res: Response) {
             { name: 'Name', type: sql.NVarChar(255), value: Name },
             { name: 'IDProductType', type: sql.Int, value: IDProductType },
             { name: 'Description', type: sql.NVarChar(512), value: Description },
-            { name: 'Price', type: sql.Money, value: Price }
+            { name: 'Price', type: sql.Money, value: Price },
+            { name: 'URL', type: sql.NVarChar(1028), value: URL }
         ],
         200,
         "Product updated successfully",

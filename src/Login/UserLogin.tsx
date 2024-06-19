@@ -103,12 +103,12 @@ const UserLogin: React.FC = () => {
           autoClose: 1500,
           theme: "colored",
         });
-        if (result.userType === 2) {
+        if ((result.userType || 4) <= 3) {
           navigate("/dashboard");
         } else if (result.userType === 4) {
           navigate("/clientside");
         } else {
-          navigate("/dashboard");
+          navigate("/clientside");
         }
       } else {
         toast.error(result.message, {

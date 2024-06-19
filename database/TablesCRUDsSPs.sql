@@ -718,17 +718,23 @@ CREATE PROCEDURE CreateInvoiceByCart
 AS
 BEGIN
     -- Insert New Invoice
+    DECLARE @NewAppointmentID INT;
     DECLARE @NewIDInvoice INT;
 
+    INSERT INTO Appointment (IDPet, IDEmployee, IDStore, IDStatus, DateTime)
+    VALUES (1, 1, 1, 4, GETDATE()) -- TODO change mockup appointment
+
+    SET @NewAppointmentID = SCOPE_IDENTITY();
+
     INSERT INTO Invoice (IDAppointment, IDClient, IDPayment, IDStatus, DateTime)
-    VALUES (2, @IDClient, @IDPayment, 4, GETDATE()) -- TODO change status code
+    VALUES (@NewAppointmentID, @IDClient, @IDPayment, 4, GETDATE()) -- TODO change status code
 
     SET @NewIDInvoice = SCOPE_IDENTITY();
 
     IF LOWER(@Shipping) = 'true'
     BEGIN
         INSERT INTO InvoiceDetail (IDInvoice, IDProduct, Description, Quantity, Price)
-        VALUES (@NewIDInvoice, 2, 'Shipping', 1, 3000) -- TODO change mockup shipping
+        VALUES (@NewIDInvoice, 1, 'Country-wide shipping', 1, 4500) -- TODO change mockup shipping
     END
     -- Initialize cursor
     DECLARE @IDProduct INT;
@@ -1347,11 +1353,12 @@ CREATE PROCEDURE CreateProduct
     @IDProductType INT,
     @Name NVARCHAR(255),
     @Description NVARCHAR(512),
-    @Price MONEY
+    @Price MONEY,
+    @URL NVARCHAR(1028)
 AS
 BEGIN
-    INSERT INTO Product (IDProductType, Name, Description, Price)
-    VALUES (@IDProductType, @Name, @Description, @Price);
+    INSERT INTO Product (IDProductType, Name, Description, Price, URL)
+    VALUES (@IDProductType, @Name, @Description, @Price, @URL);
 END;
 GO
 
@@ -1360,17 +1367,17 @@ CREATE PROCEDURE ReadAllProducts
 AS
 BEGIN
     SELECT  T.IDProduct, T.ProductName, T.Description, T.Price,
-            T.IDProductType, T.ProductTypeName, COALESCE(SUM(T.Quantity), 0) 'Stock'
+            T.IDProductType, T.URL, T.ProductTypeName, COALESCE(SUM(T.Quantity), 0) 'Stock'
 
     FROM (
             SELECT  P.IDProduct, P.Name 'ProductName', P.Description, P.Price,
-                    P.IDProductType, PT.Name 'ProductTypeName', I.Quantity
+                    P.IDProductType, P.URL, PT.Name 'ProductTypeName', I.Quantity
             FROM Product P
             LEFT JOIN ProductType PT on P.IDProductType = PT.IDProductType
             LEFT JOIN Inventory I on P.IDProduct = I.IDProduct
         ) AS T
     
-    GROUP BY T.IDProduct, T.ProductName, T.Description, T.Price, T.IDProductType, T.ProductTypeName;
+    GROUP BY T.IDProduct, T.ProductName, T.Description, T.Price, T.IDProductType, T.URL, T.ProductTypeName;
 
 END;
 GO
@@ -1381,7 +1388,7 @@ CREATE PROCEDURE ReadByIDProduct
 AS
 BEGIN
     SELECT P.IDProduct, P.Name 'ProductName', P.Description, P.Price,
-           P.IDProductType, PT.Name 'ProductTypeName'
+           P.IDProductType, P.URL, PT.Name 'ProductTypeName'
     FROM Product P
     LEFT JOIN ProductType PT on P.IDProductType = PT.IDProductType
     WHERE IDProduct = @IDProduct;
@@ -1394,14 +1401,16 @@ CREATE PROCEDURE UpdateProduct
     @IDProductType INT,
     @Name NVARCHAR(255),
     @Description NVARCHAR(512),
-    @Price MONEY
+    @Price MONEY,
+    @URL NVARCHAR(1028)
 AS
 BEGIN
     UPDATE Product
     SET IDProductType = @IDProductType,
         Name = @Name,
         Description = @Description,
-        Price = @Price
+        Price = @Price,
+        URL = @URL
     WHERE IDProduct = @IDProduct;
 END;
 GO
@@ -2054,7 +2063,7 @@ CREATE PROCEDURE ReadCartByClientAndProduct
 AS
 BEGIN
     SELECT C.IDClient, C2.IDUser, C2.Name 'ClientName', C2.PhoneNumber,
-           C.IDProduct, p.IDProductType, P.Name 'ProductName', Description, Price, C.Quantity
+           C.IDProduct, p.IDProductType, P.Name 'ProductName', P.URL, Description, Price, C.Quantity
     FROM Cart C
     LEFT JOIN Client C2 on C.IDClient = C2.IDClient
     LEFT JOIN Product P on C.IDProduct = P.IDProduct
@@ -2071,6 +2080,7 @@ BEGIN
 					, C.IDProduct
 					, P.Name				'ProductName'
 					, P.IDProductType		'ProductType'
+                    , P.URL                 'URL'
 					, P.Description			'ProductDescription'
 					, P.Price				'ProductPrice'
 					, C.Quantity			'CartQuantity'

@@ -9,6 +9,7 @@ type CartProduct = {
   id: number;
   name: string;
   type: string;
+  url: string;
   description: string;
   price: number;
   quantity: number;
@@ -26,6 +27,7 @@ function Cart() {
   useEffect(() => {
     async function fetchCart() {
       const cart = await getCartEntries();
+      console.log(cart);
       setCartProducts(cart);
     }
     fetchCart();

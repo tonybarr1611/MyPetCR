@@ -9,13 +9,13 @@ type ProductProps = {
   id: number;
   name: string;
   type: string;
+  url: string;
   description: string;
   price: number;
 };
 
-function Product({ id, name, type, description, price }: ProductProps) {
+function Product({ id, name, type, url, description, price }: ProductProps) {
   const productUrl = `/clientside/product/${id}`;
-  const productImage = `/src/ClientSide/Store/productImages/Thumbnail${id}.jpg`;
 
   const handleAddCart = () => {
     try {
@@ -34,7 +34,7 @@ function Product({ id, name, type, description, price }: ProductProps) {
         <div className="card borderless" style={{ width: "20rem" }}>
           <Link to={productUrl}>
             <img
-              src={productImage}
+              src={url}
               className="card-img-top"
               style={{ padding: "2%" }}
               alt="..."

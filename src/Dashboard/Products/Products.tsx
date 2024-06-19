@@ -9,6 +9,7 @@ interface Product {
   name: string;
   description: string;
   price: number;
+  url: string;
   typeID: number;
   type: string;
   stock: number;
@@ -16,7 +17,6 @@ interface Product {
 
 function Products() {
   const [products, setProducts] = useState<Product[]>([]);
-
   useEffect(() => {
     async function fetchProducts() {
       const products = await getProducts();
@@ -27,7 +27,7 @@ function Products() {
   }, []);
 
   return (
-    <Container className="mt-4">
+    <Container className="mt-4" fluid>
       <h2>Products</h2>
       <p>Here you can manage the products of the store.</p>
       <Table striped bordered hover responsive>
@@ -48,7 +48,11 @@ function Products() {
               <td>{product.description}</td>
               <td>{product.price}</td>
               <td>{product.type}</td>
-              <td>{product.stock}</td>
+              <td>
+                {product.type.toLowerCase() === "service"
+                  ? "N/A"
+                  : product.stock}
+              </td>
               <td>
                 <div style={{ display: "flex", justifyContent: "center" }}>
                   <Link to={`edit/${product.id}`}>
@@ -57,12 +61,14 @@ function Products() {
                       Product
                     </Button>
                   </Link>
-                  <Link to={`stock/${product.id}`}>
-                    <Button variant="primary" className="ml-2">
-                      <FaPencil />
-                      Stock
-                    </Button>
-                  </Link>
+                  {product.type.toLowerCase() === "service" ? null : (
+                    <Link to={`stock/${product.id}`}>
+                      <Button variant="primary" className="ml-2">
+                        <FaPencil />
+                        Stock
+                      </Button>
+                    </Link>
+                  )}
                 </div>
               </td>
             </tr>
