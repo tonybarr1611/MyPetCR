@@ -141,7 +141,28 @@ async function UpdateClient(req: Request, res: Response) {
         200,
         "Client updated successfully",
         "Client not updated");
+}
 
+async function UpgradeClient(req: Request, res: Response) {
+    const IDUser = req.params.id;
+    
+    // Search for the client
+    const client = await getItem(res,
+        'ReadByIDUser',
+        [{ name: 'IDUser', type : sql.Int , value: IDUser}]
+    );
+    if (!client || client.recordset.length === 0) {
+        return res.status(404).send("User not found");
+    }
+    
+    await executeProcedure(res,
+        'UpgradeClientToEmployee',
+        [
+            { name: 'IDUser', type: sql.Int, value: IDUser }
+        ],
+        200,
+        "Client upgraded successfully",
+        "Client not upgraded");
 }
 
 async function DeleteClient(req: Request, res: Response) { 
@@ -161,5 +182,6 @@ export default {
     CreateClientAndUser,
     CreateMockClient,
     UpdateClient,
+    UpgradeClient,
     DeleteClient
 }
