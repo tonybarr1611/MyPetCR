@@ -11,6 +11,7 @@ interface Personnel {
   id: number;
   name: string;
   phoneNumber: number;
+  usertype: number;
 }
 
 interface Pet {
@@ -50,7 +51,8 @@ const RegisterAppointmentDetails: React.FC = () => {
         const personnelList = personnelResponse.data.map((obj: any) => ({
           id: obj.IDEmployee,
           name: obj.Name,
-          phoneNumber: obj.PhoneNumber
+          phoneNumber: obj.PhoneNumber,
+          usertype: obj.IDUserType
         }));
         setPersonnel(personnelList);         
 
@@ -261,23 +263,25 @@ const RegisterAppointmentDetails: React.FC = () => {
                   <th>Phone Number</th>
                 </tr>
               </thead>
-              <tbody>
-                {personnel.map((person, index) => (
-                  <tr
-                    key={index}
-                    onClick={() =>
-                      setAppointment({
-                        ...appointment,
-                        personnelId: person.id.toString(),
-                      })
-                    }
-                  >
-                    <td>{person.id}</td>
-                    <td>{person.name}</td>
-                    <td>{person.phoneNumber}</td>
-                  </tr>
-                ))}
-              </tbody>
+                    <tbody>
+                        {personnel.map((person, index) => 
+                          person.usertype === 3 ? (
+                            <tr
+                              key={index}
+                              onClick={() =>
+                                setAppointment({
+                                  ...appointment,
+                                  personnelId: person.id.toString(),
+                                })
+                              }
+                            >
+                              <td>{person.id}</td>
+                              <td>{person.name}</td>
+                              <td>{person.phoneNumber}</td>
+                            </tr>
+                          ) : null
+                        )}
+                      </tbody>
             </Table>
           </div>
         </div>

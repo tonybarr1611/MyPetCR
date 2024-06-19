@@ -24,10 +24,13 @@ import appointment from '../controllers/appointment';
 import address from '../controllers/address';
 import shipping from '../controllers/shipping';
 import cart from '../controllers/cart';
+import mail from '../controllers/email';
 
-// import { sendEmail } from '../controllers/email';
 
 const route = express.Router();
+// mail
+route.post('/send-email/:IDUser/:IDSubject', mail.SendEmail); //IDSubject check the email controller
+route.post('/danger-email', mail.DangerEmail);
 
 // user 
 route.get('/user/mail/:mail', user.UserByMail); // alternative to id this one gives the hashedpassword
@@ -64,6 +67,7 @@ route.delete('/logType/:id', logType.DeleteLogType);
 route.post('/log', log.CreateLog);
 route.get('/log', log.AllLogs);
 route.get('/log/:id', log.LogById);
+route.get('/log/user/:id', log.LogByUser);
 route.put('/log/:id', log.UpdateLog);
 route.delete('/log/:id', log.DeleteLog);
 
@@ -95,6 +99,7 @@ route.get('/inventory', inventory.AllInventories);
 route.get('/inventory/:IDProduct/:IDStore', inventory.InventoryById);
 route.get('/inventory/:IDProduct', inventory.ReadInventoryByIDProduct);
 route.put('/inventory/:IDProduct/:IDStore', inventory.UpdateInventory);
+route.put('/inventory/:IDProduct', inventory.UpdateInventoryByIDProduct);
 route.delete('/inventory/:IDProduct/:IDStore', inventory.DeleteInventory);
 
 // Employee

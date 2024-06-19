@@ -9,8 +9,11 @@ function getClientID() {
 }
 
 function getUserID() {
-  const client = JSON.parse(localStorage.getItem("client") || "{}");
-  return client.IDUser;
+    const client = JSON.parse(localStorage.getItem("client") || "{}");
+    return client.IDUser;
+function getIDUser() {
+    const client = JSON.parse(localStorage.getItem("client") || "{}");
+    return client.IDUser;
 }
 
 async function getProducts() {
@@ -256,3 +259,4 @@ export { getClientInvoices };
 export { createReview };
 export { getClientID };
 export { getUserID }
+export { getIDUser };

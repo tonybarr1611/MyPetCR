@@ -4,8 +4,9 @@ import { Container, Form, Button, Card } from 'react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify';
 import { SiDatadog } from "react-icons/si";
 import axios from 'axios';
-import { getClientID } from '../../Functions';
 import logger from '../../../log';
+import { getClientID, getIDUser } from '../../Functions';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface Pet {
   IDPet: number;
@@ -46,6 +47,7 @@ const RequestAppointment: React.FC = () => {
 
         const storeResponse = await axios.get('http://localhost:8080/api/v1/store');
         setStores(storeResponse.data);
+        
       } catch (error) {
         console.error("Error fetching data:", error);
         toast.error("An error occurred while fetching data", { autoClose: 1500, theme: 'colored' });
@@ -76,6 +78,8 @@ const RequestAppointment: React.FC = () => {
         await axios.post('http://localhost:8080/api/v1/appointmentandinvoice', appointmentData);
         logger.request('User has requested an appointment for pet with ID ' + appointmentData.IDPet + ' at store with ID ' + appointmentData.IDStore + ' at date/time ' + appointmentData.DateTime);
 
+        const IDUser = getIDUser();
+        await axios.post(`http://localhost:8080/api/v1/send-email/${IDUser}/2`);
         toast.success("Appointment created successfully", { autoClose: 1500, theme: 'colored' });
         navigate('/clientside/management/appointments');
       }

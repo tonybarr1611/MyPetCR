@@ -22,6 +22,7 @@ import ProductEdit from "./Products/ProductEdit";
 import ProductAdd from "./Products/ProductAdd";
 import ProductStock from "./Products/ProductStock";
 import ProductStockEdit from "./Products/ProductStockEdit";
+import Log from "./Management/Log";
 
 const setBackgroundWhite = () => {
   var html = document.getElementsByTagName("html");
@@ -57,7 +58,8 @@ function Dashboard() {
         <Route path="/clients" element={<Clients />} />
         <Route path="/clients/registerclient" element={<RegisterClient />} />
         <Route path="/clients/editclient" element={<EditClient />} />
-        <Route path="management" element={<Management />} />
+        <Route path="/management" element={<Management />} />
+        <Route path="/management/log" element={<Log />} />
         <Route path="/medicalfiles" element={<MedicalFiles />} />
         <Route path="/medicalfiles/info" element={<MedicalFileInfo />} />
         <Route

@@ -11,8 +11,8 @@ const RegisterAppointment: React.FC = () => {
   const [clientId, setClientId] = useState<number>(0);
   const navigate = useNavigate();
 
-  const handleOnChange = (e: { target: { value: SetStateAction<number> } }) => {
-    setClientId(e.target.value);
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setClientId(e.target.value as unknown as SetStateAction<number>);
   };
 
   const handleSubmit = (e: { preventDefault: () => void }) => {
@@ -29,7 +29,7 @@ const RegisterAppointment: React.FC = () => {
   };
 
   const handleCancel = () => {
-    navigate("/dashboard/appointments");
+    navigate(-1);
   };
 
   return (
@@ -63,6 +63,7 @@ const RegisterAppointment: React.FC = () => {
                 <Button variant="primary" type="submit" className="mb-3">
                   Next
                 </Button>
+                </Link>
                 <Button
                   variant="secondary"
                   type="button"
@@ -71,7 +72,6 @@ const RegisterAppointment: React.FC = () => {
                 >
                   Cancel
                 </Button>
-              </Link>
             </div>
           </Form>
         </Card.Body>
