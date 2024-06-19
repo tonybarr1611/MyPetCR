@@ -209,23 +209,24 @@ const RegisterPet = () => {
                 <tr>
                   <th>ID</th>
                   <th>Breed</th>
-                </tr>
-              </thead>
-              <tbody>
-                {breeds.map((breed, index) => (
-                  <tr
-                    key={index}
-                    onClick={() =>
-                      setPetDetails({
-                        ...petDetails,
-                        breed: breed.IDBreed.toString(),
-                      })
-                    }
-                  >
-                    <td>{breed.IDBreed}</td>
-                    <td>{breed.BreedName}</td>
-                  </tr>
-                ))}
+                              </tr>
+                                </thead>
+                                  <tbody>
+                                     {breeds.map((breed, index) => 
+                                      breed.BreedName.toLocaleLowerCase().includes("mock breed") ? null : 
+                                      <tr
+                                      key={index}
+                                      onClick={() =>
+                                      setPetDetails({
+                                      ...petDetails,
+                                    breed: breed.IDBreed.toString(),
+                                })
+                              }
+                            >
+                        <td>{breed.IDBreed}</td> 
+                        <td>{breed.BreedName}</td>
+                      </tr>
+                    )}
               </tbody>
             </Table>
           </div>
