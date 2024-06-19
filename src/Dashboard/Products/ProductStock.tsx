@@ -31,7 +31,6 @@ function ProductStock() {
           storeID: item.IDStore,
           location: item.Location,
           stock: item.Quantity,
-          // It has two values 'false' or 'true', change it to boolean
           hasStock: item.HasInventory === "true",
         })
       );
@@ -71,7 +70,7 @@ function ProductStock() {
                     productID: id,
                     storeID: item.storeID,
                     stock: item.stock,
-                    hasStock: item.stock ? 1 : 0,
+                    hasStock: item.hasStock,
                   }}
                 >
                   <Button variant="primary" className="ml-2">

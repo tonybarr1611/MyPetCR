@@ -95,6 +95,7 @@ route.get('/inventory', inventory.AllInventories);
 route.get('/inventory/:IDProduct/:IDStore', inventory.InventoryById);
 route.get('/inventory/:IDProduct', inventory.ReadInventoryByIDProduct);
 route.put('/inventory/:IDProduct/:IDStore', inventory.UpdateInventory);
+route.put('/inventory/:IDProduct', inventory.UpdateInventoryByIDProduct);
 route.delete('/inventory/:IDProduct/:IDStore', inventory.DeleteInventory);
 
 // Employee
