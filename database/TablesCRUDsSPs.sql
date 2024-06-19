@@ -980,12 +980,11 @@ GO
 CREATE PROCEDURE CreateLog
     @IDLogType INT,
     @IDUser INT,
-    @DateTime DATETIME,
     @Description NVARCHAR(255)
 AS
 BEGIN
     INSERT INTO Log (IDLogType, IDUser, DateTime, Description)
-    VALUES (@IDLogType, @IDUser, @DateTime, @Description);
+    VALUES (@IDLogType, @IDUser, GETDATE(), @Description);
 END;
 GO
 
