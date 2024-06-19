@@ -17,13 +17,19 @@ const Management = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [users, setUsers] = useState<User[]>([]);
 
+  if (localStorage.getItem("userType") !== "1") {
+    window.location.assign("/dashboard");
+  }
+
   useEffect(() => {
     fetchUsers();
   }, []);
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get<User[]>("http://localhost:8080/api/v1/user");
+      const response = await axios.get<User[]>(
+        "http://localhost:8080/api/v1/user"
+      );
       if (Array.isArray(response.data)) {
         setUsers(response.data);
       } else {
@@ -66,12 +72,14 @@ const Management = () => {
         });
         return;
       }
-      
 
-      const response = await axios.put(`http://localhost:8080/api/v1/user/${id}`, {
-        IDUserType: newIDUserType,
-      });
-      
+      const response = await axios.put(
+        `http://localhost:8080/api/v1/user/${id}`,
+        {
+          IDUserType: newIDUserType,
+        }
+      );
+
       if (response.status === 200) {
         fetchUsers(); // Refresh users list after upgrade
         toast.success("User level upgraded successfully", {
@@ -107,10 +115,13 @@ const Management = () => {
         return;
       }
 
-      const response = await axios.put(`http://localhost:8080/api/v1/user/${id}`, {
-        IDUserType: newIDUserType,
-      });
-      
+      const response = await axios.put(
+        `http://localhost:8080/api/v1/user/${id}`,
+        {
+          IDUserType: newIDUserType,
+        }
+      );
+
       if (response.status === 200) {
         fetchUsers(); // Refresh users list after downgrade
         toast.success("User level downgraded successfully", {
@@ -146,9 +157,6 @@ const Management = () => {
                     value={searchTerm}
                   />
                 </Col>
-                <Col>
-                  <Button type="submit">Search</Button>
-                </Col>
               </Row>
             </Form>
             <div className="contain-table">
@@ -165,19 +173,30 @@ const Management = () => {
                 </thead>
                 <tbody>
                   {users.length > 0 ? (
-                    users.map((user) => (
-                      <ManagementData
-                        key={user.IDUser}
-                        id={user.IDUser}
-                        user={user.LoginID}
-                        role={user.UserTypeName} // Assuming UserTypeName is the role
-                        handleUpgrade={() => handleUpgrade(user.IDUser)}
-                        handleDowngrade={() => handleDowngrade(user.IDUser)}
-                      />
-                    ))
+                    users
+                      .filter(
+                        (user) =>
+                          user.LoginID.toLowerCase() !== "mypetcr@gmail.com" &&
+                          (searchTerm === "" ||
+                            user.LoginID.toLowerCase().includes(searchTerm) ||
+                            user.UserTypeName.toLowerCase().includes(
+                              searchTerm
+                            ) ||
+                            user.IDUser.toString().includes(searchTerm))
+                      )
+                      .map((user) => (
+                        <ManagementData
+                          key={user.IDUser}
+                          id={user.IDUser}
+                          user={user.LoginID}
+                          role={user.UserTypeName} // Assuming UserTypeName is the role
+                          handleUpgrade={() => handleUpgrade(user.IDUser)}
+                          handleDowngrade={() => handleDowngrade(user.IDUser)}
+                        />
+                      ))
                   ) : (
                     <tr>
-                      <td colSpan="5" className="text-center">
+                      <td colSpan={5} className="text-center">
                         No users found
                       </td>
                     </tr>
