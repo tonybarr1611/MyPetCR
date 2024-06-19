@@ -5,7 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { SiDatadog } from "react-icons/si";
 import axios from 'axios';
 import { getClientID } from '../../Functions';
-import 'react-toastify/dist/ReactToastify.css';
+import logger from '../../../log';
 
 interface Pet {
   IDPet: number;
@@ -74,6 +74,7 @@ const RequestAppointment: React.FC = () => {
 
         console.log(appointmentData);
         await axios.post('http://localhost:8080/api/v1/appointmentandinvoice', appointmentData);
+        logger.request('User has requested an appointment for pet with ID ' + appointmentData.IDPet + ' at store with ID ' + appointmentData.IDStore + ' at date/time ' + appointmentData.DateTime);
 
         toast.success("Appointment created successfully", { autoClose: 1500, theme: 'colored' });
         navigate('/clientside/management/appointments');
