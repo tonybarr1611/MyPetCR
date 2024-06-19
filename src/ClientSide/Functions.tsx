@@ -15,12 +15,14 @@ async function getProducts() {
       ProductName: any;
       IDProductType: any;
       ProductTypeName: any;
+      URL: any;
       Description: any;
       Price: any;
       Stock: any;
     }) => ({
       id: product.IDProduct,
       name: product.ProductName,
+      url: product.URL,
       typeID: product.IDProductType,
       type: product.ProductTypeName,
       description: product.Description,
@@ -36,7 +38,7 @@ async function getProductsClient() {
   const response = await getProducts();
   // Assuming response.data is an array of products
   return response.filter(
-    (product: { IDProductType: any }) => product.IDProductType !== 4
+    (product: { IDProductType: any }) => product.IDProductType !== 3
   );
 }
 

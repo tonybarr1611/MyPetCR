@@ -1332,7 +1332,7 @@ CREATE PROCEDURE ReadAllProducts
 AS
 BEGIN
     SELECT  T.IDProduct, T.ProductName, T.Description, T.Price,
-            T.IDProductType, T.ProductTypeName, COALESCE(SUM(T.Quantity), 0) 'Stock'
+            T.IDProductType, T.URL, T.ProductTypeName, COALESCE(SUM(T.Quantity), 0) 'Stock'
 
     FROM (
             SELECT  P.IDProduct, P.Name 'ProductName', P.Description, P.Price,
@@ -1342,7 +1342,7 @@ BEGIN
             LEFT JOIN Inventory I on P.IDProduct = I.IDProduct
         ) AS T
     
-    GROUP BY T.IDProduct, T.ProductName, T.Description, T.Price, T.IDProductType, T.ProductTypeName;
+    GROUP BY T.IDProduct, T.ProductName, T.Description, T.Price, T.IDProductType, T.URL, T.ProductTypeName;
 
 END;
 GO

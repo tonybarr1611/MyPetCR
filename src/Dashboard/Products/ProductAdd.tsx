@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Container, Form, Button, Card } from "react-bootstrap";
+import { Container, Form, Button, Card, Col, Row } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import { SiDatadog } from "react-icons/si";
@@ -11,14 +11,16 @@ interface Product {
   description: string;
   price: number;
   typeID: number;
+  URL?: string;
 }
 
 const ProductAdd: React.FC = () => {
   const [product, setProduct] = useState<Product>({
     name: "",
     description: "",
-    price: 0,
+    price: 1,
     typeID: 1, // You might want to set this dynamically
+    URL: "",
   });
 
   const navigate = useNavigate();
@@ -26,19 +28,13 @@ const ProductAdd: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const formProductName = document.getElementById(
-        "productName"
-      ) as HTMLInputElement;
-      const formProductDescription = document.getElementById(
-        "productDescription"
-      ) as HTMLInputElement;
-      const formProductPrice = document.getElementById(
-        "productPrice"
-      ) as HTMLInputElement;
+      console.log("Product:", product);
       if (
-        !formProductName.value ||
-        !formProductDescription.value ||
-        parseInt(formProductPrice.value) <= 0
+        !product.name ||
+        !product.description ||
+        !product.price ||
+        !product.typeID ||
+        product.price <= 0
       ) {
         toast.error("All fields are required and price must be positive", {
           autoClose: 1500,
@@ -47,10 +43,11 @@ const ProductAdd: React.FC = () => {
       } else {
         // Add new product
         await axios.post(`${backendURL}product`, {
-          Name: formProductName.value,
-          Description: formProductDescription.value,
-          Price: parseInt(formProductPrice.value),
+          Name: product.name,
+          Description: product.description,
+          Price: product.price,
           IDProductType: product.typeID,
+          URL: product.URL,
         });
         toast.success("Product added successfully", {
           autoClose: 1500,
@@ -75,6 +72,7 @@ const ProductAdd: React.FC = () => {
     <Container
       className="d-flex justify-content-center align-items-center"
       style={{ height: "100vh" }}
+      fluid
     >
       <ToastContainer position="top-center" />
       <Card style={{ width: "36rem", background: "#C9E5F0" }}>
@@ -122,11 +120,22 @@ const ProductAdd: React.FC = () => {
                 onChange={(e) =>
                   setProduct({ ...product, price: +e.target.value })
                 }
-                min="0"
+                min="1"
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="formProductType">
               <Form.Label>Type ID</Form.Label>
+              <Row>
+                <Col>
+                  <p>1: Product</p>
+                </Col>
+                <Col>
+                  <p>2: Medicine</p>
+                </Col>
+                <Col>
+                  <p>3: Service</p>
+                </Col>
+              </Row>
               <Form.Control
                 type="number"
                 name="typeID"
@@ -135,6 +144,20 @@ const ProductAdd: React.FC = () => {
                   setProduct({ ...product, typeID: +e.target.value })
                 }
                 min="1"
+                max="3"
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formProductURL">
+              <Form.Label>Image URL</Form.Label>
+              <p>Should be square sized (same width and height)</p>
+              <Form.Control
+                type="text"
+                name="URL"
+                value={product.URL}
+                id="productURL"
+                onChange={(e) =>
+                  setProduct({ ...product, URL: e.target.value })
+                }
               />
             </Form.Group>
             <div className="d-flex justify-content-between">
