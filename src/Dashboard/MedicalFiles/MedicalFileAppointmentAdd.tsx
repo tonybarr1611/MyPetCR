@@ -10,7 +10,7 @@ const AddMedicalFileAppointment = () => {
   guestRedirection();
   handleExpiration();
   const location = useLocation();
-  const {id} = location.state;
+  const { id } = location.state;
 
   const [detail, setDetail] = useState({
     productId: "",
@@ -21,7 +21,13 @@ const AddMedicalFileAppointment = () => {
   });
 
   const [products, setProducts] = useState<
-    { id: number; name: string; description: string; quantity: number; price: number }[]
+    {
+      id: number;
+      name: string;
+      description: string;
+      quantity: number;
+      price: number;
+    }[]
   >([]);
   const [showProductTable, setShowProductTable] = useState(false);
 
@@ -29,15 +35,20 @@ const AddMedicalFileAppointment = () => {
     const fetchProducts = async () => {
       try {
         console.log(id);
-        const response = await axios.get("http://localhost:8080/api/v1/medicine");
-        const products = response.data.map((product: any) => ({
+        const response = await axios.get(
+          "http://localhost:8080/api/v1/medicine"
+        );
+        var productsData = response.data.map((product: any) => ({
           id: product.IDProduct,
           name: product.Name,
           description: product.Description,
           quantity: product.Quantity,
           price: product.Price,
         }));
-        setProducts(products);
+        productsData = productsData.filter(
+          (product: any) => product.name !== "Shipping"
+        );
+        setProducts(productsData);
       } catch (error) {
         console.error("Error fetching products:", error);
         toast.error("Failed to fetch products", {
@@ -80,6 +91,23 @@ const AddMedicalFileAppointment = () => {
 
       const totalPrice = selectedProduct.price * detail.quantity;
 
+      const availableInventory = await axios.get(
+        `http://localhost:8080/api/v1/inventory/${detail.productId}`
+      );
+
+      const availableQuantity = availableInventory.data.reduce(
+        (acc: number, inventory: any) => acc + inventory.Quantity,
+        0
+      );
+
+      if (availableQuantity < detail.quantity) {
+        toast.error("Insufficient stock", {
+          autoClose: 1500,
+          theme: "colored",
+        });
+        return;
+      }
+
       try {
         const url = "http://localhost:8080/api/v1/invoiceDetail";
         const params = {
@@ -90,11 +118,19 @@ const AddMedicalFileAppointment = () => {
           Price: totalPrice,
         };
         await axios.post(url, params);
+
+        const quantityParams = {
+          Quantity: detail.quantity,
+        };
+        await axios.put(
+          `http://localhost:8080/api/v1/inventory/${detail.productId}`,
+          quantityParams
+        );
         toast.success("Detail added successfully", {
           autoClose: 1500,
           theme: "colored",
         });
-        window.location.assign(`/dashboard/medicalfiles`)
+        window.location.assign(`/dashboard/medicalfiles`);
       } catch (error) {
         console.error("Error adding detail:", error);
         toast.error("Failed to add detail", {
@@ -111,7 +147,7 @@ const AddMedicalFileAppointment = () => {
   };
 
   const handleCancel = () => {
-    window.location.assign(`/dashboard/medicalfiles`)
+    window.location.assign(`/dashboard/medicalfiles`);
   };
 
   const toggleProductTable = () => {

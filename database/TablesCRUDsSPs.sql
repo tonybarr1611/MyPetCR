@@ -641,7 +641,6 @@ BEGIN
     WHERE IDProduct = @IDProduct AND IDStore = @IDStore;
 END;
 GO
-
 -- Update Quantity Inventory by IDProduct
 CREATE PROCEDURE UpdateInventoryByIDProduct (
     @IDProduct INT,
@@ -653,7 +652,7 @@ BEGIN
     DECLARE @IDStore INT;
     DECLARE @ActualQuantity INT;
     DECLARE @RemainingQuantity INT;
-    SET @RemainingQuantity = @Quantity;
+    SET @RemainingQuantity = ABS(@Quantity); -- Absolute value of @Quantity
 
     DECLARE CURSOR_INVENTORY CURSOR FOR
     SELECT IDStore, Quantity
@@ -666,21 +665,32 @@ BEGIN
     FETCH NEXT FROM CURSOR_INVENTORY INTO @IDStore, @ActualQuantity;
     WHILE @@FETCH_STATUS = 0 AND @RemainingQuantity > 0
     BEGIN
-        IF @ActualQuantity >= @RemainingQuantity
+        IF @Quantity > 0 -- Decreasing inventory
+        BEGIN
+            IF @ActualQuantity >= @RemainingQuantity
+            BEGIN
+                UPDATE Inventory
+                SET Quantity = Quantity - @RemainingQuantity
+                WHERE IDStore = @IDStore AND IDProduct = @IDProduct;
+
+                SET @RemainingQuantity = 0;
+            END
+            ELSE
+            BEGIN
+                UPDATE Inventory
+                SET Quantity = 0
+                WHERE IDStore = @IDStore AND IDProduct = @IDProduct;
+
+                SET @RemainingQuantity = @RemainingQuantity - @ActualQuantity;
+            END
+        END
+        ELSE -- Increasing inventory
         BEGIN
             UPDATE Inventory
-            SET Quantity = Quantity - @RemainingQuantity
+            SET Quantity = Quantity + @RemainingQuantity
             WHERE IDStore = @IDStore AND IDProduct = @IDProduct;
 
             SET @RemainingQuantity = 0;
-        END
-        ELSE
-        BEGIN
-            UPDATE Inventory
-            SET Quantity = 0
-            WHERE IDStore = @IDStore AND IDProduct = @IDProduct;
-
-            SET @RemainingQuantity = @RemainingQuantity - @ActualQuantity;
         END
 
         FETCH NEXT FROM CURSOR_INVENTORY INTO @IDStore, @ActualQuantity;
@@ -690,6 +700,7 @@ BEGIN
     DEALLOCATE CURSOR_INVENTORY;
 END;
 GO
+
 
 -- Delete
 CREATE PROCEDURE DeleteInventory
@@ -1010,6 +1021,19 @@ BEGIN
     FROM Log L
     LEFT JOIN LogType LT on L.IDLogType = LT.IDLogType
     WHERE IDLog = @IDLog;
+END;
+GO
+
+-- Read By IDUser
+CREATE PROCEDURE ReadLogsByIDUser
+    @IDUser INT
+AS
+BEGIN
+    SELECT L.IDLog, L.IDUser, L.DateTime, L.Description,
+           L.IDLogType, LT.Name 'LogTypeName'
+    FROM Log L
+    LEFT JOIN LogType LT on L.IDLogType = LT.IDLogType
+    WHERE IDUser = @IDUser;
 END;
 GO
 
@@ -1450,7 +1474,7 @@ BEGIN
     INNER JOIN 
         ProductType pt ON p.IDProductType = pt.IDProductType
     WHERE 
-        pt.Name IN ('Medicine', 'Services');
+        pt.IDProductType = 2 OR pt.IDProductType = 3;
 END;
 GO
 

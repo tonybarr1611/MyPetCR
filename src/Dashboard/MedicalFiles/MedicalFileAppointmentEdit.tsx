@@ -1,4 +1,4 @@
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import { Container, Card, Form, Button } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 import { MdVaccines } from "react-icons/md";
@@ -9,23 +9,34 @@ import axios from "axios";
 const MedicalFileAppointmentEdit = () => {
   guestRedirection();
   handleExpiration();
-  const location = useLocation(); 
-  const {id, productid} = location.state;
+  const location = useLocation();
+  const { id, productid } = location.state;
+  const [initialQuantity, setInitialQuantity] = useState(0);
 
+  const [detail, setDetail] = useState<{
+    description: string;
+    quantity: number;
+  }>({ description: "", quantity: 0 });
+  const [product, setProduct] = useState<{
+    description: string;
+    price: number;
+  }>({ description: "", price: 0 });
 
-  const [detail, setDetail] = useState<{ description: string; quantity: number }>({ description: "", quantity: 0 });
-  const [product, setProduct] = useState<{ description: string; price: number }>({ description: "", price: 0 });
-
-  useEffect (() => {
+  useEffect(() => {
     const fetchDetail = async () => {
       try {
         console.log(id);
         console.log(productid);
-        const response = await axios.get(`http://localhost:8080/api/v1/invoiceDetail/${id}`);
+        const response = await axios.get(
+          `http://localhost:8080/api/v1/invoiceDetail/${id}`
+        );
         setDetail({
           description: response.data[0].Description,
           quantity: response.data[0].Quantity,
         });
+        setInitialQuantity(
+          response.data[0].Quantity || parseInt(response.data[0].Quantity)
+        );
       } catch (error) {
         console.error("Error fetching detail:", error);
         toast.error("Failed to fetch detail", {
@@ -39,30 +50,31 @@ const MedicalFileAppointmentEdit = () => {
   }, []);
 
   useEffect(() => {
-      const fetchProduct = async () => {
-        try {
-          const response = await axios.get(`http://localhost:8080/api/v1/product/${productid}`);
-          setProduct({
-            description: response.data[0].Description,
-            price: response.data[0].Price,
-          });
-        } catch (error) {
-          console.error("Error fetching product:", error);
-          toast.error("Failed to fetch product", {
-            autoClose: 1500,
-            theme: "colored",
-          });
-        }
-      };
-      fetchProduct();
-    }, []);
-
+    const fetchProduct = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/v1/product/${productid}`
+        );
+        setProduct({
+          description: response.data[0].Description,
+          price: response.data[0].Price,
+        });
+      } catch (error) {
+        console.error("Error fetching product:", error);
+        toast.error("Failed to fetch product", {
+          autoClose: 1500,
+          theme: "colored",
+        });
+      }
+    };
+    fetchProduct();
+  }, []);
 
   const handleChange = (e: { target: { name: any; value: any } }) => {
     setDetail({ ...detail, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: { preventDefault: () => void }) => {
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     try {
       if (!detail.description || !detail.quantity) {
@@ -72,13 +84,39 @@ const MedicalFileAppointmentEdit = () => {
         });
       } else {
         try {
+          const quantityDifference = detail.quantity - initialQuantity;
+
+          const stockData = await axios.get(
+            `http://localhost:8080/api/v1/inventory/${productid}`
+          );
+
+          const stock = stockData.data.reduce(
+            (acc: number, inventory: any) => acc + inventory.Quantity,
+            0
+          );
+
+          if (quantityDifference > stock) {
+            toast.error("Insufficient stock", {
+              autoClose: 2000,
+              theme: "colored",
+            });
+            return;
+          }
+
           const url = `http://localhost:8080/api/v1/invoiceDetail/${id}`;
           const params = {
             Description: detail.description,
             Quantity: detail.quantity,
             Price: product.price * detail.quantity,
           };
-          axios.put(url, params);
+          await axios.put(url, params);
+          const paramsStock = {
+            Quantity: quantityDifference,
+          };
+          await axios.put(
+            `http://localhost:8080/api/v1/inventory/${productid}`,
+            paramsStock
+          );
         } catch (error) {
           console.error("Error updating detail:", error);
           toast.error("Failed to update detail", {
@@ -101,7 +139,7 @@ const MedicalFileAppointmentEdit = () => {
   };
 
   const handleCancel = () => {
-    window.location.assign(`/dashboard/medicalfiles`)
+    window.location.assign(`/dashboard/medicalfiles`);
   };
 
   return (
@@ -161,4 +199,3 @@ const MedicalFileAppointmentEdit = () => {
 };
 
 export default MedicalFileAppointmentEdit;
-

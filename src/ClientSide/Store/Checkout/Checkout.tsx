@@ -146,7 +146,7 @@ function Checkout() {
         await createInvoice(shipping);
         clearCart();
         toast.success("Purchase successful");
-        window.location.assign("/clientside");
+        window.location.assign("/clientside/history");
         setSubmitted(true);
       } else {
         toast.error("Not enough stock to complete purchase");

@@ -1,6 +1,8 @@
 import React from "react";
 import { Button } from "react-bootstrap";
 import { FaArrowUp, FaArrowDown } from "react-icons/fa";
+import { FaGavel, FaScroll } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 
 type ManagementDataProps = {
   id: number;
@@ -17,6 +19,11 @@ const ManagementData: React.FC<ManagementDataProps> = ({
   handleUpgrade,
   handleDowngrade,
 }) => {
+  const navigate = useNavigate();
+  const handleLog = (id: number) => {
+    console.log(`Log for user ${id}`);
+    navigate("log", { state: { IDUser: id } });
+  };
   return (
     <tr key={id}>
       <td>{id}</td>
@@ -30,7 +37,7 @@ const ManagementData: React.FC<ManagementDataProps> = ({
             className="mr-2"
             onClick={() => handleDowngrade(id)}
           >
-            <FaArrowDown />
+            <FaGavel />
           </Button>
           <Button
             variant="success"
@@ -39,6 +46,14 @@ const ManagementData: React.FC<ManagementDataProps> = ({
             onClick={() => handleUpgrade(id)}
           >
             <FaArrowUp />
+          </Button>
+          <Button
+            variant="warning"
+            size="sm"
+            className="mr-2"
+            onClick={() => handleLog(id)}
+          >
+            <FaScroll />
           </Button>
         </div>
       </td>
