@@ -30,7 +30,7 @@ function NavBar() {
             <Link to={"/dashboard/appointments"} className="nav-link">
               Appointments
             </Link>
-            {parseInt(localStorage.getItem("userType") || "3") < 3 && (
+            {parseInt(localStorage.getItem("userType") || "3") === 1 && (
               <Link to={"/dashboard/management"} className="nav-link">
                 Management
               </Link>
