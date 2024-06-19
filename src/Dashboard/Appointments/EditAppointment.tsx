@@ -8,6 +8,8 @@ import axios from "axios";
 import { getIDUser } from "../../ClientSide/Functions";
 
 let LastIDEmployee = 0;
+let LastIDStatus = 0;
+
 interface Personnel {
   id: number;
   name: string;
@@ -40,7 +42,8 @@ const EditAppointment: React.FC = () => {
     status: "Pending",
     idPet:0,
     idStore:0,
-    idStatus:0
+    idStatus:0,
+    iduser: 0
   });
   guestRedirection();
   handleExpiration();
@@ -68,12 +71,13 @@ const EditAppointment: React.FC = () => {
           store: appoointmentResponse.data[0].StoreLocation,
           dateTime: formatDate(appoointmentResponse.data[0].DateTime),
           status: appoointmentResponse.data[0].StatusName,
-
+          iduser: appoointmentResponse.data[0].IDUser,
           idPet: appoointmentResponse.data[0].IDPet,
           idStore: appoointmentResponse.data[0].IDStore,
           idStatus: appoointmentResponse.data[0].IDStatus
         });
         LastIDEmployee = appoointmentResponse.data[0].IDEmployee;
+        LastIDStatus = appoointmentResponse.data[0].IDStatus;
         const petResponse = await axios.get(
           `http://localhost:8080/api/v1/petByClient/${appoointmentResponse.data[0].IDClient}`
         );
@@ -162,14 +166,19 @@ const EditAppointment: React.FC = () => {
             "IDEmployee": appointment.personnelId,
             "IDStore": appointment.idStore,
             "IDStatus": appointment.idStatus,
-            "DateTime": appointment.dateTime
+            "DateTime": appointment.dateTime,
+            "IDUser": appointment.iduser
           }
-         
-          if (LastIDEmployee !== parseInt(param.IDEmployee)) {
+
+          if (LastIDStatus !== param.IDStatus){
             const IDUser = getIDUser(); 
-            await axios.post(`http://localhost:8080/api/v1/send-email/${IDUser}/3`);
+            await axios.post(`http://localhost:8080/api/v1/send-email/${IDUser}/4`);
           }
-          await axios.put(url, param);
+          if (LastIDEmployee !== parseInt(param.IDEmployee)) {
+            console.log("Send email to: ", param.IDEmployee , param.IDUser);
+            //await axios.post(`http://localhost:8080/api/v1/send-email/${param.IDUser}/3`);
+          }
+          //await axios.put(url, param);
         
         } catch (error) {
           toast.error("Failed to update client", {
