@@ -1,5 +1,6 @@
 import { Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
+import logger from "../../logs";
 
 type ClientsDataProps = {
   id: number;
@@ -14,6 +15,10 @@ function ClientsData({ id, name, phonenumber }: ClientsDataProps) {
     navigate(`editclient`);
   };
 
+  const makeLog = () => {
+    logger.request(`The user has requested to edit the client ID: ${id}`)
+  }
+
   return (
     <tr>
       <td>{id}</td>
@@ -21,7 +26,7 @@ function ClientsData({ id, name, phonenumber }: ClientsDataProps) {
       <td>{phonenumber}</td>
       <td className="text-center">
         <div className="d-flex justify-content-center">
-          <Link to={"editclient"} state={id}>
+          <Link to={"editclient"} state={id} onClick={makeLog}>
             <Button variant="primary" size="sm" className="mr-2">
               Edit
             </Button>
