@@ -16,6 +16,7 @@ type ProductProp = {
   id: number;
   name: string;
   type: string;
+  url: string;
   description: string;
   price: number;
 };
@@ -73,8 +74,6 @@ function ProductDetail({ products }: ProductDetailProps) {
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
 
-  const productImage = `/src/ClientSide/Store/productImages/Thumbnail${id}.jpg`;
-
   function changeRating(rate: number) {
     setSelectedRating(rate);
     handleShow();
@@ -99,7 +98,7 @@ function ProductDetail({ products }: ProductDetailProps) {
       <div className="productDetailCard twoColumnDisplay">
         <div className="columnItem">
           <img
-            src={productImage}
+            src={product.url}
             className="productDetailImage"
             alt={product.name}
           />

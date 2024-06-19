@@ -2028,7 +2028,7 @@ CREATE PROCEDURE ReadCartByClientAndProduct
 AS
 BEGIN
     SELECT C.IDClient, C2.IDUser, C2.Name 'ClientName', C2.PhoneNumber,
-           C.IDProduct, p.IDProductType, P.Name 'ProductName', Description, Price, C.Quantity
+           C.IDProduct, p.IDProductType, P.Name 'ProductName', P.URL, Description, Price, C.Quantity
     FROM Cart C
     LEFT JOIN Client C2 on C.IDClient = C2.IDClient
     LEFT JOIN Product P on C.IDProduct = P.IDProduct
@@ -2045,6 +2045,7 @@ BEGIN
 					, C.IDProduct
 					, P.Name				'ProductName'
 					, P.IDProductType		'ProductType'
+                    , P.URL                 'URL'
 					, P.Description			'ProductDescription'
 					, P.Price				'ProductPrice'
 					, C.Quantity			'CartQuantity'

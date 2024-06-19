@@ -16,7 +16,6 @@ function CartData({
   updateQuantity,
   modifiable = true,
 }: CartDataProps) {
-  const productImage = `/src/ClientSide/Store/productImages/Thumbnail${product.id}.jpg`;
   const [quantity, setQuantity] = useState(product.quantity);
 
   useEffect(() => {
@@ -41,7 +40,7 @@ function CartData({
     >
       <Row>
         <Col sm="1">
-          <img src={productImage} alt="..." width="75" height="75" />
+          <img src={product.url} alt="..." width="75" height="75" />
         </Col>
         <Col>
           <p>

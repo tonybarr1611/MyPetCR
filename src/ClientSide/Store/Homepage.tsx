@@ -34,6 +34,7 @@ function Homepage() {
                 id={product.id}
                 name={product.name}
                 type={product.type}
+                url={product.url}
                 description={product.description}
                 price={product.price}
               />

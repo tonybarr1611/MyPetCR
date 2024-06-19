@@ -38,7 +38,9 @@ async function getProductsClient() {
   const response = await getProducts();
   // Assuming response.data is an array of products
   return response.filter(
-    (product: { IDProductType: any }) => product.IDProductType !== 3
+    (product: { typeID: any }) => (
+      console.log(product.typeID), parseInt(product.typeID) !== 3
+    )
   );
 }
 
@@ -51,6 +53,7 @@ async function getProductByID(id: any) {
     id: product[0].IDProduct,
     name: product[0].ProductName,
     type: product[0].ProductTypeName,
+    url: product[0].URL,
     description: product[0].Description,
     price: product[0].Price,
   };
@@ -115,6 +118,7 @@ async function getCartEntries() {
     (entry: {
       IDProduct: any;
       ProductType: any;
+      URL: any;
       ProductName: any;
       ProductDescription: any;
       ProductPrice: any;
@@ -122,6 +126,7 @@ async function getCartEntries() {
     }) => ({
       id: entry.IDProduct,
       type: entry.ProductType,
+      url: entry.URL,
       name: entry.ProductName,
       description: entry.ProductDescription,
       price: entry.ProductPrice,
@@ -161,7 +166,7 @@ async function checkStock() {
 // Create invoice from cart
 async function createInvoice(shipping: boolean) {
   const clientID = getClientID();
-  const paymentID = "4";
+  const paymentID = "1";
   const response = await axios.post(`${backendURL}invoiceByCart`, {
     IDClient: clientID,
     IDPayment: paymentID,
