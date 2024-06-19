@@ -2,9 +2,11 @@ import React from "react";
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import { FaDog, FaCircleUser } from "react-icons/fa6"; // Importing the UserCircle icon
 import { Link } from "react-router-dom";
+import logger from "../log";
 
 function NavBar() {
   const handleLogOut = () => {
+    logger.access(`The user has logged out of the application`);
     window.location.assign("/");
   };
 
