@@ -1,5 +1,5 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
-import { Container, Row, Col, Form, Button, Table } from "react-bootstrap";
+import { Container, Row, Col, Form, Table } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import ManagementData from "./ManagementData";
@@ -150,20 +150,6 @@ const Management = () => {
           throw new Error("Failed to update user");
         }
       }
-      
-      // const response = await axios.put(`http://localhost:8080/api/v1/user/${id}`, {
-      //   IDUserType: newIDUserType,
-      // });
-      
-      // if (response.status === 200) {
-      //   fetchUsers(); // Refresh users list after upgrade
-      //   toast.success("User level upgraded successfully", {
-      //     autoClose: 1500,
-      //     theme: "colored",
-      //   });
-      // } else {
-      //   throw new Error("Failed to update user");
-      // }
     } catch (error) {
       console.error("Error downgrading user level:", error);
       toast.error("Error downgrading user level", {
