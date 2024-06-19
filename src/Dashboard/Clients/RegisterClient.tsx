@@ -6,7 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { EyeFill, EyeSlashFill } from "react-bootstrap-icons";
 import { FaDog } from "react-icons/fa6";
 import axios from "axios";
-import logger from "../../logs";
+import logger from "../../log";
 
 const RegisterClient = () => {
   const [credentials, setCredentials] = useState({

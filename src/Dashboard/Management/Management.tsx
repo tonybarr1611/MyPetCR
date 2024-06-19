@@ -4,7 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import ManagementData from "./ManagementData";
 import { guestRedirection } from "../../Commons/AuthCommons";
-import logger from "../../logs";
+import logger from "../../log";
 
 interface User {
   IDUser: number;

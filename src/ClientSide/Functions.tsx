@@ -1,6 +1,6 @@
 import axios from "axios";
 import { backendURL } from "../main";
-import logger from "../logs";
+import logger from "../log";
 
 // Get ClientID from localStorage
 function getClientID() {

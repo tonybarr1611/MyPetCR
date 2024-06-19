@@ -6,7 +6,7 @@ import { PlusLg } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
 import ClientsData from "./ClientsData";
 import axios from "axios";
-import logger from "../../logs";
+import logger from "../../log";
 
 const Clients = () => {
   guestRedirection();
@@ -53,7 +53,7 @@ const Clients = () => {
   };
 
   const handleAddClient = () => {
-    logger.request(`The user has requested to add a client`)
+    logger.request(`The user has requested to add a client`);
     navigate("registerclient");
   };
 

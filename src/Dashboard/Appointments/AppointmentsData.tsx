@@ -1,6 +1,5 @@
 import { Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import logger from "../../logs";
 
 type AppointmentsDetailProps = {
   appointment: {

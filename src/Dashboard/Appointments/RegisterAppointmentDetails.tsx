@@ -5,7 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { SiDatadog } from "react-icons/si";
 import { guestRedirection, handleExpiration } from "../../Commons/AuthCommons";
 import axios from "axios";
-import logger from "../../logs";
+import logger from "../../log";
 
 interface Personnel {
   id: number;

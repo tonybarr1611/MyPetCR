@@ -1,6 +1,6 @@
 import { Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import logger from "../../logs";
+import logger from "../../log";
 
 type ClientsDataProps = {
   id: number;

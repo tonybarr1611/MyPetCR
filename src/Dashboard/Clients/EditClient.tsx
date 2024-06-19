@@ -5,7 +5,7 @@ import { guestRedirection, handleExpiration } from "../../Commons/AuthCommons";
 import { ToastContainer, toast } from "react-toastify";
 import { FaUserEdit } from "react-icons/fa";
 import axios from "axios";
-import logger from "../../logs";
+import logger from "../../log";
 
 const EditClient = () => {
   guestRedirection();

@@ -5,7 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { EyeFill, EyeSlashFill, PersonLock } from "react-bootstrap-icons";
 import "./UserLogin.css";
 import { loginGuest } from "../ClientSide/Functions";
-import logger from "../logs";
+import logger from "../log";
 
 interface Credentials {
   email: string;
