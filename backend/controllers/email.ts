@@ -23,40 +23,40 @@ interface BodyDictionary {
 }
 
 const SubjectForMail: SubjectDictionary = {
-    1: "Notificación de Cancelación de Cita",
-    2: "Confirmación de su Cita",
-    3: "Nueva Asignación de Cita",
-    4: "Notificación de Cancelación de Cita por el Cliente"
+    1: "Appointment Cancellation Notification",
+    2: "Appointment Confirmation",
+    3: "New Appointment Assignment",
+    4: "Appointment Cancellation Notification by Client"
 };
 
-const BodyForMail : BodyDictionary = {
-    
+
+const BodyForMail: BodyDictionary = {
     1: `
-    Estimado/a cliente
-    Su cita ha sido cancelada. Disculpe las molestias
-    Para mas información, consulte en la página web.
-    Atentamente, My Pet C R
+    Dear customer,
+    Your appointment has been canceled. We apologize for any inconvenience.
+    For more information, please check our website.
+    Best regards, My Pet CR
     `,
     2: `
-    Estimado/a cliente,
-    Su cita ha sido confirmada.
-    Para mas información, consulte en la página web.
-    Atentamente, My Pet CR
+    Dear customer,
+    Your appointment has been confirmed.
+    For more information, please check our website.
+    Best regards, My Pet CR
     `,
     3: `
-    Estimado/a personal,
-    Tiene una nueva cita asignada.
-    Para mas información, consulte en la página web.
-    Atentamente, My Pet CR
+    Dear staff,
+    You have been assigned a new appointment.
+    For more information, please check our website.
+    Best regards, My Pet CR
     `,
     4: `
-    Estimado/a personal,
-    Una cita ha sido cancelada por el cliente.
-    Para mas información, consulte en la página web.
-    Atentamente, My Pet CR
+    Dear staff,
+    An appointment has been canceled by the customer.
+    For more information, please check our website.
+    Best regards, My Pet CR
     `,
-    
 };
+
 
 function GetSubject(IDSubject: number): string {
     return SubjectForMail[IDSubject];
@@ -66,7 +66,7 @@ function GetBody(IDSubject: number): string {
     return BodyForMail[IDSubject];
 }
 
-async function SendMail(req: Request, res: Response) {
+async function SendEmail(req: Request, res: Response) {
     console.log(transporter);
     const ID = parseInt(req.params.IDSubject);
     const IDUser = req.params.IDUser;
@@ -80,7 +80,7 @@ async function SendMail(req: Request, res: Response) {
     if (!user || user.recordset.length === 0) { return res.status(404).send("User not found"); }
 
     const mailOptions = {
-        from: 'Victoraymesada159@gmail.com',
+        from: process.env.USER,
         to: user.recordset[0].LoginID,
         subject: GetSubject(ID),
         text: GetBody(ID) 
@@ -89,8 +89,47 @@ async function SendMail(req: Request, res: Response) {
         if (error) {
             return res.status(500).send(error.message);
         }
-        return res.status(200).send('Correo enviado: ' + info.response);
+        return res.status(200).send('Email send:  ' + info.response);
     });
 } 
 
-export { SendMail };
+async function DangerEmail(req: Request, res: Response) {
+    //search all the users
+    const users = await getObject(res,
+        'ReadAllUsers',
+        [],
+        200,
+        "Users retrieved successfully",
+        "Users not retrieved");
+    if (!users || users.recordset.length === 0) { return res.status(404).send("Users not found"); }
+
+    //loop through all the users
+    users.recordset.forEach((user: any) => {
+        if (user.IDUserType === 4) return;
+        
+        const mailOptions = {
+            from: process.env.USER,
+            to: user.LoginID,
+            subject: 'My Pet C R Security alert: Unauthorized access attempt',
+            text: `Dear employees and administrators of My Pet C R,
+
+            An unauthorized access attempt to an account has been detected.
+            Please contact support staff if you have any questions.
+            For the management of the company, please access the website and check security immediately.
+
+            Best regards,
+            My Pet C R Team`
+        };
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                return res.status(500).send(error.message);
+            }
+            return res.status(200).send('Correo enviado: ' + info.response);
+        });
+    });
+    
+    }
+export default { 
+    SendEmail ,
+    DangerEmail
+};
