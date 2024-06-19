@@ -96,9 +96,20 @@ const Clients = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {clients.map((client: any) => (
-                    <ClientsData key={client.id} {...client} />
-                  ))}
+                  {clients.length > 0 &&
+                    clients
+                      .filter(
+                        (client: any) =>
+                          !client.name.toLowerCase().includes("mockuser") &&
+                          (searchTerm === "" ||
+                            client.name.toLowerCase().includes(searchTerm) ||
+                            String(client.id)
+                              .toLowerCase()
+                              .includes(searchTerm))
+                      )
+                      .map((client: any) => (
+                        <ClientsData key={client.id} {...client} />
+                      ))}
                 </tbody>
               </Table>
             </div>
