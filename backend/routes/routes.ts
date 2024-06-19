@@ -24,10 +24,13 @@ import appointment from '../controllers/appointment';
 import address from '../controllers/address';
 import shipping from '../controllers/shipping';
 import cart from '../controllers/cart';
+import mail from '../controllers/email';
 
-// import { sendEmail } from '../controllers/email';
 
 const route = express.Router();
+// mail
+route.post('/send-email/:IDUser/:IDSubject', mail.SendEmail); //IDSubject check the email controller
+route.post('/danger-email', mail.DangerEmail);
 
 // user 
 route.get('/user/mail/:mail', user.UserByMail); // alternative to id this one gives the hashedpassword
