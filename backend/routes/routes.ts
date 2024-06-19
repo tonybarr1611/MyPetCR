@@ -64,6 +64,7 @@ route.delete('/logType/:id', logType.DeleteLogType);
 route.post('/log', log.CreateLog);
 route.get('/log', log.AllLogs);
 route.get('/log/:id', log.LogById);
+route.get('/log/user/:id', log.LogByUser);
 route.put('/log/:id', log.UpdateLog);
 route.delete('/log/:id', log.DeleteLog);
 

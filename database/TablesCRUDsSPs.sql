@@ -1024,6 +1024,19 @@ BEGIN
 END;
 GO
 
+-- Read By IDUser
+CREATE PROCEDURE ReadLogsByIDUser
+    @IDUser INT
+AS
+BEGIN
+    SELECT L.IDLog, L.IDUser, L.DateTime, L.Description,
+           L.IDLogType, LT.Name 'LogTypeName'
+    FROM Log L
+    LEFT JOIN LogType LT on L.IDLogType = LT.IDLogType
+    WHERE IDUser = @IDUser;
+END;
+GO
+
 -- Update
 CREATE PROCEDURE UpdateLog
     @IDLog INT,

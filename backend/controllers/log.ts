@@ -21,6 +21,16 @@ async function LogById(req: Request, res: Response) {
         "Log not retrieved");
 }
 
+async function LogByUser(req: Request, res: Response) {
+    const IDUser = req.params.id;
+    await executeProcedure(res,
+        'ReadLogsByIDUser',
+        [{ name: 'IDUser', type: sql.Int, value: IDUser }],
+        200,
+        "Log retrieved successfully",
+        "Log not retrieved");
+}
+
 async function CreateLog(req: Request, res: Response) {
     const { IDLogType, IDUser, DateTime, Description } = req.body; 
 
@@ -122,6 +132,7 @@ async function DeleteLog(req: Request, res: Response) {
 export default {
     AllLogs,
     LogById,
+    LogByUser,
     CreateLog,
     UpdateLog,
     DeleteLog
