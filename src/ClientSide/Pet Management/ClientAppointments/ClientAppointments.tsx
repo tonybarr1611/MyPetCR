@@ -19,6 +19,10 @@ const ClientAppointments = () => {
 
   const navigate = useNavigate();
 
+  const formatDate = (date: string | any[]) => {
+    return `${date.slice(0, 10)} ${date.slice(11, 16)}`;
+  };
+
   interface Appointment {
     id: number;
     pet: string;
@@ -45,7 +49,7 @@ const ClientAppointments = () => {
           IDUser: obj.IDUser,
           store: obj.StoreLocation,
           status: obj.StatusName,
-          dateTime: obj.DateTime,
+          dateTime: formatDate(obj.DateTime),
         }));
         setAppointments(appointmentlist);
       } catch (error) {

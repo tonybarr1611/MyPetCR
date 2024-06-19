@@ -5,6 +5,7 @@ import { MdVaccines } from "react-icons/md";
 import { ToastContainer, toast } from "react-toastify";
 import { guestRedirection, handleExpiration } from "../../Commons/AuthCommons";
 import axios from "axios";
+import logger from "../../log";
 
 const AddMedicalFileAppointment = () => {
   guestRedirection();
@@ -118,6 +119,7 @@ const AddMedicalFileAppointment = () => {
           Price: totalPrice,
         };
         await axios.post(url, params);
+        logger.update(`Added detail to invoice ${id} with product ${detail.productId}`)
 
         const quantityParams = {
           Quantity: detail.quantity,

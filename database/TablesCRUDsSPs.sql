@@ -159,7 +159,7 @@ AS
 BEGIN
 	SELECT A.IDAppointment, A.DateTime, 
            A.IDPet, P.IDBreed, P.IDClient, P.Name 'PetName', P.Birthdate 'PetBirthdate', P.Weight 'PetWeight', P.Notes 'PetNotes',
-           C.Name 'ClientName', C.IDUser 'ClientUserID', I.IDInvoice
+           C.Name 'ClientName', C.IDUser 'ClientUserID', I.IDInvoice,
            A.IDEmployee, E.IDUser, E.Name 'EmployeeName', E.PhoneNumber 'EmployeePhoneNumber',
            A.IDStore, S.Location 'StoreLocation',
            A.IDStatus,ST.Name 'StatusName'

@@ -5,6 +5,7 @@ import { PlusCircleDotted } from "react-bootstrap-icons";
 import { ToastContainer, toast } from "react-toastify";
 import { guestRedirection, handleExpiration } from "../../Commons/AuthCommons";
 import axios from "axios";
+import logger from "../../log";
 
 const MedicalFileDetails = () => {
   guestRedirection();
@@ -105,6 +106,7 @@ const MedicalFileDetails = () => {
       const url = `http://localhost:8080/api/v1/appointment/${id}`;
       const params = { IDStatus: newStatus };
       axios.put(url, params);
+      logger.update("Appointment status updated successfully to " + newStatus);
       toast.success("Appointment status updated successfully", {
         autoClose: 1500,
         theme: "colored",
@@ -147,6 +149,7 @@ const MedicalFileDetails = () => {
       const url = `http://localhost:8080/api/v1/appointment/${id}`;
       const params = { IDStatus: "4" };
       axios.put(url, params);
+      logger.update("Appointment status updated successfully to Completed, payment registered successfully");
     } catch (error) {
       console.error("Error registering payment:", error);
       toast.error("Failed to register payment", {
