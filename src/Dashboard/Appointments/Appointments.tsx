@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { guestRedirection, handleExpiration } from "../../Commons/AuthCommons";
 import AppointmentsDetail from "./AppointmentsData";
+import logger from "../../logs";
 
 const Appointments = () => {
   guestRedirection();
@@ -65,6 +66,7 @@ const Appointments = () => {
   };
 
   const handleAddAppointment = () => {
+    logger.request(`The user has requested to add a appointment`);
     navigate("registerappointment");
   };
 

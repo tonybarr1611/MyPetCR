@@ -1,5 +1,6 @@
 import { Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
+import logger from "../../logs";
 
 type AppointmentsDetailProps = {
   appointment: {
@@ -21,7 +22,6 @@ function AppointmentsDetail({
   const handleEditAppointment = () => {
     navigate("editappointment/", { state: { id: appointment.id } });
   };
-
   return (
     <tr>
       <td>{appointment.id}</td>
@@ -33,8 +33,7 @@ function AppointmentsDetail({
       <td>{appointment.dateTime}</td>
       <td className="text-center">
         <div className="d-flex justify-content-center">
-        <Link to={"editappointment"} 
-                state={appointment.id}> 
+        <Link to={"editappointment"} state={appointment.id}> 
           <Button
             variant="primary"
             size="sm"
