@@ -72,7 +72,7 @@ const RegisterClient = () => {
             PhoneNumber: credentials.phoneNumber,
             Password: credentials.password,
             LoginID: credentials.email,
-            IDUserType: 2,
+            IDUserType: 4,
           };
           await axios.post(url, param);
         } catch (error) {

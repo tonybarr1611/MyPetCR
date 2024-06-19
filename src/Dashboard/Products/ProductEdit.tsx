@@ -4,7 +4,7 @@ import { Container, Form, Button, Card } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import { SiDatadog } from "react-icons/si";
-import { getProductsClient } from "../../ClientSide/Functions";
+import { getProducts } from "../../ClientSide/Functions";
 import { backendURL } from "../../main";
 
 interface Product {
@@ -27,7 +27,7 @@ const ProductEdit: React.FC = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await getProductsClient();
+        const response = await getProducts();
         const product = response.find(
           (product: Product) => product.id === +(id || 0)
         );
