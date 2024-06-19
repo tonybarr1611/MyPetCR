@@ -689,10 +689,16 @@ CREATE PROCEDURE CreateInvoiceByCart
 AS
 BEGIN
     -- Insert New Invoice
+    DECLARE @NewAppointmentID INT;
     DECLARE @NewIDInvoice INT;
 
+    INSERT INTO Appointment (IDPet, IDEmployee, IDStore, IDStatus, DateTime)
+    VALUES (1, 1, 1, 4, GETDATE()) -- TODO change mockup appointment
+
+    SET @NewAppointmentID = SCOPE_IDENTITY();
+
     INSERT INTO Invoice (IDAppointment, IDClient, IDPayment, IDStatus, DateTime)
-    VALUES (2, @IDClient, @IDPayment, 4, GETDATE()) -- TODO change status code
+    VALUES (@NewAppointmentID, @IDClient, @IDPayment, 4, GETDATE()) -- TODO change status code
 
     SET @NewIDInvoice = SCOPE_IDENTITY();
 

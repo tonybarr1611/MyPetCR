@@ -28,8 +28,13 @@ const MedicalFiles = () => {
           ownerName: obj.UserName,
           breed: obj.BreedName,
         }));
-        // Delete pet with id 1
-        newList.splice(0, 1);
+        // Set the tuple with id=1 to
+        // petName="Ventas de e-commerce"
+        // ownerName="No aplica"
+        // breed="No aplica"
+        newList[0].petName = "Ventas de e-commerce";
+        newList[0].ownerName = "No aplica";
+        newList[0].breed = "No aplica";
         setPets(newList);
       } catch (error) {
         console.error("Error fetching pets:", error);

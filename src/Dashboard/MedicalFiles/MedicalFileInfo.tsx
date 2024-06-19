@@ -9,20 +9,31 @@ import { useLocation } from "react-router-dom";
 const MedicalFileInfo = () => {
   guestRedirection();
   handleExpiration();
-  const [petData, setPetData] = useState({ id: "", breed: "", owner: "", petName: "", birthdate: "", weight: "", notes: "" });
+  const [petData, setPetData] = useState({
+    id: "",
+    breed: "",
+    owner: "",
+    petName: "",
+    birthdate: "",
+    weight: "",
+    notes: "",
+  });
   const [appointments, setAppointments] = useState([]);
+  const [commerceFlag, setCommerceFlag] = useState(false);
   const location = useLocation();
   const id = location.state;
-  const formatDate = (date:any) => {  
+  const formatDate = (date: any) => {
     return `${date.slice(0, 10)} ${date.slice(11, 16)}`;
-  }
+  };
 
   useEffect(() => {
     const fetchPetData = async () => {
       try {
         console.log(id);
-        
-        const response = await axios.get(`http://localhost:8080/api/v1/pet/${id}`);
+
+        const response = await axios.get(
+          `http://localhost:8080/api/v1/pet/${id}`
+        );
         setPetData({
           id: response.data[0].IDPet,
           breed: response.data[0].BreedName,
@@ -30,33 +41,55 @@ const MedicalFileInfo = () => {
           petName: response.data[0].PetName,
           birthdate: formatDate(response.data[0].Birthdate),
           weight: response.data[0].Weight,
-          notes: response.data[0].Notes
+          notes: response.data[0].Notes,
         });
+        // if id is 1, set the tuple with id=1 to
+        // breed="No aplica"
+        // owner="No aplica"
+        // petName="Ventas de e-commerce"
+        // birthdate="No aplica"
+        // weight="No aplica"
+        // notes="Se presentan las ventas del e-commerce, cada registro representa una venta realizada a un cliente."
+        if (id === 1) {
+          setCommerceFlag(true);
+          setPetData({
+            id: response.data[0].IDPet,
+            breed: "No aplica",
+            owner: "No aplica",
+            petName: "Ventas de e-commerce",
+            birthdate: "No aplica",
+            weight: "No aplica",
+            notes:
+              "Se presentan las ventas del e-commerce, cada registro representa una venta realizada a un cliente.",
+          });
+        }
       } catch (error) {
         console.error("Error fetching pet data:", error);
         toast.error("Failed to fetch pet data", {
           autoClose: 1500,
-          theme: "colored"
+          theme: "colored",
         });
       }
     };
 
     const fetchAppointments = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/v1/appointment/pet/${id}`);
+        const response = await axios.get(
+          `http://localhost:8080/api/v1/appointment/pet/${id}`
+        );
         const appointmentlist = response.data.map((obj: any) => ({
           id: obj.IDAppointment,
           employee: obj.EmployeeName,
           store: obj.Location,
           status: obj.StatusName,
-          dateTime: formatDate(obj.DateTime)
+          dateTime: formatDate(obj.DateTime),
         }));
-        setAppointments(appointmentlist); 
+        setAppointments(appointmentlist);
       } catch (error) {
         console.error("Error fetching appointments:", error);
         toast.error("Failed to fetch appointments", {
           autoClose: 1500,
-          theme: "colored"
+          theme: "colored",
         });
       }
     };
