@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Form, Button, Card } from "react-bootstrap";
+import { guestRedirection, handleExpiration } from "../../Commons/AuthCommons";
 import { ToastContainer, toast } from "react-toastify";
 import { EyeFill, EyeSlashFill } from "react-bootstrap-icons";
 import { FaDog } from "react-icons/fa6";
+import axios from "axios";
+import logger from "../../log";
 
 const RegisterClient = () => {
   const [credentials, setCredentials] = useState({
@@ -12,6 +15,8 @@ const RegisterClient = () => {
     email: "",
     password: "",
   });
+  guestRedirection();
+  handleExpiration();
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
@@ -22,6 +27,10 @@ const RegisterClient = () => {
   const handleOnChange = (e: { target: { name: any; value: any } }) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
+
+  const makeLog = () => {
+    logger.update(`The user has created a client`);
+  }
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -61,8 +70,23 @@ const RegisterClient = () => {
           theme: "colored",
         });
       } else {
-        // Authentication logic to register the client
-        navigate("/clients");
+        try {
+          const url = `http://localhost:8080/api/v1/clientAndUser/`;
+          const param = {
+            Name: credentials.name,
+            PhoneNumber: credentials.phoneNumber,
+            Password: credentials.password,
+            LoginID: credentials.email,
+            IDUserType: 4,
+          };
+          await axios.post(url, param);
+        } catch (error) {
+          toast.error(`Failed to add client: ${error}`, {
+            autoClose: 1500,
+            theme: "colored",
+          });
+        }
+        navigate("/dashboard/clients");
       }
     } catch (error) {
       toast.error("An error occurred during registration", {

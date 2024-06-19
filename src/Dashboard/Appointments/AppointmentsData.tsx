@@ -1,51 +1,47 @@
 import { Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 type AppointmentsDetailProps = {
-  id: number;
-  owner: string;
-  pet: string;
-  veterinary: number;
-  store: string;
-  status: string;
-  dateTime: string; // Check if this should be a Date object
+  appointment: {
+    id: number;
+    owner: string;
+    pet: string;
+    veterinary: string;
+    store: string;
+    status: string;
+    dateTime: string; // Check if this should be a Date object
+  };
 };
 
 function AppointmentsDetail({
-  id,
-  owner,
-  pet,
-  veterinary,
-  store,
-  status,
-  dateTime,
+  appointment
 }: AppointmentsDetailProps) {
   const navigate = useNavigate();
 
   const handleEditAppointment = () => {
-    // No need to pass the id here as it's already available in the component
-    navigate("editappointment/");
+    navigate("editappointment/", { state: { id: appointment.id } });
   };
-
   return (
-    <tr key={"appointment" + id.toString()}>
-      <td>{id}</td>
-      <td>{owner}</td>
-      <td>{pet}</td>
-      <td>{veterinary}</td>
-      <td>{store}</td>
-      <td>{status}</td>
-      <td>{dateTime}</td>
+    <tr>
+      <td>{appointment.id}</td>
+      <td>{appointment.owner}</td>
+      <td>{appointment.pet}</td>
+      <td>{appointment.veterinary}</td>
+      <td>{appointment.store}</td>
+      <td>{appointment.status}</td>
+      <td>{appointment.dateTime}</td>
       <td className="text-center">
         <div className="d-flex justify-content-center">
+        <Link to={"editappointment"} state={appointment.id}> 
           <Button
             variant="primary"
             size="sm"
-            className=" mr-2"
+            className="mr-2"
             onClick={handleEditAppointment}
           >
             Edit
           </Button>
+          </Link>
         </div>
       </td>
     </tr>

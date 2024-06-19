@@ -3,6 +3,7 @@ import { CartProduct } from "./Cart";
 import { useState, useEffect } from "react";
 import { PlusCircle, DashCircle } from "react-bootstrap-icons";
 import "../Store.css";
+import { addCartEntry } from "../../Functions";
 
 type CartDataProps = {
   product: CartProduct;
@@ -15,7 +16,6 @@ function CartData({
   updateQuantity,
   modifiable = true,
 }: CartDataProps) {
-  const productImage = `/src/ClientSide/Store/productImages/Thumbnail${product.id}.jpg`;
   const [quantity, setQuantity] = useState(product.quantity);
 
   useEffect(() => {
@@ -26,6 +26,7 @@ function CartData({
     const newQuantity = quantity + numQuantity;
     if (newQuantity >= 0) {
       setQuantity(newQuantity);
+      addCartEntry(product.id, numQuantity);
       if (updateQuantity) {
         updateQuantity(product.id, newQuantity);
       }
@@ -39,7 +40,7 @@ function CartData({
     >
       <Row>
         <Col sm="1">
-          <img src={productImage} alt="..." width="75" height="75" />
+          <img src={product.url} alt="..." width="75" height="75" />
         </Col>
         <Col>
           <p>
@@ -78,6 +79,11 @@ function CartData({
                 <PlusCircle size={20} />
               </button>
             </div>
+          </Col>
+        )}
+        {!modifiable && (
+          <Col>
+            <div>Quantity: {quantity}</div>
           </Col>
         )}
       </Row>

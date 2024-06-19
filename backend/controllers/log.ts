@@ -21,11 +21,21 @@ async function LogById(req: Request, res: Response) {
         "Log not retrieved");
 }
 
+async function LogByUser(req: Request, res: Response) {
+    const IDUser = req.params.id;
+    await executeProcedure(res,
+        'ReadLogsByIDUser',
+        [{ name: 'IDUser', type: sql.Int, value: IDUser }],
+        200,
+        "Log retrieved successfully",
+        "Log not retrieved");
+}
+
 async function CreateLog(req: Request, res: Response) {
-    const { IDLogType, IDUser, DateTime, Description } = req.body; 
+    const { IDLogType, IDUser, Description } = req.body; 
 
     //validate the json
-    if (!IDLogType || !IDUser || !DateTime || !Description) {
+    if (!IDLogType || !IDUser || !Description) {
         return res.status(400).send("Missing required fields");}
     
     //validate idLogType
@@ -51,7 +61,6 @@ async function CreateLog(req: Request, res: Response) {
         'CreateLog',
         [{ name: 'IDLogType', type: sql.Int, value: IDLogType },
         { name: 'IDUser', type: sql.Int, value: IDUser },
-        { name: 'DateTime', type: sql.DateTime, value: DateTime },
         { name: 'Description', type: sql.NVarChar, value: Description }],
         201,
         "Log created successfully",
@@ -122,6 +131,7 @@ async function DeleteLog(req: Request, res: Response) {
 export default {
     AllLogs,
     LogById,
+    LogByUser,
     CreateLog,
     UpdateLog,
     DeleteLog

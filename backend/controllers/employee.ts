@@ -1,5 +1,5 @@
 import sql from 'mssql';
-import { executeProcedure, getObject } from './executeProcedure';
+import { executeProcedure, getItem, getObject } from './executeProcedure';
 import { Request, Response } from 'express';
 
 async function AllEmployees(req: Request, res: Response) {
@@ -62,6 +62,25 @@ async function UpdateEmployee(req: Request, res: Response) {
         "Employee not updated");
 };
 
+async function DowngradeEmployee(req: Request, res: Response) {
+    const IDUser = req.params.id;
+
+    const employee = await getItem(res,
+        'ReadByIDUser',
+        [{ name: 'IDUser', type: sql.Int, value: IDUser }]
+    );
+    if (!employee || employee.recordset.length === 0) { return res.status(404).send("User not found");}
+
+    await executeProcedure(res,
+        'DowngradeEmployeeToClient',
+        [
+            { name: 'IDUser', type: sql.Int, value: IDUser }
+        ],
+        200,
+        "Employee downgraded successfully",
+        "Employee not downgraded");
+};
+
 async function CreateEmployee(req: Request, res: Response) {
     const { IDUser, Name, PhoneNumber } = req.body;
     //validate the json
@@ -106,5 +125,6 @@ export default{
     EmployeeById,
     CreateEmployee,
     DeleteEmployee,
-    UpdateEmployee
+    UpdateEmployee,
+    DowngradeEmployee
 };

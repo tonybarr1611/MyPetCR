@@ -23,6 +23,16 @@ async function InventoryById(req: Request, res: Response) {
         "Inventory not retrieved");
 };
 
+async function ReadInventoryByIDProduct(req: Request, res: Response) {
+    const IDProduct = req.params.IDProduct;
+    await executeProcedure(res,
+        'ReadInventoryByIDProduct',
+        [{ name: 'IDProduct', type: sql.Int, value: IDProduct }],
+        200,
+        "Inventory retrieved successfully",
+        "Inventory not retrieved");
+}
+
 async function CreateInventory(req: Request, res: Response) {
     const { IDProduct, IDStore, Quantity } = req.body;
     //validate the json
@@ -94,10 +104,32 @@ async function UpdateInventory(req: Request, res: Response) {
         "Inventory not updated");
 };
 
+async function UpdateInventoryByIDProduct(req: Request, res: Response) {
+    const IDProduct = req.params.IDProduct;
+    const { Quantity } = req.body;
+    //validate the json
+    if (!Quantity) {
+        return res.status(400).send("Missing required fields");
+    }
+
+    //Update the inventory
+    await executeProcedure(res,
+        'UpdateInventoryByIDProduct',
+        [
+            { name: 'IDProduct', type: sql.Int, value: IDProduct },
+            { name: 'Quantity', type: sql.Int, value: Quantity }
+        ],
+        200,
+        "Inventory updated successfully",
+        "Inventory not updated");
+}
+
 export default {
     AllInventories,
     InventoryById,
     CreateInventory,
     DeleteInventory,
-    UpdateInventory
+    UpdateInventory, 
+    UpdateInventoryByIDProduct,
+    ReadInventoryByIDProduct
 };

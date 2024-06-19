@@ -2,8 +2,14 @@ import React from "react";
 import { Container, Nav, NavDropdown, Navbar } from "react-bootstrap";
 import { FaDog, FaCartShopping, FaCircleUser } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import logger from "../log";
 
 function NavBar() {
+  const handleSignOut = () => {    
+    logger.access(`The user has logged out of the application`);
+    window.location.assign("/");
+  };
+
   return (
     <Navbar bg="light" expand="lg" style={{ width: "100%" }}>
       <Container>
@@ -23,8 +29,13 @@ function NavBar() {
             <Link to={"/clientside/shop"} className="nav-link">
               Shop
             </Link>
-            <Link to={"/clientside/management"} className="nav-link">
-              Pet Management
+            {localStorage.getItem("token") !== "guest" && (
+              <Link to={"/clientside/management"} className="nav-link">
+                Pet Management
+              </Link>
+            )}
+            <Link to={"/clientside/history"} className="nav-link">
+              Sales History
             </Link>
           </Nav>
           <Nav className="ml-auto">
@@ -32,8 +43,14 @@ function NavBar() {
               <FaCartShopping size={24} />
             </Link>
             <NavDropdown title={<FaCircleUser size={24} />}>
-              <NavDropdown.Item><Link to={"/clientside/profile"}>Profile</Link></NavDropdown.Item>
-              <NavDropdown.Item>Sign out</NavDropdown.Item>
+              {localStorage.getItem("token") !== "guest" && (
+                <NavDropdown.Item>
+                  <Link to={"/clientside/profile"}>Profile</Link>
+                </NavDropdown.Item>
+              )}
+              <NavDropdown.Item onClick={handleSignOut}>
+                Sign out
+              </NavDropdown.Item>
             </NavDropdown>
           </Nav>
         </Navbar.Collapse>

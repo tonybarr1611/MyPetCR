@@ -1,20 +1,31 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Col, Container, Form } from "react-bootstrap";
 import Product from "./Product";
-import { products } from "../../ClientSide";
+// import { products } from "../../ClientSide";
+import { getProductsClient } from "../../Functions";
+import { ProductProp } from "./ProductDetail";
 import "../Store.css";
 
 function Shop() {
   const [searchValue, setSearchValue] = useState("");
   const [isProductChecked, setIsProductChecked] = useState(true);
   const [isMedicineChecked, setIsMedicineChecked] = useState(true);
-
-  const maxPrice = products.reduce(
-    (max, product) => (product.price > max ? product.price : max),
-    0
-  );
-
+  const [maxPrice, setMaxPrice] = useState(0);
   const [price, setPrice] = useState(maxPrice);
+  const [products, setProducts] = useState<ProductProp[]>([]);
+
+  useEffect(() => {
+    async function fetchProducts() {
+      const allProducts = await getProductsClient();
+      const maxP = Math.max(
+        ...allProducts.map((product: { price: any }) => product.price)
+      );
+      setProducts(allProducts);
+      setMaxPrice(maxP);
+      setPrice(maxP);
+    }
+    fetchProducts();
+  }, []);
 
   const handleSearchChange = (e: { target: { value: string } }) => {
     setSearchValue(e.target.value);

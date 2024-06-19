@@ -1,4 +1,4 @@
-import { SetStateAction, useState } from "react";
+import { useState, useEffect, SetStateAction } from "react";
 import {
   Container,
   Row,
@@ -11,105 +11,61 @@ import {
 import { ToastContainer, toast } from "react-toastify";
 import { PlusLg } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { guestRedirection, handleExpiration } from "../../Commons/AuthCommons";
 import AppointmentsDetail from "./AppointmentsData";
+import logger from "../../log";
 
 const Appointments = () => {
+  guestRedirection();
+  handleExpiration();
   const [searchTerm, setSearchTerm] = useState("");
-
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [status, setStatus] = useState("All");
+  const [store, setStore] = useState("");
+  const [appointments, setAppointments] = useState<
+    {
+      id: number;
+      owner: string;
+      pet: string;
+      veterinary: string;
+      store: string;
+      status: string;
+      dateTime: string;
+    }[]
+  >([]);
+  const formatDate = (date: any) => {
+    return `${date.slice(0, 10)} ${date.slice(11, 16)}`;
+  };
   const navigate = useNavigate();
 
-  const [appointments, setAppointments] = useState([
-    {
-      id: 1,
-      owner: "<Tony",
-      pet: "Buddy",
-      veterinary: 123,
-      store: "Pet Store 1",
-      status: "Pending",
-      dateTime: "2024-06-15 10:00 AM",
-    },
-    {
-      id: 2,
-      owner: "<Tony",
-      pet: "Buddy",
-      veterinary: 123,
-      store: "Pet Store 1",
-      status: "Pending",
-      dateTime: "2024-06-15 10:00 AM",
-    },
-    {
-      id: 3,
-      owner: "<Tony",
-      pet: "Buddy",
-      veterinary: 123,
-      store: "Pet Store 1",
-      status: "Pending",
-      dateTime: "2024-06-15 10:00 AM",
-    },
-    {
-      id: 4,
-      owner: "<Tony",
-      pet: "Buddy",
-      veterinary: 123,
-      store: "Pet Store 1",
-      status: "Pending",
-      dateTime: "2024-06-15 10:00 AM",
-    },
-    {
-      id: 5,
-      owner: "<Tony",
-      pet: "Buddy",
-      veterinary: 123,
-      store: "Pet Store 1",
-      status: "Pending",
-      dateTime: "2024-06-15 10:00 AM",
-    },
-    {
-      id: 6,
-      owner: "<Tony",
-      pet: "Buddy",
-      veterinary: 123,
-      store: "Pet Store 1",
-      status: "Pending",
-      dateTime: "2024-06-15 10:00 AM",
-    },
-    {
-      id: 7,
-      owner: "<Tony",
-      pet: "Buddy",
-      veterinary: 123,
-      store: "Pet Store 1",
-      status: "Pending",
-      dateTime: "2024-06-15 10:00 AM",
-    },
-    {
-      id: 8,
-      owner: "<Tony",
-      pet: "Buddy",
-      veterinary: 123,
-      store: "Pet Store 1",
-      status: "Pending",
-      dateTime: "2024-06-15 10:00 AM",
-    },
-    {
-      id: 9,
-      owner: "<Tony",
-      pet: "Buddy",
-      veterinary: 123,
-      store: "Pet Store 1",
-      status: "Pending",
-      dateTime: "2024-06-15 10:00 AM",
-    },
-    {
-      id: 10,
-      owner: "<Tony",
-      pet: "Buddy",
-      veterinary: 123,
-      store: "Pet Store 1",
-      status: "Pending",
-      dateTime: "2024-06-15 10:00 AM",
-    },
-  ]);
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/v1/appointment/`
+        );
+        const newList = response.data.map((obj: any) => ({
+          id: obj.IDAppointment,
+          owner: obj.ClientName,
+          pet: obj.PetName,
+          veterinary: obj.EmployeeName,
+          store: obj.StoreLocation,
+          status: obj.StatusName,
+          dateTime: formatDate(obj.DateTime),
+        }));
+        setAppointments(newList);
+      } catch (error) {
+        console.error("Error fetching appointments:", error);
+        toast.error("Failed to fetch appointments", {
+          autoClose: 1500,
+          theme: "colored",
+        });
+      }
+    };
+    fetchAppointments();
+  }, []);
 
   const handleSearchChange = (e: {
     target: { value: SetStateAction<string> };
@@ -128,6 +84,7 @@ const Appointments = () => {
   };
 
   const handleAddAppointment = () => {
+    logger.request(`The user has requested to add a appointment`);
     navigate("registerappointment");
   };
 
@@ -143,17 +100,37 @@ const Appointments = () => {
                   <Card.Title>Filter Appointments</Card.Title>
                   <Form>
                     <Form.Group className="mb-3">
-                      <Form.Label>By Date</Form.Label>
-                      <Form.Control type="date" name="date" />
+                      <Form.Label>From Date</Form.Label>
+                      <Form.Control
+                        type="date"
+                        name="startDate"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                      />
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                      <Form.Label>To Date</Form.Label>
+                      <Form.Control
+                        type="date"
+                        name="endDate"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                      />
                     </Form.Group>
                     <Form.Group className="mb-3">
                       <Form.Label>By Status</Form.Label>
-                      <Form.Control as="select" name="status">
-                        <option>All</option>
-                        <option>Pending</option>
-                        <option>Confirmed</option>
-                        <option>Completed</option>
-                        <option>Cancelled</option>
+                      <Form.Control
+                        as="select"
+                        name="status"
+                        id="statusForm"
+                        value={status}
+                        onChange={(e) => setStatus(e.target.value)}
+                      >
+                        <option value={"All"}>All</option>
+                        <option value={"Pending"}>Pending</option>
+                        <option value={"Confirmed"}>Confirmed</option>
+                        <option value={"Completed"}>Completed</option>
+                        <option value={"Cancelled"}>Cancelled</option>
                       </Form.Control>
                     </Form.Group>
                     <Form.Group className="mb-3">
@@ -162,11 +139,10 @@ const Appointments = () => {
                         type="text"
                         name="store"
                         placeholder="Store Name"
+                        value={store}
+                        onChange={(e) => setStore(e.target.value)}
                       />
                     </Form.Group>
-                    <Button variant="primary" type="button" className="w-100">
-                      Apply Filters
-                    </Button>
                   </Form>
                 </Card.Body>
               </Card>
@@ -212,9 +188,67 @@ const Appointments = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {appointments.map((appointment) =>
-                    AppointmentsDetail(appointment)
-                  )}
+                  {appointments
+                    .filter((appointment) => {
+                      if (searchTerm === "") {
+                        return appointment;
+                      } else if (
+                        appointment.owner
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase()) ||
+                        appointment.pet
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase()) ||
+                        appointment.veterinary
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase()) ||
+                        appointment.store
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase()) ||
+                        appointment.status
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase()) ||
+                        appointment.dateTime
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase())
+                      ) {
+                        return appointment;
+                      }
+                    })
+                    .filter((appointment) => {
+                      if (status === "All") {
+                        return appointment;
+                      } else if (appointment.status === status) {
+                        return appointment;
+                      }
+                    })
+                    .filter((appointment) => {
+                      if (store === "") {
+                        return appointment;
+                      } else if (
+                        appointment.store
+                          .toLowerCase()
+                          .includes(store.toLowerCase())
+                      ) {
+                        return appointment;
+                      }
+                    })
+                    .filter((appointment) => {
+                      if (startDate === "" && endDate === "") {
+                        return appointment;
+                      } else if (
+                        appointment.dateTime >= startDate &&
+                        appointment.dateTime <= endDate
+                      ) {
+                        return appointment;
+                      }
+                    })
+                    .map((appointment) => (
+                      <AppointmentsDetail
+                        key={appointment.id}
+                        appointment={appointment}
+                      />
+                    ))}
                 </tbody>
               </Table>
             </div>

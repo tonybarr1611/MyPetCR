@@ -48,6 +48,16 @@ async function CreateAppointment(req: Request, res: Response) {
         "Appointment not created");
 };
 
+async function ReadAllAppointmentsByPet(req: Request, res: Response) {
+    const IDPet = req.params.id;
+    await executeProcedure(res,
+        'ReadAppointmentsByPet',
+        [{ name: 'IDPet', type: sql.Int, value: IDPet }],
+        200,
+        "",
+        "Appointments not retrieved");
+};
+
 async function ReadAllAppointments(req: Request, res: Response) {
     await executeProcedure(res, 
         'ReadAllAppointments', 
@@ -133,10 +143,43 @@ async function DeleteAppointment(req: Request, res: Response) {
         "Appointment not removed");
 };
 
+async function ReadAppointmentsByClientID (req: Request, res: Response) {
+    const IDClient = req.params.id;
+    await executeProcedure(res,
+        'ReadAppointmentsByClientID',
+        [{ name: 'IDClient', type: sql.Int, value: IDClient }],
+        200,
+        "",
+        "Appointments not retrieved");
+}
+
+async function AddAppointmentAndInvoice (req: Request, res: Response) {
+    const { IDPet, IDEmployee, IDClient, IDStore, DateTime } = req.body;
+
+    if (!IDPet || !IDEmployee || !IDStore || !DateTime) {
+        return res.status(400).send("Missing required fields");
+    }
+    //sin validaciones 
+    await executeProcedure(res, 
+        'AddAppointmentAndInvoice', 
+        [
+            { name: 'IDPet', type: sql.Int, value: IDPet },
+            { name: 'IDEmployee', type: sql.Int, value: IDEmployee },
+            { name: 'IDClient', type: sql.Int, value: IDClient },
+            { name: 'IDStore', type: sql.Int, value: IDStore },
+            { name: 'DateTime', type: sql.DateTime, value: DateTime }
+        ], 
+        201, 
+        "Appointment and invoice created successfully", 
+        "Appointment and invoice not created");
+}
 export default {
     CreateAppointment,
     ReadAllAppointments,
     ReadAppointmentByID,
     UpdateAppointment,
     DeleteAppointment,
+    ReadAllAppointmentsByPet,
+    ReadAppointmentsByClientID,
+    AddAppointmentAndInvoice
 }

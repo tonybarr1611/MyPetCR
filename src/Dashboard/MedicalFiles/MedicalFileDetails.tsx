@@ -1,67 +1,162 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Container, Row, Col, Table, Button, Form } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
-import { useParams } from "react-router";
+import { Link, useLocation } from "react-router-dom";
 import { PlusCircleDotted } from "react-bootstrap-icons";
 import { ToastContainer, toast } from "react-toastify";
+import { guestRedirection, handleExpiration } from "../../Commons/AuthCommons";
+import axios from "axios";
+import logger from "../../log";
 
 const MedicalFileDetails = () => {
-  const navigate = useNavigate();
-  const { idParam } = useParams();
+  guestRedirection();
+  handleExpiration();
+  const location = useLocation();
+  const id = location.state;
 
-  const appointmentData = {
-    id: 101,
-    status: "Pending",
-    petName: "Buddy",
-    owner: "Tony",
-    dateTime: "2023-06-01 10:00 AM",
-    invoiceId: 5001,
-  };
-
-  const [status, setStatus] = useState(appointmentData.status);
-
-  console.log(status.toLowerCase() === "completed");
-
-  const invoiceDetails = [
-    {
-      id: 1,
-      product: 1001,
-      description: "Rabies Vaccine",
-      quantity: 1,
-      price: 50.0,
-    },
-    {
-      id: 2,
-      product: 1002,
-      description: "Heartworm Prevention",
-      quantity: 3,
-      price: 30.0,
-    },
+  const statusOptions = [
+    { value: "1", label: "Pending" },
+    { value: "2", label: "Confirmed" },
+    { value: "3", label: "Cancelled" },
+    { value: "4", label: "Completed" },
   ];
 
-  const handleEditInvoiceDetail = (detailId: number) => {
-    navigate(`edit`);
+  const formatDate = (date: string | any[]) => {
+    return `${date.slice(0, 10)} ${date.slice(11, 16)}`;
   };
 
-  const handleAddInvoiceDetail = () => {
-    navigate(`add`);
-  };
+  const [appointmentData, setAppointmentData] = useState({
+    id: "",
+    status: "",
+    petName: "",
+    owner: "",
+    dateTime: "",
+    invoiceId: "",
+  });
+  const [status, setStatus] = useState("");
+  const [invoiceDetails, setInvoiceDetails] = useState<
+    {
+      id: string;
+      product: string;
+      description: string;
+      quantity: number;
+      price: number;
+      productID: string;
+    }[]
+  >([]);
 
-  const handleStatusChange = () => {
-    const combobox = document.querySelector("select") as HTMLSelectElement;
-    setStatus(combobox.value);
+  useEffect(() => {
+    const fetchAppointmentData = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/v1/appointment/${id}`
+        );
+        setAppointmentData({
+          id: response.data[0].IDAppointment,
+          status: response.data[0].StatusName,
+          petName: response.data[0].PetName,
+          owner: response.data[0].ClientName,
+          dateTime: formatDate(response.data[0].DateTime),
+          invoiceId: response.data[0].IDInvoice,
+        });
+        setStatus(response.data[0].IDStatus.toString());
+      } catch (error) {
+        console.error("Error fetching appointment data:", error);
+        toast.error("Failed to fetch appointment data", {
+          autoClose: 1500,
+          theme: "colored",
+        });
+      }
+    };
 
-    if (combobox.value.toLowerCase() === "completed") {
+    fetchAppointmentData();
+  }, [id]);
+
+  useEffect(() => {
+    const fetchInvoiceDetails = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/v1/invoiceDetail/appointment/${id}`
+        );
+        const invoicesdetaillist = response.data.map((obj: any) => ({
+          id: obj.IDInvoiceDetail,
+          product: obj.Name,
+          description: obj.Description,
+          quantity: obj.Quantity,
+          price: obj.Price,
+          productID: obj.IDProduct,
+        }));
+        setInvoiceDetails(invoicesdetaillist);
+      } catch (error) {
+        console.error("Error fetching invoice details:", error);
+        toast.error("Failed to fetch invoice details", {
+          autoClose: 1500,
+          theme: "colored",
+        });
+      }
+    };
+
+    fetchInvoiceDetails();
+  }, [id]);
+
+  const handleStatusChange = async (event: { target: { value: any } }) => {
+    const newStatus = event.target.value;
+    setStatus(newStatus);
+
+    try {
+      const url = `http://localhost:8080/api/v1/appointment/${id}`;
+      const params = { IDStatus: newStatus };
+      axios.put(url, params);
+      logger.update("Appointment status updated successfully to " + newStatus);
+      toast.success("Appointment status updated successfully", {
+        autoClose: 1500,
+        theme: "colored",
+      });
+    } catch (error) {
+      console.error("Error updating status:", error);
+      toast.error("Failed to update status", {
+        autoClose: 1500,
+        theme: "colored",
+      });
+    }
+
+    if (newStatus === "4") {
+      // "Completed"
       disableCombobox();
-      toast.success("Appointment status updated successfully");
-    } else {
-      toast.warn("Appointment status updated successfully");
     }
   };
 
   const disableCombobox = () => {
     const combobox = document.querySelector("select");
-    combobox!.setAttribute("disabled", "true");
+    if (combobox) {
+      combobox.setAttribute("disabled", "true");
+    }
+  };
+
+  const calculateTotal = () => {
+    const total = invoiceDetails.reduce((total, item) => total + item.price, 0);
+    return total.toLocaleString("es-CR", {
+      style: "currency",
+      currency: "CRC",
+    });
+  };
+
+  const registerPayment = async () => {
+    setStatus("4"); // "Completed"
+    disableCombobox();
+    toast.success("Payment registered successfully");
+
+    try {
+      const url = `http://localhost:8080/api/v1/appointment/${id}`;
+      const params = { IDStatus: "4" };
+      axios.put(url, params);
+      logger.update("Appointment status updated successfully to Completed, payment registered successfully");
+    } catch (error) {
+      console.error("Error registering payment:", error);
+      toast.error("Failed to register payment", {
+        autoClose: 1500,
+        theme: "colored",
+      });
+    }
   };
 
   return (
@@ -78,8 +173,9 @@ const MedicalFileDetails = () => {
               <tr>
                 <td>Status</td>
                 <td>
-                  {appointmentData.status.toLowerCase() === "completed" ? (
-                    appointmentData.status
+                  {status === "4" ? (
+                    statusOptions.find((option) => option.value === status)
+                      ?.label
                   ) : (
                     <Form.Control
                       as="select"
@@ -87,10 +183,11 @@ const MedicalFileDetails = () => {
                       id="statusCombobox"
                       onChange={handleStatusChange}
                     >
-                      <option value="Pending">Pending</option>
-                      <option value="Confirmed">Confirmed</option>
-                      <option value="Cancelled">Cancelled</option>
-                      <option value="Completed">Completed</option>
+                      {statusOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
                     </Form.Control>
                   )}
                 </td>
@@ -119,7 +216,7 @@ const MedicalFileDetails = () => {
             <thead>
               <tr>
                 <th>ID Invoice Detail</th>
-                <th>Product Name </th>
+                <th>Product Name</th>
                 <th>Description</th>
                 <th>Quantity</th>
                 <th>Price</th>
@@ -127,22 +224,33 @@ const MedicalFileDetails = () => {
               </tr>
             </thead>
             <tbody>
-              {invoiceDetails.map((detail) => (
-                <tr key={detail.id}>
-                  <td>{detail.id}</td>
-                  <td>{detail.product}</td>
-                  <td>{detail.description}</td>
-                  <td>{detail.quantity}</td>
-                  <td>{detail.price.toFixed(2)}</td>
+              {invoiceDetails.map((invoiceDetail) => (
+                <tr key={invoiceDetail.id}>
+                  <td>{invoiceDetail.id}</td>
+                  <td>{invoiceDetail.product}</td>
+                  <td>{invoiceDetail.description}</td>
+                  <td>{invoiceDetail.quantity}</td>
+                  <td>{invoiceDetail.price.toFixed(2)}</td>
                   <td className="text-center">
-                    <Button
-                      variant="primary"
-                      size="sm"
-                      onClick={() => handleEditInvoiceDetail(detail.id)}
-                      disabled={status.toLowerCase() === "completed"}
+                    <Link
+                      to={"edit"}
+                      state={{
+                        id: invoiceDetail.id,
+                        productid: invoiceDetail.productID,
+                      }}
                     >
-                      Edit
-                    </Button>
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        disabled={
+                          status === "4" ||
+                          parseInt(localStorage.getItem("userType") || "4") !==
+                            3
+                        }
+                      >
+                        Edit
+                      </Button>
+                    </Link>
                   </td>
                 </tr>
               ))}
@@ -150,12 +258,30 @@ const MedicalFileDetails = () => {
           </Table>
 
           <div className="text-center mt-3">
+            <Link to="add" state={{ id: appointmentData.invoiceId }}>
+              <Button
+                variant="success"
+                disabled={
+                  status === "4" ||
+                  parseInt(localStorage.getItem("userType") || "4") !== 3
+                }
+              >
+                <PlusCircleDotted size={24} className="mb-1 mr-1" /> Add
+                Procedure
+              </Button>
+            </Link>
+          </div>
+          <div className="mt-5 text-center">
+            <h4>Total Invoice Amount: {calculateTotal()}</h4>
             <Button
-              variant="success"
-              onClick={handleAddInvoiceDetail}
-              disabled={status.toLowerCase() === "completed"}
+              variant="primary"
+              onClick={registerPayment}
+              disabled={
+                status === "4" ||
+                parseInt(localStorage.getItem("userType") || "4") !== 3
+              }
             >
-              <PlusCircleDotted size={24} className="mb-1 mr-1" /> Add Procedure
+              Register Payment
             </Button>
           </div>
         </Col>

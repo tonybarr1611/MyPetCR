@@ -1,8 +1,11 @@
-import { Container, Row, Col, Button, Card } from 'react-bootstrap';
-import { Shop, Hospital } from 'react-bootstrap-icons';
-import { useNavigate } from 'react-router-dom';
+import { Container, Row, Col, Button, Card } from "react-bootstrap";
+import { Shop, Hospital } from "react-bootstrap-icons";
+import { useNavigate } from "react-router-dom";
+import { guestRedirection, handleExpiration } from "../Commons/AuthCommons";
 
 const ClientOptions = () => {
+  guestRedirection();
+  handleExpiration();
   const navigate = useNavigate();
 
   return (
@@ -10,7 +13,9 @@ const ClientOptions = () => {
       <Row className="text-center mb-4">
         <Col>
           <h1>Welcome to MyPetCR</h1>
-          <p>Choose an option below to proceed to the Store or Clinic Dashboard.</p>
+          <p>
+            Choose an option below to proceed to the Store or Clinic Dashboard.
+          </p>
         </Col>
       </Row>
       <Row className="d-flex justify-content-center">
@@ -31,14 +36,11 @@ const ClientOptions = () => {
         <Col md={4}>
           <Card className="mb-3" style={{ height: "100%" }}>
             <Card.Body className="d-flex flex-column align-items-center">
-              <Hospital size={70} className="mb-3 text-success" />
-              <Card.Title>Clinic Dashboard</Card.Title>
-              <Card.Text className="text-center">
-                Access and manage clinic operations.
+              <Hospital size={70} className="mb-3 text-success mt-1" />
+              <Card.Title className="mt-3">Welcome to Clinic Dashboard</Card.Title>
+              <Card.Text className="text-center mt-4">
+                Here you can access and manage several clinic operations.
               </Card.Text>
-              <Button variant="success" className="mt-4" onClick={() => navigate("/dashboard")}>
-                Go to Clinic Dashboard
-              </Button>
             </Card.Body>
           </Card>
         </Col>

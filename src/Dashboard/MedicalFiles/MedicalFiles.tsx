@@ -1,17 +1,51 @@
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { Container, Row, Col, Form, Table } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
+import { guestRedirection, handleExpiration } from "../../Commons/AuthCommons";
 import MedicalFilesData from "./MedicalFilesData";
+import axios from "axios";
+
+interface Pet {
+  id: number;
+  petName: string;
+  ownerName: string;
+  breed: string;
+}
 
 const MedicalFiles = () => {
+  guestRedirection();
+  handleExpiration();
   const [searchTerm, setSearchTerm] = useState("");
+  const [pets, setPets] = useState<Pet[]>([]);
 
-  const [pets, setPets] = useState([
-    { id: 1, petName: "Buddy", ownerName: "Tony", breed: "Golden Retriever" },
-    { id: 2, petName: "Milo", ownerName: "Sarah", breed: "Beagle" },
-    { id: 3, petName: "Max", ownerName: "John", breed: "Bulldog" },
-    { id: 4, petName: "Bella", ownerName: "Anna", breed: "Poodle" },
-  ]);
+  useEffect(() => {
+    const fetchPets = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/api/v1/pet");
+        const newList = response.data.map((obj: any) => ({
+          id: obj.IDPet,
+          petName: obj.PetName,
+          ownerName: obj.UserName,
+          breed: obj.BreedName,
+        }));
+        // Set the tuple with id=1 to
+        // petName="E-commerce sales"
+        // ownerName="N/A"
+        // breed="N/A"
+        newList[0].petName = "E-commerce sales";
+        newList[0].ownerName = "N/A";
+        newList[0].breed = "N/A";
+        setPets(newList);
+      } catch (error) {
+        console.error("Error fetching pets:", error);
+        toast.error("Failed to fetch pets", {
+          autoClose: 1500,
+          theme: "colored",
+        });
+      }
+    };
+    fetchPets();
+  }, []);
 
   const handleSearchChange = (e: {
     target: { value: SetStateAction<string> };
@@ -58,7 +92,22 @@ const MedicalFiles = () => {
                     <th className="text-center">Actions</th>
                   </tr>
                 </thead>
-                <tbody>{pets.map((pet) => MedicalFilesData(pet))}</tbody>
+                <tbody>
+                  {pets
+                    .filter(
+                      (pet: Pet) =>
+                        pet.petName
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase()) ||
+                        pet.ownerName
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase()) ||
+                        pet.breed
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase())
+                    )
+                    .map((pet) => MedicalFilesData(pet))}
+                </tbody>
               </Table>
             </div>
           </Col>

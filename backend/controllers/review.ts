@@ -12,20 +12,20 @@ async function AllReviews(req: Request, res: Response) {
 }
 
 async function ReviewById(req: Request, res: Response) {
-    const IDReview = req.params.id;
+    const IDProduct = req.params.id;
     await executeProcedure(res,
         'ReadByIDReview',
-        [{ name: 'IDReview', type: sql.Int, value: IDReview }],
+        [{ name: 'IDProduct', type: sql.Int, value: IDProduct }],
         200,
         "Review retrieved successfully",
         "Review not retrieved");
 }
 
 async function AverageReviewById(req: Request, res: Response) {
-    const IDReview = req.params.id;
+    const IDProduct = req.params.id;
     await executeProcedure(res,
         'ReadAverageByIDReview',
-        [{ name: 'IDReview', type: sql.Int, value: IDReview }],
+        [{ name: 'IDProduct', type: sql.Int, value: IDProduct }],
         200,
         "Average Review retrieved successfully",
         "Average Review not retrieved");

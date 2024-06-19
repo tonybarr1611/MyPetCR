@@ -1,39 +1,65 @@
 import { useState, useEffect } from "react";
 import { Container, Card, Form, Button, Table } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { MdVaccines } from "react-icons/md";
 import { ToastContainer, toast } from "react-toastify";
+import { guestRedirection, handleExpiration } from "../../Commons/AuthCommons";
+import axios from "axios";
+import logger from "../../log";
 
 const AddMedicalFileAppointment = () => {
-  const navigate = useNavigate();
+  guestRedirection();
+  handleExpiration();
+  const location = useLocation();
+  const { id } = location.state;
 
   const [detail, setDetail] = useState({
     productId: "",
     productName: "",
     description: "",
     quantity: 1,
+    price: 0,
   });
 
   const [products, setProducts] = useState<
-    { id: number; name: string; description: string }[]
+    {
+      id: number;
+      name: string;
+      description: string;
+      quantity: number;
+      price: number;
+    }[]
   >([]);
   const [showProductTable, setShowProductTable] = useState(false);
 
   useEffect(() => {
-    // Fetch products data from backend
-    setProducts([
-      {
-        id: 1001,
-        name: "Rabies Vaccine",
-        description: "Vaccine for rabies prevention",
-      },
-      {
-        id: 1002,
-        name: "Feline Vaccine",
-        description: "Vaccine for feline diseases",
-      },
-      // Add more products as needed
-    ]);
+    const fetchProducts = async () => {
+      try {
+        console.log(id);
+        const response = await axios.get(
+          "http://localhost:8080/api/v1/medicine"
+        );
+        var productsData = response.data.map((product: any) => ({
+          id: product.IDProduct,
+          name: product.Name,
+          description: product.Description,
+          quantity: product.Quantity,
+          price: product.Price,
+        }));
+        productsData = productsData.filter(
+          (product: any) => product.name !== "Shipping"
+        );
+        setProducts(productsData);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        toast.error("Failed to fetch products", {
+          autoClose: 1500,
+          theme: "colored",
+        });
+      }
+    };
+
+    fetchProducts();
   }, []);
 
   const handleChange = (e: { target: { name: any; value: any } }) => {
@@ -44,18 +70,75 @@ const AddMedicalFileAppointment = () => {
     e.preventDefault();
 
     try {
-      if (!detail.productName || !detail.description || !detail.quantity) {
+      if (!detail.productId || !detail.description || !detail.quantity) {
         toast.error("All fields are required", {
           autoClose: 1500,
           theme: "colored",
         });
-      } else {
-        // Backend request logic to add the detail using detail data
+        return;
+      }
+
+      const selectedProduct = products.find(
+        (product) => product.id.toString() === detail.productId
+      );
+
+      if (!selectedProduct) {
+        toast.error("Invalid Product ID", {
+          autoClose: 1500,
+          theme: "colored",
+        });
+        return;
+      }
+
+      const totalPrice = selectedProduct.price * detail.quantity;
+
+      const availableInventory = await axios.get(
+        `http://localhost:8080/api/v1/inventory/${detail.productId}`
+      );
+
+      const availableQuantity = availableInventory.data.reduce(
+        (acc: number, inventory: any) => acc + inventory.Quantity,
+        0
+      );
+
+      if (availableQuantity < detail.quantity) {
+        toast.error("Insufficient stock", {
+          autoClose: 1500,
+          theme: "colored",
+        });
+        return;
+      }
+
+      try {
+        const url = "http://localhost:8080/api/v1/invoiceDetail";
+        const params = {
+          IDInvoice: id,
+          IDProduct: detail.productId,
+          Description: detail.description,
+          Quantity: detail.quantity,
+          Price: totalPrice,
+        };
+        await axios.post(url, params);
+        logger.update(`Added detail to invoice ${id} with product ${detail.productId}`)
+
+        const quantityParams = {
+          Quantity: detail.quantity,
+        };
+        await axios.put(
+          `http://localhost:8080/api/v1/inventory/${detail.productId}`,
+          quantityParams
+        );
         toast.success("Detail added successfully", {
           autoClose: 1500,
           theme: "colored",
         });
-        navigate("/dashboard/medicalfiles/info/details");
+        window.location.assign(`/dashboard/medicalfiles`);
+      } catch (error) {
+        console.error("Error adding detail:", error);
+        toast.error("Failed to add detail", {
+          autoClose: 1500,
+          theme: "colored",
+        });
       }
     } catch (error) {
       toast.error("An error occurred while adding the detail", {
@@ -66,7 +149,7 @@ const AddMedicalFileAppointment = () => {
   };
 
   const handleCancel = () => {
-    navigate("/dashboard/medicalfiles/info/details");
+    window.location.assign(`/dashboard/medicalfiles`);
   };
 
   const toggleProductTable = () => {
@@ -91,13 +174,14 @@ const AddMedicalFileAppointment = () => {
           </div>
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3" controlId="formProductName">
-              <Form.Label>Product Name</Form.Label>
+              <Form.Label>Product ID</Form.Label>
               <div className="d-flex">
                 <Form.Control
-                  type="text"
-                  name="productName"
-                  value={detail.productName}
+                  type="number"
+                  name="productId"
+                  value={detail.productId}
                   onChange={handleChange}
+                  min={1}
                 />
                 <Button
                   variant="info"
@@ -165,6 +249,7 @@ const AddMedicalFileAppointment = () => {
                         productId: product.id.toString(),
                         productName: product.name,
                         description: product.description,
+                        price: product.price,
                       })
                     }
                   >

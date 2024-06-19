@@ -1,27 +1,40 @@
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useState, useEffect } from "react";
 import { Container, Row, Col, Form, Button, Table } from "react-bootstrap";
+import { guestRedirection, handleExpiration } from "../../Commons/AuthCommons";
 import { ToastContainer, toast } from "react-toastify";
 import { PlusLg } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
 import ClientsData from "./ClientsData";
+import axios from "axios";
+import logger from "../../log";
 
 const Clients = () => {
+  guestRedirection();
+  handleExpiration();
   const [searchTerm, setSearchTerm] = useState("");
-
+  const [clients, setClients] = useState([]);
   const navigate = useNavigate();
 
-  const [clients, setClients] = useState([
-    { id: 1, name: "Tony", phonenumber: "Buddy" },
-    { id: 1, name: "Tony", phonenumber: "Buddy" },
-    { id: 1, name: "Tony", phonenumber: "Buddy" },
-    { id: 1, name: "Tony", phonenumber: "Buddy" },
-    { id: 1, name: "Tony", phonenumber: "Buddy" },
-    { id: 1, name: "Tony", phonenumber: "Buddy" },
-    { id: 1, name: "Tony", phonenumber: "Buddy" },
-    { id: 1, name: "Tony", phonenumber: "Buddy" },
-    { id: 1, name: "Tony", phonenumber: "Buddy" },
-    { id: 1, name: "Tony", phonenumber: "Buddy" },
-  ]);
+  useEffect(() => {
+    const fetchClients = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/api/v1/client");
+        const newList = response.data.map((obj: any) => ({
+          id: obj.IDClient,
+          name: obj.Name,
+          phonenumber: obj.PhoneNumber,
+        }));
+        setClients(newList);
+      } catch (error) {
+        console.error("Error fetching clients:", error);
+        toast.error("Failed to fetch clients", {
+          autoClose: 1500,
+          theme: "colored",
+        });
+      }
+    };
+    fetchClients();
+  }, []);
 
   const handleSearchChange = (e: {
     target: { value: SetStateAction<string> };
@@ -39,7 +52,8 @@ const Clients = () => {
     }
   };
 
-  const handleAddclient = () => {
+  const handleAddClient = () => {
+    logger.request(`The user has requested to add a client`);
     navigate("registerclient");
   };
 
@@ -64,7 +78,7 @@ const Clients = () => {
                     variant="primary"
                     type="button"
                     className="me-2"
-                    onClick={handleAddclient}
+                    onClick={handleAddClient}
                   >
                     <PlusLg />
                   </Button>
@@ -83,7 +97,22 @@ const Clients = () => {
                     </th>
                   </tr>
                 </thead>
-                <tbody>{clients.map((client) => ClientsData(client))}</tbody>
+                <tbody>
+                  {clients.length > 0 &&
+                    clients
+                      .filter(
+                        (client: any) =>
+                          !client.name.toLowerCase().includes("mockuser") &&
+                          (searchTerm === "" ||
+                            client.name.toLowerCase().includes(searchTerm) ||
+                            String(client.id)
+                              .toLowerCase()
+                              .includes(searchTerm))
+                      )
+                      .map((client: any) => (
+                        <ClientsData key={client.id} {...client} />
+                      ))}
+                </tbody>
               </Table>
             </div>
           </Col>

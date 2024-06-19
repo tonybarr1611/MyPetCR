@@ -62,11 +62,13 @@ async function UpdateInvoiceDetail(req: Request, res: Response) {
     );
     if (invoiceDetail?.recordset.length == 0) { return res.status(404).send("Invoice detail not found"); }
 
+    const priceReq = req.body.Price;
+
     const IDInvoice = req.body.IDInvoice || invoiceDetail?.recordset[0].IDInvoice;
     const IDProduct = req.body.IDProduct || invoiceDetail?.recordset[0].IDProduct;
     const Description = req.body.Description || invoiceDetail?.recordset[0].Description;
     const Quantity = req.body.Quantity || invoiceDetail?.recordset[0].Quantity;
-    const Price = req.body.Price || invoiceDetail?.recordset[0].Price;
+    const Price = priceReq >= 0 ? priceReq : invoiceDetail?.recordset[0].Price;
     
     const invoice = await getItem(res,
         'ReadByIDInvoice',
@@ -106,10 +108,21 @@ async function DeleteInvoiceDetail(req: Request, res: Response) {
         "Invoice detail not deleted");
 }
 
+async function ReadInvoiceDetailsByAppointmentID(req: Request, res: Response) {
+    const IDInvoice = req.params.id;
+    await executeProcedure(res,
+        'ReadInvoiceDetailsByAppointmentID',
+        [{ name: 'IDAppointment', type: sql.Int, value: IDInvoice }],
+        200,
+        "Invoice details retrieved successfully",
+        "Invoice details not retrieved");
+}
+
 export default {
     CreateInvoiceDetail,
     ReadAllInvoiceDetails,
     ReadInvoiceDetailById,
     UpdateInvoiceDetail,
-    DeleteInvoiceDetail
+    DeleteInvoiceDetail,
+    ReadInvoiceDetailsByAppointmentID
 }

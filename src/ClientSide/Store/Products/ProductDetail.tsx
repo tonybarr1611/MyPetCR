@@ -1,21 +1,28 @@
 import { Container, Button } from "react-bootstrap";
-import { useParams, Link, useNavigate } from "react-router-dom";
-import Ratings from "react-ratings-declarative";
+import { useParams, useNavigate } from "react-router-dom";
 import { FaCartPlus } from "react-icons/fa6";
-import { useState } from "react";
+import {
+  getProductByID,
+  getAverageRatingByID,
+  addCartEntry,
+} from "../../Functions";
+import { useState, useEffect } from "react";
+import Ratings from "react-ratings-declarative";
 import RateEntry from "./Reviews/RateEntry";
 import ReviewsDisplay from "./Reviews/ReviewsDisplay";
+import { ToastContainer, toast } from "react-toastify";
 
-type Product = {
+type ProductProp = {
   id: number;
   name: string;
   type: string;
+  url: string;
   description: string;
   price: number;
 };
 
 type ProductDetailProps = {
-  products: Product[];
+  products: ProductProp[];
 };
 
 const iconPath =
@@ -23,10 +30,28 @@ const iconPath =
 
 function ProductDetail({ products }: ProductDetailProps) {
   const { id } = useParams<{ id: string }>();
-  const productId = parseInt(id ?? "", 10);
-  const product = products.find((p) => p.id === productId);
-
+  const [product, setProduct] = useState<ProductProp | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [rating, setRating] = useState(0.0); // [1, 2, 3, 4, 5]
+  const [selectedRating, setSelectedRating] = useState<number | null>(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    async function fetchProduct() {
+      if (id) {
+        const product = await getProductByID(id);
+        setProduct(product);
+      }
+    }
+    async function fetchRatings() {
+      if (id) {
+        const ratingAvg = await getAverageRatingByID(id);
+        setRating(ratingAvg);
+      }
+    }
+    fetchProduct();
+    fetchRatings();
+  }, [id]);
 
   if (!product) {
     return <div>Product not found</div>;
@@ -46,28 +71,34 @@ function ProductDetail({ products }: ProductDetailProps) {
     ));
   };
 
-  const [showModal, setShowModal] = useState(false);
-
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
 
-  const productImage = `/src/ClientSide/Store/productImages/Thumbnail${id}.jpg`;
-
-  function changeRating(rate: any) {
-    console.log(rate);
+  function changeRating(rate: number) {
+    setSelectedRating(rate);
     handleShow();
   }
-  window.scrollTo(0, 0);
+
+  const handleAddCart = () => {
+    try {
+      addCartEntry(id, 1);
+      toast.success("Product added to cart");
+    } catch (error) {
+      console.log(error);
+      toast.error("Product wasn't added to cart");
+    }
+  };
 
   return (
     <Container>
+      <ToastContainer />
       <Button className="btn btn-secondary mt-4" onClick={() => navigate(-1)}>
         Back to Products
       </Button>
       <div className="productDetailCard twoColumnDisplay">
         <div className="columnItem">
           <img
-            src={productImage}
+            src={product.url}
             className="productDetailImage"
             alt={product.name}
           />
@@ -75,16 +106,16 @@ function ProductDetail({ products }: ProductDetailProps) {
         <div className="productDetailInfo columnItem">
           <h2>{product.name}</h2>
           <p className="description">{product.description}</p>
-          <Ratings rating={4} changeRating={changeRating}>
+          <Ratings rating={rating} changeRating={changeRating}>
             {renderRatingWidgets()}
           </Ratings>
           <p className="price">
-            {product.price.toLocaleString("es-CR", {
+            {(product.price || 0).toLocaleString("es-CR", {
               style: "currency",
               currency: "CRC",
             })}
           </p>
-          <a href="#" className="btn btn-primary">
+          <a className="btn btn-primary" onClick={handleAddCart}>
             <FaCartPlus /> Add to Cart
           </a>
         </div>
@@ -93,13 +124,14 @@ function ProductDetail({ products }: ProductDetailProps) {
         show={showModal}
         handleClose={handleClose}
         productRated={product}
+        rating={selectedRating || 1}
       />
       <div>
-        <ReviewsDisplay />
+        <ReviewsDisplay id={parseInt(id || "0")} />
       </div>
     </Container>
   );
 }
 
 export default ProductDetail;
-export type { Product };
+export type { ProductProp, ProductDetailProps };

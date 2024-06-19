@@ -1,0 +1,175 @@
+@startuml
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+class Address {
+   IDAddress: int
+   IDClient: int
+   Province: nvarchar(16)
+   City: nvarchar(64)
+   District: nvarchar(64)
+   ZIPCode: nvarchar(10)
+   Description: nvarchar(512)
+}
+class Appointment {
+   IDAppointment: int
+   IDPet: int
+   IDEmployee: int
+   IDStore: int
+   IDStatus: int
+   DateTime: datetime
+}
+class Breed {
+   IDBreed: int
+   IDPetType: int
+   Name: nvarchar(128)
+}
+class Client {
+   IDClient: int
+   IDUser: int
+   Name: nvarchar(255)
+   PhoneNumber: nvarchar(20)
+}
+class Employee {
+   IDEmployee: int
+   IDUser: int
+   Name: nvarchar(255)
+   PhoneNumber: nvarchar(20)
+}
+class Inventory {
+   IDProduct: int
+   IDStore: int
+   Quantity: int
+}
+class Invoice {
+   IDInvoice: int
+   IDAppointment: int
+   IDClient: int
+   IDPayment: int
+   IDStatus: int
+   DateTime: datetime
+}
+class InvoiceDetail {
+   IDInvoiceDetail: int
+   IDInvoice: int
+   IDProduct: int
+   Description: nvarchar(512)
+   Quantity: int
+   Price: money
+}
+class Log {
+   IDLog: int
+   IDLogType: int
+   IDUser: int
+   DateTime: datetime
+   Description: nvarchar(255)
+}
+class LogType {
+   IDLogType: int
+   Name: nvarchar(64)
+}
+class Payment {
+   IDPayment: int
+   IDPaymentType: int
+   Name: nvarchar(64)
+}
+class PaymentType {
+   IDPaymentType: int
+   Name: nvarchar(64)
+}
+class Pet {
+   IDPet: int
+   IDBreed: int
+   IDClient: int
+   Name: nvarchar(128)
+   Birthdate: date
+   Weight: int
+   Notes: nvarchar(512)
+}
+class PetType {
+   IDPetType: int
+   Name: nvarchar(64)
+}
+class Product {
+   IDProduct: int
+   IDProductType: int
+   Name: nvarchar(255)
+   Description: nvarchar(512)
+   Price: money
+}
+class ProductType {
+   IDProductType: int
+   Name: nvarchar(255)
+}
+class Review {
+   IDReview: int
+   IDProduct: int
+   IDClient: int
+   Description: nvarchar(512)
+   Rating: tinyint
+   DateTime: datetime
+}
+class Shipping {
+   IDShipping: int
+   IDInvoice: int
+   IDAddress: int
+   IDStatus: int
+   TrackingID: nvarchar(128)
+}
+class StatusType {
+   IDStatus: int
+   Name: nvarchar(64)
+}
+class Store {
+   IDStore: int
+   Location: nvarchar(128)
+}
+class User {
+   IDUser: int
+   IDUserType: int
+   LoginID: nvarchar(255)
+   Password: nvarchar(255)
+}
+class UserType {
+   IDUserType: int
+   Name: nvarchar(64)
+   Clearance: int
+}
+class Cart {
+   IDClient: int
+   IDProduct: int
+   Quantity: int
+}
+
+Address        -->  Client        : "1 to *"
+Appointment    -->  Employee      : "1 to *"
+Appointment    -->  Pet           : "1 to *"
+Appointment    -->  StatusType    : "1 to *"
+Appointment    -->  Store         : "1 to *"
+Breed          -->  PetType       : "1 to *"
+Client         -->  User          : "1 to *"
+Employee       -->  User          : "1 to *"
+Inventory      -->  Product       : "1 to *"
+Inventory      -->  Store         : "1 to *"
+Invoice        -->  Appointment   : "1 to *"
+Invoice        -->  Client        : "1 to *"
+Invoice        -->  Payment       : "1 to *"
+Invoice        -->  StatusType    : "1 to *"
+InvoiceDetail  -->  Invoice       : "1 to *"
+InvoiceDetail  -->  Product       : "1 to *"
+Log            -->  LogType       : "1 to *"
+Log            -->  User          : "1 to *"
+Payment        -->  PaymentType   : "1 to *"
+Pet            -->  Breed         : "1 to *"
+Pet            -->  Client        : "1 to *"
+Product        -->  ProductType   : "1 to *"
+Review         -->  Client        : "1 to *"
+Review         -->  Product       : "1 to *"
+Shipping       -->  Address       : "1 to *"
+Shipping       -->  Invoice       : "1 to *"
+Shipping       -->  StatusType    : "1 to *"
+User           -->  UserType      : "1 to *"
+Cart           -->  Client        : "1 to *"
+Cart           -->  Product       : "1 to *"
+@enduml

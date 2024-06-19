@@ -1,5 +1,5 @@
 import { Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 type MedicalFileInfoDataProps = {
   id: number;
@@ -16,12 +16,7 @@ function MedicalFileInfoData({
   status,
   dateTime,
 }: MedicalFileInfoDataProps) {
-  const navigate = useNavigate();
-
-  const handleInvestigateAppointment = () => {
-    navigate(`details`);
-  };
-
+  
   return (
     <tr key={"appointmentNotes" + id.toString()}>
       <td>{id}</td>
@@ -30,13 +25,14 @@ function MedicalFileInfoData({
       <td>{status}</td>
       <td>{dateTime}</td>
       <td className="text-center">
-        <Button
-          variant="primary"
-          size="sm"
-          onClick={handleInvestigateAppointment}
-        >
+      <Link to={"details"} state={id}>
+        <Button variant="primary"
+            size="sm"
+            className="mr-2"
+            style={{ width: "50%" }}>
           Investigate
         </Button>
+      </Link>
       </td>
     </tr>
   );

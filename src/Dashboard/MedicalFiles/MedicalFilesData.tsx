@@ -1,5 +1,5 @@
 import { Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 type MedicalFilesDataProps = {
   id: number;
@@ -14,31 +14,23 @@ function MedicalFilesData({
   ownerName,
   breed,
 }: MedicalFilesDataProps) {
-  const navigate = useNavigate();
-
-  const handleViewPetDetails = () => {
-    // No need to pass the id here as it's already available in the component
-    navigate(`info`);
-    //navigate(`petdetails/${id}`);
-  };
-
   return (
     <tr key={"pet" + id.toString()}>
       <td>{id}</td>
       <td>{petName}</td>
-      <td>{ownerName}</td>
+      <td>
+        {ownerName.toLowerCase().includes("mockuser")
+          ? "Unassigned pet"
+          : ownerName}
+      </td>
       <td>{breed}</td>
       <td className="text-center">
         <div className="d-flex justify-content-center">
-          <Button
-            variant="primary"
-            size="sm"
-            className="mr-2"
-            style={{ width: "50%" }}
-            onClick={handleViewPetDetails}
-          >
-            View Details
-          </Button>
+          <Link to={"info"} state={id}>
+            <Button variant="primary" size="sm" className="mr-2">
+              View Details
+            </Button>
+          </Link>
         </div>
       </td>
     </tr>

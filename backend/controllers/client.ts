@@ -1,8 +1,7 @@
-import {Response, Request} from 'express';
+import bcript from 'bcrypt';
 import sql from 'mssql';
-import { executeProcedure, getObject } from './executeProcedure';
-
-
+import {Response, Request} from 'express';
+import { executeProcedure, getObject, getItem } from './executeProcedure';
 
 async function AllClients(req: Request, res: Response) {
     await executeProcedure(res,
@@ -42,7 +41,7 @@ async function CreateClient(req: Request, res: Response) {
     if (!user || user.recordset.length === 0) { res.status(404).send("User not found");}
     
     await executeProcedure(res,
-        'CreateClient',
+        'CreateClientAndUser',
         [
             { name: 'Name', type: sql.NVarChar(255), value: Name },
             { name: 'PhoneNumber', type: sql.NVarChar(20) , value: PhoneNumber },
@@ -53,10 +52,56 @@ async function CreateClient(req: Request, res: Response) {
         "Client not created");
 }
 
-async function UpdateClient(req: Request, res: Response) {
-    let {Name, PhoneNumber, IDUser} = req.body;
-    const IDClient = req.params.id;
+async function CreateMockClient(req: Request, res: Response) {
+    await executeProcedure(res,
+        'CreateMockClient',
+        [],
+        201,
+        "Client mock created successfully",
+        "Client mock not created");
+}
 
+async function CreateClientAndUser(req: Request, res: Response) {
+    const {Name, PhoneNumber, Password, LoginID, IDUserType} = req.body
+    
+    if (!Name || !PhoneNumber || !Password || !LoginID || !IDUserType) {
+        return res.status(400).send("Missing required fields");
+    }
+
+    const userType = await getItem(res,
+        'ReadByIDUserType',
+        [{ name: 'IDUserType', type: sql.Int, value: IDUserType }]
+    );
+    if (!userType || userType.recordset.length === 0) { res.status(404).send("User type not found");}
+
+    const user = await getItem(res,
+        'ReadUserByMail',
+        [{ name: 'LoginID', type: sql.NVarChar, value: LoginID }]
+    );    
+    if (user && user.recordset.length != 0) {         
+        return res.status(400).send("Mail already in use");
+    }    
+
+    const salt = await bcript.genSalt(10);   
+    let hashedPassword = await bcript.hash(Password, salt);
+    
+    await executeProcedure(res,
+        'CreateClientAndUser',
+        [
+            { name: 'Name', type: sql.NVarChar(255), value: Name },
+            { name: 'PhoneNumber', type: sql.NVarChar(20) , value: PhoneNumber },
+            { name: 'Password', type: sql.NVarChar, value: hashedPassword },
+            { name: 'LoginID', type: sql.NVarChar, value: LoginID },
+            { name: 'IDUserType', type: sql.Int, value: IDUserType }
+        ],
+        201,
+        "Client created successfully",
+        "Client not created");
+}
+
+async function UpdateClient(req: Request, res: Response) {
+    const IDClient = req.params.id;
+    
     // Search for the client
     const client = await getObject(res,
         'ReadByIDClient',
@@ -67,6 +112,8 @@ async function UpdateClient(req: Request, res: Response) {
     if (!client || client.recordset.length === 0) {
         return res.status(404).send("Client not found");
     }
+
+    let {Name, PhoneNumber, IDUser} = req.body;
 
     //validate the json
     Name = Name || client.recordset[0].Name;
@@ -94,7 +141,27 @@ async function UpdateClient(req: Request, res: Response) {
         200,
         "Client updated successfully",
         "Client not updated");
+}
 
+async function UpgradeClient(req: Request, res: Response) {
+    const IDUser = req.params.id;
+    
+    const client = await getItem(res,
+        'ReadByIDUser',
+        [{ name: 'IDUser', type : sql.Int , value: IDUser}]
+    );
+    if (!client || client.recordset.length === 0) {
+        return res.status(404).send("User not found");
+    }
+    
+    await executeProcedure(res,
+        'UpgradeClientToEmployee',
+        [
+            { name: 'IDUser', type: sql.Int, value: IDUser }
+        ],
+        200,
+        "Client upgraded successfully",
+        "Client not upgraded");
 }
 
 async function DeleteClient(req: Request, res: Response) { 
@@ -111,6 +178,9 @@ export default {
     AllClients,
     ClientById,
     CreateClient,
+    CreateClientAndUser,
+    CreateMockClient,
     UpdateClient,
+    UpgradeClient,
     DeleteClient
 }

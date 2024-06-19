@@ -16,6 +16,13 @@ import MedicalFileAppointmentEdit from "./MedicalFiles/MedicalFileAppointmentEdi
 import MedicalFileAppointmentAdd from "./MedicalFiles/MedicalFileAppointmentAdd";
 import AccessDenied from "./AccessDenied";
 import StoreClinicOptions from "./StoreClinicOptions";
+import { guestRedirection, handleExpiration } from "../Commons/AuthCommons";
+import Products from "./Products/Products";
+import ProductEdit from "./Products/ProductEdit";
+import ProductAdd from "./Products/ProductAdd";
+import ProductStock from "./Products/ProductStock";
+import ProductStockEdit from "./Products/ProductStockEdit";
+import Log from "./Management/Log";
 
 const setBackgroundWhite = () => {
   var html = document.getElementsByTagName("html");
@@ -27,11 +34,14 @@ const setBackgroundWhite = () => {
 function Dashboard() {
   // Change html, body property
   setBackgroundWhite();
+  guestRedirection();
+  handleExpiration();
+
   return (
     <div>
       <NavBar />
       <Routes>
-        <Route path="/" />
+        <Route path="/" element={<StoreClinicOptions />} />
         <Route path="/appointments" element={<Appointments />} />
         <Route
           path="/appointments/registerappointment"
@@ -48,7 +58,8 @@ function Dashboard() {
         <Route path="/clients" element={<Clients />} />
         <Route path="/clients/registerclient" element={<RegisterClient />} />
         <Route path="/clients/editclient" element={<EditClient />} />
-        <Route path="management" element={<Management />} />
+        <Route path="/management" element={<Management />} />
+        <Route path="/management/log" element={<Log />} />
         <Route path="/medicalfiles" element={<MedicalFiles />} />
         <Route path="/medicalfiles/info" element={<MedicalFileInfo />} />
         <Route
@@ -63,6 +74,11 @@ function Dashboard() {
           path="/medicalfiles/info/details/add"
           element={<MedicalFileAppointmentAdd />}
         />
+        <Route path="/products" element={<Products />} />
+        <Route path="/products/edit/:id" element={<ProductEdit />} />
+        <Route path="/products/stock/:id" element={<ProductStock />} />
+        <Route path="/products/stock/:id/edit" element={<ProductStockEdit />} />
+        <Route path="/products/add" element={<ProductAdd />} />
         <Route path="/accessdenied" element={<AccessDenied />} />
         <Route path="/storeclinic" element={<StoreClinicOptions />} />
       </Routes>

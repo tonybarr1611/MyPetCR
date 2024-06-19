@@ -1,34 +1,102 @@
 import { Container, Row, Col, Table } from "react-bootstrap";
+import { guestRedirection, handleExpiration } from "../../Commons/AuthCommons";
 import MedicalFileInfoData from "./MedicalFileInfoData";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import axios from "axios";
+import { useLocation } from "react-router-dom";
 
 const MedicalFileInfo = () => {
-  const petData = {
-    id: 1,
-    petType: "Dog",
-    breed: "Golden Retriever",
-    owner: "Tony",
-    petName: "Buddy",
-    birthdate: "2020-01-01",
-    weight: "30kg",
-    notes: "Healthy and active",
+  guestRedirection();
+  handleExpiration();
+  const [petData, setPetData] = useState({
+    id: "",
+    breed: "",
+    owner: "",
+    petName: "",
+    birthdate: "",
+    weight: "",
+    notes: "",
+  });
+  const [appointments, setAppointments] = useState([]);
+  const [commerceFlag, setCommerceFlag] = useState(false);
+  const location = useLocation();
+  const id = location.state;
+  const formatDate = (date: any) => {
+    return `${date.slice(0, 10)} ${date.slice(11, 16)}`;
   };
 
-  const appointments = [
-    {
-      id: 101,
-      employee: "Dr. Smith",
-      store: "Main Clinic",
-      status: "Completed",
-      dateTime: "2023-06-01 10:00 AM",
-    },
-    {
-      id: 102,
-      employee: "Dr. John",
-      store: "Main Clinic",
-      status: "Pending",
-      dateTime: "2023-06-10 02:00 PM",
-    },
-  ];
+  useEffect(() => {
+    const fetchPetData = async () => {
+      try {
+        console.log(id);
+
+        const response = await axios.get(
+          `http://localhost:8080/api/v1/pet/${id}`
+        );
+        setPetData({
+          id: response.data[0].IDPet,
+          breed: response.data[0].BreedName,
+          owner: response.data[0].UserName,
+          petName: response.data[0].PetName,
+          birthdate: formatDate(response.data[0].Birthdate),
+          weight: response.data[0].Weight,
+          notes: response.data[0].Notes,
+        });
+        // if id is 1, set the tuple with id=1 to
+        // breed="N/A"
+        // owner="N/A"
+        // petName="Ventas de e-commerce"
+        // birthdate="N/A"
+        // weight="N/A"
+        // notes="Each record represents a sale made to a customer."
+        if (id === 1) {
+          setCommerceFlag(true);
+          setPetData({
+            id: response.data[0].IDPet,
+            breed: "N/A",
+            owner: "N/A",
+            petName: "E-commerce sales",
+            birthdate: "N/A",
+            weight: "N/A",
+            notes:
+              "Each record represents a sale made to a customer. The data includes the customer's name, the product name, the quantity, the price, and the total amount of the sale.",
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching pet data:", error);
+        toast.error("Failed to fetch pet data", {
+          autoClose: 1500,
+          theme: "colored",
+        });
+      }
+    };
+
+    const fetchAppointments = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/v1/appointment/pet/${id}`
+        );
+        const appointmentlist = response.data.map((obj: any) => ({
+          id: obj.IDAppointment,
+          employee: obj.EmployeeName,
+          store: obj.Location,
+          status: obj.StatusName,
+          dateTime: formatDate(obj.DateTime),
+        }));
+        setAppointments(appointmentlist);
+      } catch (error) {
+        console.error("Error fetching appointments:", error);
+        toast.error("Failed to fetch appointments", {
+          autoClose: 1500,
+          theme: "colored",
+        });
+      }
+    };
+
+    fetchPetData();
+    fetchAppointments();
+  }, [id]); // Added dependency to useEffect to avoid warnings and unnecessary re-fetches
 
   return (
     <Container fluid>
@@ -37,14 +105,6 @@ const MedicalFileInfo = () => {
           <h2>Medical File Info</h2>
           <Table striped bordered hover responsive className="mb-3">
             <tbody>
-              <tr>
-                <td>ID Pet</td>
-                <td>{petData.id}</td>
-              </tr>
-              <tr>
-                <td>Pet Type</td>
-                <td>{petData.petType}</td>
-              </tr>
               <tr>
                 <td>Breed</td>
                 <td>{petData.breed}</td>
