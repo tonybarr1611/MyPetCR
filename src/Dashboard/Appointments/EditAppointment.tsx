@@ -5,12 +5,15 @@ import { ToastContainer, toast } from "react-toastify";
 import { SiDatadog } from "react-icons/si";
 import { guestRedirection, handleExpiration } from "../../Commons/AuthCommons";
 import axios from "axios";
+import { getIDUser } from "../../ClientSide/Functions";
 
+let LastIDEmployee = 0;
 interface Personnel {
   id: number;
   name: string;
   phoneNumber: number;
   usertype: number;
+  IDUser: number;
 }
 
 interface Pet {
@@ -70,7 +73,7 @@ const EditAppointment: React.FC = () => {
           idStore: appoointmentResponse.data[0].IDStore,
           idStatus: appoointmentResponse.data[0].IDStatus
         });
-
+        LastIDEmployee = appoointmentResponse.data[0].IDEmployee;
         const petResponse = await axios.get(
           `http://localhost:8080/api/v1/petByClient/${appoointmentResponse.data[0].IDClient}`
         );
@@ -88,6 +91,7 @@ const EditAppointment: React.FC = () => {
           name: obj.Name,
           phoneNumber: obj.PhoneNumber,
           usertype: obj.IDUserType,
+          IDUser: obj.IDUser
         }));
         setPersonnel(personnelList);
 
@@ -160,7 +164,13 @@ const EditAppointment: React.FC = () => {
             "IDStatus": appointment.idStatus,
             "DateTime": appointment.dateTime
           }
+         
+          if (LastIDEmployee !== parseInt(param.IDEmployee)) {
+            const IDUser = getIDUser(); 
+            await axios.post(`http://localhost:8080/api/v1/send-email/${IDUser}/3`);
+          }
           await axios.put(url, param);
+        
         } catch (error) {
           toast.error("Failed to update client", {
             autoClose: 1500,
