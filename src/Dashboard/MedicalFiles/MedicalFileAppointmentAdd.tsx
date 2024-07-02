@@ -28,6 +28,7 @@ const AddMedicalFileAppointment = () => {
       description: string;
       quantity: number;
       price: number;
+      type: string;
     }[]
   >([]);
   const [showProductTable, setShowProductTable] = useState(false);
@@ -45,6 +46,7 @@ const AddMedicalFileAppointment = () => {
           description: product.Description,
           quantity: product.Quantity,
           price: product.Price,
+          type: product.ProductTypeName,
         }));
         productsData = productsData.filter(
           (product: any) => product.name !== "Shipping"
@@ -101,7 +103,10 @@ const AddMedicalFileAppointment = () => {
         0
       );
 
-      if (availableQuantity < detail.quantity) {
+      if (
+        availableQuantity < detail.quantity &&
+        !selectedProduct.type.toLocaleLowerCase().includes("service")
+      ) {
         toast.error("Insufficient stock", {
           autoClose: 1500,
           theme: "colored",
@@ -119,7 +124,9 @@ const AddMedicalFileAppointment = () => {
           Price: totalPrice,
         };
         await axios.post(url, params);
-        logger.update(`Added detail to invoice ${id} with product ${detail.productId}`)
+        logger.update(
+          `Added detail to invoice ${id} with product ${detail.productId}`
+        );
 
         const quantityParams = {
           Quantity: detail.quantity,
