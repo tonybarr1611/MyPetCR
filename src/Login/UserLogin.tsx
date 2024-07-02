@@ -170,9 +170,9 @@ const UserLogin: React.FC = () => {
                   onChange={handleOnChange}
                 />
                 <Button
-                  variant="primary"
                   onClick={handleClickShowPassword}
                   className="ml-1"
+                  style={{ marginTop: "0" }}
                 >
                   {showPassword ? <EyeSlashFill /> : <EyeFill />}
                 </Button>

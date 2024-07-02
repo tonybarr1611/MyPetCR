@@ -78,6 +78,7 @@ const Clients = () => {
                     variant="primary"
                     type="button"
                     className="me-2"
+                    style={{ marginTop: "0" }}
                     onClick={handleAddClient}
                   >
                     <PlusLg />
