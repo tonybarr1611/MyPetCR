@@ -57,15 +57,31 @@ function Products() {
               <td>
                 <div style={{ display: "flex", justifyContent: "center" }}>
                   <Link to={`edit/${product.id}`}>
-                    <Button variant="primary" className="ml-2" onClick={async () => await logger.request(`The user requested to edit the product with an ID: ${product.id}`)}>
-                      <FaPencil />
+                    <Button
+                      variant="primary"
+                      className="ml-2"
+                      onClick={async () =>
+                        await logger.request(
+                          `The user requested to edit the product with an ID: ${product.id}`
+                        )
+                      }
+                    >
+                      <FaPencil style={{ marginRight: "6px" }} />
                       Product
                     </Button>
                   </Link>
                   {product.type.toLowerCase() === "service" ? null : (
                     <Link to={`stock/${product.id}`}>
-                      <Button variant="primary" className="ml-2" onClick={async () => await logger.request(`The user requested to view the stock on each store of the product with an ID: ${product.id}`)}>
-                        <FaPencil />
+                      <Button
+                        variant="primary"
+                        className="ml-2"
+                        onClick={async () =>
+                          await logger.request(
+                            `The user requested to view the stock on each store of the product with an ID: ${product.id}`
+                          )
+                        }
+                      >
+                        <FaPencil style={{ marginRight: "6px" }} />
                         Stock
                       </Button>
                     </Link>
@@ -78,7 +94,15 @@ function Products() {
       </Table>
       <div style={{ textAlign: "center" }}>
         <Link to={`add`}>
-          <Button onClick={async() => await logger.request(`The user has requested to add a new Product`)}>Add Product</Button>
+          <Button
+            onClick={async () =>
+              await logger.request(
+                `The user has requested to add a new Product`
+              )
+            }
+          >
+            Add Product
+          </Button>
         </Link>
         <br />
         <br />

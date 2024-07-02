@@ -262,7 +262,7 @@ END;
 GO
 
 -- Create appointment and invoice
-CREATE PROCEDURE CreateAppointmentAndInvoice
+CREATE PROCEDURE AddAppointmentAndInvoice
     @IDPet INT,
     @IDStore INT,
     @DateTime DATETIME,

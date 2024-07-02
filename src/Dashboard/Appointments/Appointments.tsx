@@ -164,6 +164,7 @@ const Appointments = () => {
                     variant="primary"
                     type="button"
                     className="me-2"
+                    style={{ marginTop: "0" }}
                     onClick={handleAddAppointment}
                   >
                     <PlusLg />
