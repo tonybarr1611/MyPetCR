@@ -5,7 +5,7 @@ import { guestRedirection } from "../../Commons/AuthCommons";
 
 const ClientOptions = () => {
   const navigate = useNavigate();
-  guestRedirection();
+  guestRedirection(false);
 
   return (
     <Container className="mt-5">

@@ -192,6 +192,11 @@ const EditAppointment: React.FC = () => {
           autoClose: 1500,
           theme: "colored",
         });
+      } else if (new Date(appointment.dateTime) < new Date()) {
+        toast.error("Date/Time must be in the future", {
+          autoClose: 1500,
+          theme: "colored",
+        });
       } else {
         try {
           const url = `http://localhost:8080/api/v1/appointment/${id}`;
@@ -204,10 +209,10 @@ const EditAppointment: React.FC = () => {
             IDUser: appointment.iduserEmployee,
           };
 
-          console.log(param.IDStatus);
-          console.log(LastIDStatus);
+          console.log("new", param.IDStatus);
+          console.log("original", originalAppointment.idStatus);
 
-          if (param.IDStatus === 3) {
+          if (param.IDStatus === "3") {
             console.log(
               personnel.reduce(
                 (acc, curr) =>

@@ -32,8 +32,10 @@ function isGuest() {
   return localStorage.getItem("token") === "guest";
 }
 
-function guestRedirection() {
-  if (isGuest()) {
+// Optional parameter notClient, default true
+function guestRedirection(notClient = true) {
+  const userType = localStorage.getItem("userType") || "4";
+  if (isGuest() || (parseInt(userType) === 4 && notClient)) {
     window.location.assign("/");
   }
 }

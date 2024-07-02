@@ -15,7 +15,7 @@ interface Personnel {
 }
 
 interface Pet {
-  id: number;  // Added id field
+  id: number; // Added id field
   name: string;
 }
 
@@ -23,7 +23,6 @@ interface Store {
   id: number;
   name: string;
 }
-
 
 const RegisterAppointmentDetails: React.FC = () => {
   guestRedirection();
@@ -46,27 +45,33 @@ const RegisterAppointmentDetails: React.FC = () => {
 
   useEffect(() => {
     const fetchClient = async () => {
-      try { 
-        const personnelResponse = await axios.get(`http://localhost:8080/api/v1/employee/`);
+      try {
+        const personnelResponse = await axios.get(
+          `http://localhost:8080/api/v1/employee/`
+        );
         const personnelList = personnelResponse.data.map((obj: any) => ({
           id: obj.IDEmployee,
           name: obj.Name,
           phoneNumber: obj.PhoneNumber,
-          usertype: obj.IDUserType
+          usertype: obj.IDUserType,
         }));
-        setPersonnel(personnelList);         
+        setPersonnel(personnelList);
 
-        const petResponse = await axios.get(`http://localhost:8080/api/v1/petByClient/${clientID}`)
+        const petResponse = await axios.get(
+          `http://localhost:8080/api/v1/petByClient/${clientID}`
+        );
         const petList = petResponse.data.map((obj: any) => ({
           id: obj.IDPet,
-          name: obj.PetName
+          name: obj.PetName,
         }));
-        setPets(petList);         
+        setPets(petList);
 
-        const storeResponse = await axios.get(`http://localhost:8080/api/v1/store/`);
+        const storeResponse = await axios.get(
+          `http://localhost:8080/api/v1/store/`
+        );
         const storeList = storeResponse.data.map((obj: any) => ({
           id: obj.IDStore,
-          name: obj.Location
+          name: obj.Location,
         }));
         setStores(storeList);
       } catch (error) {
@@ -83,10 +88,19 @@ const RegisterAppointmentDetails: React.FC = () => {
   const handleOnChange = (e: { target: { name: any; value: any } }) => {
     if (e.target.name === "petName") {
       const selectedPetId = e.target.selectedOptions[0].getAttribute("data-id");
-      setAppointment({ ...appointment, idPet: selectedPetId, petName: e.target.value });  
+      setAppointment({
+        ...appointment,
+        idPet: selectedPetId,
+        petName: e.target.value,
+      });
     } else if (e.target.name === "store") {
-      const selectedStoreId = e.target.selectedOptions[0].getAttribute("data-id");
-      setAppointment({ ...appointment, store: e.target.value, idStore: selectedStoreId });
+      const selectedStoreId =
+        e.target.selectedOptions[0].getAttribute("data-id");
+      setAppointment({
+        ...appointment,
+        store: e.target.value,
+        idStore: selectedStoreId,
+      });
     } else {
       setAppointment({ ...appointment, [e.target.name]: e.target.value });
     }
@@ -106,28 +120,36 @@ const RegisterAppointmentDetails: React.FC = () => {
           autoClose: 1500,
           theme: "colored",
         });
+      } else if (new Date(appointment.dateTime) < new Date()) {
+        toast.error("Date/Time must be in the future", {
+          autoClose: 1500,
+          theme: "colored",
+        });
       } else {
         try {
-          const petResponse = await axios.get(`http://localhost:8080/api/v1/client/`, {
-            params: {
-              "Name": clientID
+          const petResponse = await axios.get(
+            `http://localhost:8080/api/v1/client/`,
+            {
+              params: {
+                Name: clientID,
+              },
             }
-          });
+          );
           const petList = petResponse.data.map((obj: any) => ({
             id: obj.IDPet,
-            name: obj.PetName
+            name: obj.PetName,
           }));
-          setPets(petList); 
+          setPets(petList);
 
           const url = `http://localhost:8080/api/v1/appointmentandinvoice/`;
           const param = {
-            "IDPet": appointment.idPet,
-            "IDEmployee": appointment.personnelId,
-            "IDClient": clientID,
-            "IDStore": appointment.idStore,
-            "IDStatus": 1,
-            "DateTime": appointment.dateTime
-          }
+            IDPet: appointment.idPet,
+            IDEmployee: appointment.personnelId,
+            IDClient: clientID,
+            IDStore: appointment.idStore,
+            IDStatus: 1,
+            DateTime: appointment.dateTime,
+          };
           await axios.post(url, param);
         } catch (error) {
           toast.error("Failed to update client", {
@@ -263,25 +285,25 @@ const RegisterAppointmentDetails: React.FC = () => {
                   <th>Phone Number</th>
                 </tr>
               </thead>
-                    <tbody>
-                        {personnel.map((person, index) => 
-                          person.usertype === 3 ? (
-                            <tr
-                              key={index}
-                              onClick={() =>
-                                setAppointment({
-                                  ...appointment,
-                                  personnelId: person.id.toString(),
-                                })
-                              }
-                            >
-                              <td>{person.id}</td>
-                              <td>{person.name}</td>
-                              <td>{person.phoneNumber}</td>
-                            </tr>
-                          ) : null
-                        )}
-                      </tbody>
+              <tbody>
+                {personnel.map((person, index) =>
+                  person.usertype === 3 ? (
+                    <tr
+                      key={index}
+                      onClick={() =>
+                        setAppointment({
+                          ...appointment,
+                          personnelId: person.id.toString(),
+                        })
+                      }
+                    >
+                      <td>{person.id}</td>
+                      <td>{person.name}</td>
+                      <td>{person.phoneNumber}</td>
+                    </tr>
+                  ) : null
+                )}
+              </tbody>
             </Table>
           </div>
         </div>
